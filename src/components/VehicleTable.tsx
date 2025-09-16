@@ -36,7 +36,7 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
   };
 
   const formatKilometer = (value: number) => {
-    return new Intl.NumberFormat('pt-BR').format(value) + ' km';
+    return new Intl.NumberFormat('pt-BR').format(value);
   };
 
   const isAllSelected = vehicles.length > 0 && selectedVehicles.length === vehicles.length;
