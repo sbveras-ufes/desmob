@@ -68,7 +68,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.cr}
+                  {user.cr.join(', ')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(user.createdAt)}
