@@ -10,6 +10,8 @@ interface UserFilterPanelProps {
 
 const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
+  const [crSearchTerm, setCrSearchTerm] = useState('');
 
   const uniqueCrs = useMemo(() => {
     return [...new Set(mockVehicles.map(v => v.cr))].sort();
@@ -22,11 +24,25 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
     });
   };
 
+  const handleCrChange = (cr: string) => {
+    const currentCrs = filters.cr || [];
+    const newCrs = currentCrs.includes(cr)
+      ? currentCrs.filter(c => c !== cr)
+      : [...currentCrs, cr];
+    onFiltersChange({ ...filters, cr: newCrs });
+  };
+  
+  const filteredCrs = useMemo(() => {
+    return uniqueCrs.filter(cr =>
+      cr.toLowerCase().includes(crSearchTerm.toLowerCase())
+    );
+  }, [uniqueCrs, crSearchTerm]);
+
   const clearFilters = () => {
     onFiltersChange({});
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value && value !== '');
+  const hasActiveFilters = Object.values(filters).some(value => value && (Array.isArray(value) ? value.length > 0 : value !== ''));
 
   return (
     <div className="bg-white rounded-lg shadow-md mb-6">
@@ -43,11 +59,7 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
                 Ativo
               </span>
             )}
-            {isExpanded ? (
-              <ChevronUp className="h-5 w-5" />
-            ) : (
-              <ChevronDown className="h-5 w-5" />
-            )}
+            {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </button>
           
           {hasActiveFilters && (
@@ -105,20 +117,49 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
               </select>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                CR (Centro de Custo)
-              </label>
-              <select
-                value={filters.cr || ''}
-                onChange={(e) => handleFilterChange('cr', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-2">CR (Centro de Custo)</label>
+              <button
+                type="button"
+                onClick={() => setIsCrDropdownOpen(!isCrDropdownOpen)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between"
               >
-                <option value="">Todos os CRs</option>
-                {uniqueCrs.map(cr => (
-                  <option key={cr} value={cr}>{cr}</option>
-                ))}
-              </select>
+                <span className="truncate">
+                  {filters.cr?.length > 0 ? `${filters.cr.length} selecionado(s)` : 'Selecione o(s) CR(s)'}
+                </span>
+                <ChevronDown className={`h-5 w-5 transform transition-transform ${isCrDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isCrDropdownOpen && (
+                <div 
+                  className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                  onMouseLeave={() => setIsCrDropdownOpen(false)}
+                >
+                  <div className="p-2">
+                    <input
+                      type="text"
+                      placeholder="Buscar CR..."
+                      value={crSearchTerm}
+                      onChange={(e) => setCrSearchTerm(e.target.value)}
+                      className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <ul>
+                    {filteredCrs.map(cr => (
+                      <li key={cr} className="px-2 py-1 hover:bg-gray-100">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={filters.cr?.includes(cr) || false}
+                            onChange={() => handleCrChange(cr)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span>{cr}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </div>
