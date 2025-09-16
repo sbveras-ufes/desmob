@@ -223,4 +223,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
 
             {/* Local Desmobilização */}
             <div>
-                <label className="block text-sm
+                <label className="block text-sm font-medium text-gray-700 mb-2">Local Desmobilização</label>
+                <select value={filters.localDesmobilizacao || ''} onChange={(e) => handleFilterChange('localDesmobilizacao', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Selecione o Local</option>
+                    {uniqueValues.locaisDesmobilizacao.map(local => <option key={local} value={local}>{local}</option>)}
+                </select>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default FilterPanel;
