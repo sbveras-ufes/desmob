@@ -40,7 +40,7 @@ const UserModal: React.FC<UserModalProps> = ({
         nome: editingUser.nome,
         email: editingUser.email,
         cargo: editingUser.cargo,
-        cr: editingUser.cr
+        cr: Array.isArray(editingUser.cr) ? editingUser.cr : [editingUser.cr],
       });
     } else {
       setFormData({
