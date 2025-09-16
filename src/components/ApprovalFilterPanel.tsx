@@ -10,44 +10,16 @@ interface ApprovalFilterPanelProps {
 
 const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [clienteInput, setClienteInput] = useState(filters.cliente || '');
-  const [modeloInput, setModeloInput] = useState(filters.modelo || '');
-  const [crInput, setCrInput] = useState(filters.cr || '');
-  const [showClienteSuggestions, setShowClienteSuggestions] = useState(false);
-  const [showModeloSuggestions, setShowModeloSuggestions] = useState(false);
-  const [showCrSuggestions, setShowCrSuggestions] = useState(false);
 
-  // Get unique values for autocomplete
-  const uniqueClientes = useMemo(() => {
-    return [...new Set(mockVehicles.map(v => v.cliente))].sort();
+  const uniqueValues = useMemo(() => {
+    const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
+    const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
+    const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
+    const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
+    const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
+    const locaisDesmobilizacao = [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
+    return { modelos, clientes, crs, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
   }, []);
-
-  const uniqueModelos = useMemo(() => {
-    return [...new Set(mockVehicles.map(v => v.modelo))].sort();
-  }, []);
-
-  const uniqueCrs = useMemo(() => {
-    return [...new Set(mockVehicles.map(v => v.cr))].sort();
-  }, []);
-
-  // Filter suggestions based on input
-  const filteredClientes = useMemo(() => {
-    return uniqueClientes.filter(cliente => 
-      cliente.toLowerCase().includes(clienteInput.toLowerCase())
-    );
-  }, [uniqueClientes, clienteInput]);
-
-  const filteredModelos = useMemo(() => {
-    return uniqueModelos.filter(modelo => 
-      modelo.toLowerCase().includes(modeloInput.toLowerCase())
-    );
-  }, [uniqueModelos, modeloInput]);
-
-  const filteredCrs = useMemo(() => {
-    return uniqueCrs.filter(cr => 
-      cr.includes(crInput)
-    );
-  }, [uniqueCrs, crInput]);
 
   const handleFilterChange = (key: keyof ApprovalFilters, value: string) => {
     onFiltersChange({
@@ -56,28 +28,7 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     });
   };
 
-  const handleClienteSelect = (cliente: string) => {
-    setClienteInput(cliente);
-    handleFilterChange('cliente', cliente);
-    setShowClienteSuggestions(false);
-  };
-
-  const handleModeloSelect = (modelo: string) => {
-    setModeloInput(modelo);
-    handleFilterChange('modelo', modelo);
-    setShowModeloSuggestions(false);
-  };
-
-  const handleCrSelect = (cr: string) => {
-    setCrInput(cr);
-    handleFilterChange('cr', cr);
-    setShowCrSuggestions(false);
-  };
-
   const clearFilters = () => {
-    setClienteInput('');
-    setModeloInput('');
-    setCrInput('');
     onFiltersChange({});
   };
 
@@ -196,106 +147,46 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
               </select>
             </div>
 
-            {/* Modelo Autocomplete */}
-            <div className="relative">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Modelo
               </label>
-              <input
-                type="text"
-                value={modeloInput}
-                onChange={(e) => {
-                  setModeloInput(e.target.value);
-                  handleFilterChange('modelo', e.target.value);
-                  setShowModeloSuggestions(true);
-                }}
-                onFocus={() => setShowModeloSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowModeloSuggestions(false), 200)}
-                placeholder="Digite o modelo..."
+              <select
+                value={filters.modelo || ''}
+                onChange={(e) => handleFilterChange('modelo', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {showModeloSuggestions && filteredModelos.length > 0 && modeloInput && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredModelos.slice(0, 10).map((modelo, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleModeloSelect(modelo)}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                    >
-                      {modelo}
-                    </button>
-                  ))}
-                </div>
-              )}
+              >
+                <option value="">Selecione o Modelo</option>
+                {uniqueValues.modelos.map(modelo => <option key={modelo} value={modelo}>{modelo}</option>)}
+              </select>
             </div>
 
-            {/* Cliente Autocomplete */}
-            <div className="relative">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Cliente
               </label>
-              <input
-                type="text"
-                value={clienteInput}
-                onChange={(e) => {
-                  setClienteInput(e.target.value);
-                  handleFilterChange('cliente', e.target.value);
-                  setShowClienteSuggestions(true);
-                }}
-                onFocus={() => setShowClienteSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowClienteSuggestions(false), 200)}
-                placeholder="Digite o nome do cliente..."
+              <select
+                value={filters.cliente || ''}
+                onChange={(e) => handleFilterChange('cliente', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {showClienteSuggestions && filteredClientes.length > 0 && clienteInput && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredClientes.slice(0, 10).map((cliente, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleClienteSelect(cliente)}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                    >
-                      {cliente}
-                    </button>
-                  ))}
-                </div>
-              )}
+              >
+                <option value="">Selecione o Cliente</option>
+                {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
+              </select>
             </div>
 
-            {/* CR Autocomplete */}
-            <div className="relative">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 CR
               </label>
-              <input
-                type="text"
-                value={crInput}
-                onChange={(e) => {
-                  setCrInput(e.target.value);
-                  handleFilterChange('cr', e.target.value);
-                  setShowCrSuggestions(true);
-                }}
-                onFocus={() => setShowCrSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}
-                placeholder="Digite o código CR..."
+              <select
+                value={filters.cr || ''}
+                onChange={(e) => handleFilterChange('cr', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {showCrSuggestions && filteredCrs.length > 0 && crInput && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredCrs.slice(0, 10).map((cr, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleCrSelect(cr)}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                    >
-                      {cr}
-                    </button>
-                  ))}
-                </div>
-              )}
+              >
+                <option value="">Selecione o CR</option>
+                {uniqueValues.crs.map(cr => <option key={cr} value={cr}>{cr}</option>)}
+              </select>
             </div>
 
             <div>
@@ -314,6 +205,34 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 <option value="FINANCEIRA">FINANCEIRA</option>
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo Desmobilização</label>
+              <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Selecione o Tipo</option>
+                  {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
+              </select>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Pátio Destino</label>
+                <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Selecione o Pátio</option>
+                    {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+                </select>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Local Desmobilização</label>
+                <select value={filters.localDesmobilizacao || ''} onChange={(e) => handleFilterChange('localDesmobilizacao', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Selecione o Local</option>
+                    {uniqueValues.locaisDesmobilizacao.map(local => <option key={local} value={local}>{local}</option>)}
+                </select>
+            </div>
+
           </div>
         </div>
       )}
