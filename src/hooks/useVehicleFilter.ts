@@ -26,13 +26,6 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
         if (mesVeiculo !== mesFiltro) return false;
       }
 
-      // Filtro por placa
-      if (filters.placa) {
-        if (!vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
-          return false;
-        }
-      }
-
       // Filtro por modelo
       if (filters.modelo) {
         if (!vehicle.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
