@@ -40,6 +40,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       placa: vehicle.placa,
       modelo: vehicle.modelo,
       anoModelo: vehicle.anoModelo,
+      km: vehicle.km,
       diretoria: vehicle.diretoria,
       cr: vehicle.cr,
       dataPrevista: vehicle.dataPrevista,
