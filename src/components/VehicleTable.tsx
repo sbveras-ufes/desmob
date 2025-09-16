@@ -35,6 +35,10 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
     }).format(value);
   };
 
+  const formatKilometer = (value: number) => {
+    return new Intl.NumberFormat('pt-BR').format(value) + ' km';
+  };
+
   const isAllSelected = vehicles.length > 0 && selectedVehicles.length === vehicles.length;
   const isPartiallySelected = selectedVehicles.length > 0 && selectedVehicles.length < vehicles.length;
 
@@ -65,16 +69,28 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
                 Ano/Modelo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                KM
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Diretoria
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 CR do Veículo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Situação
+                Tipo de desmobilização
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Pátio Destino
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Local da Desmobilização
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Data Prevista
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Data de Entrega
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Gerente do Contrato
@@ -89,7 +105,7 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map((vehicle, index) => (
-              <tr 
+              <tr
                 key={vehicle.id}
                 className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
               >
@@ -111,18 +127,28 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
                   {vehicle.anoModelo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatKilometer(vehicle.km)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.diretoria}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.cr}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    {vehicle.situacao}
-                  </span>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.tipoDesmobilizacao}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.patioDestino}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.localDesmobilizacao}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.gerente}
@@ -138,7 +164,7 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
           </tbody>
         </table>
       </div>
-      
+
       {vehicles.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">Nenhum veículo encontrado</p>
