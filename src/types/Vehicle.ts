@@ -3,10 +3,14 @@ export interface Vehicle {
   placa: string;
   modelo: string;
   anoModelo: string;
+  km: number;
   diretoria: string;
   cr: string;
-  situacao: string;
+  tipoDesmobilizacao: 'Renovação de Frota' | 'Redução de Frota' | 'Término Contrato';
+  patioDestino: string;
+  localDesmobilizacao: string;
   dataPrevista: string;
+  dataEntrega: string;
   gerente: string;
   cliente: string;
   residual: number;
