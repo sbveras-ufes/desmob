@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
 import { UserFilters } from '../types/User';
+import { mockVehicles } from '../data/mockData';
 
 interface UserFilterPanelProps {
   filters: UserFilters;
@@ -9,6 +10,10 @@ interface UserFilterPanelProps {
 
 const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const uniqueCrs = useMemo(() => {
+    return [...new Set(mockVehicles.map(v => v.cr))].sort();
+  }, []);
 
   const handleFilterChange = (key: keyof UserFilters, value: string) => {
     onFiltersChange({
@@ -58,7 +63,7 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
 
       {isExpanded && (
         <div className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Nome
@@ -97,6 +102,22 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
                 <option value="">Todos os cargos</option>
                 <option value="Gestor Contrato">Gestor Contrato</option>
                 <option value="Supervisor">Supervisor</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                CR (Centro de Custo)
+              </label>
+              <select
+                value={filters.cr || ''}
+                onChange={(e) => handleFilterChange('cr', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todos os CRs</option>
+                {uniqueCrs.map(cr => (
+                  <option key={cr} value={cr}>{cr}</option>
+                ))}
               </select>
             </div>
           </div>
