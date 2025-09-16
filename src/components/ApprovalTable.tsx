@@ -43,6 +43,10 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     }
   };
 
+  const formatKilometer = (value: number) => {
+    return new Intl.NumberFormat('pt-BR').format(value);
+  };
+
   const selectableVehicles = vehicles.filter(v => v.situacao === 'Aguardando aprovação');
   const isAllSelected = selectableVehicles.length > 0 && 
     selectableVehicles.every(v => selectedVehicles.includes(v.id));
@@ -78,13 +82,28 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 Ano/Modelo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                KM
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Diretoria
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 CR do Veículo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tipo de Desmobilização
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Pátio Destino
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Local da Desmobilização
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Data Prevista
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Data de Entrega
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Cliente
@@ -125,13 +144,28 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   {vehicle.anoModelo}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {formatKilometer(vehicle.km)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.diretoria}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.cr}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.tipoDesmobilizacao}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.patioDestino}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {vehicle.localDesmobilizacao}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {vehicle.cliente}
