@@ -71,9 +71,21 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
           return false;
         }
         
-        if (filters.tipo === 'leve' && !isHeavyVehicle) {
+        if (filters.tipo === 'leve' && isHeavyVehicle) { // Corrigido para isHeavyVehicle
           return false;
         }
+      }
+      
+      if (filters.tipoDesmobilizacao && vehicle.tipoDesmobilizacao !== filters.tipoDesmobilizacao) {
+        return false;
+      }
+      
+      if (filters.patioDestino && vehicle.patioDestino !== filters.patioDestino) {
+        return false;
+      }
+
+      if (filters.localDesmobilizacao && vehicle.localDesmobilizacao !== filters.localDesmobilizacao) {
+        return false;
       }
 
       return true;
