@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 import { User, UserFormData } from '../types/User';
 import { mockVehicles } from '../data/mockData';
 
@@ -22,11 +22,13 @@ const UserModal: React.FC<UserModalProps> = ({
     nome: '',
     email: '',
     cargo: '',
-    cr: ''
+    cr: []
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [supervisorWarning, setSupervisorWarning] = useState('');
+  const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
+  const [crSearchTerm, setCrSearchTerm] = useState('');
 
   const uniqueCrs = useMemo(() => {
     return [...new Set(mockVehicles.map(v => v.cr))].sort();
@@ -45,7 +47,7 @@ const UserModal: React.FC<UserModalProps> = ({
         nome: '',
         email: '',
         cargo: '',
-        cr: ''
+        cr: []
       });
     }
     setErrors({});
@@ -67,7 +69,7 @@ const UserModal: React.FC<UserModalProps> = ({
       newErrors.email = 'E-mail deve ter um formato válido';
     }
     if (!formData.cargo) newErrors.cargo = 'Cargo é obrigatório';
-    if (!formData.cr) newErrors.cr = 'CR é obrigatório';
+    if (formData.cr.length === 0) newErrors.cr = 'Pelo menos um CR deve ser selecionado';
 
     if (formData.cargo === 'Supervisor' && existingSupervisor) {
       newErrors.cargo = `Já existe um Supervisor: ${existingSupervisor.nome}`;
@@ -83,7 +85,7 @@ const UserModal: React.FC<UserModalProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof UserFormData, value: string) => {
+  const handleInputChange = (field: keyof Omit<UserFormData, 'cr'>, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     if (field === 'cargo' && value === 'Supervisor' && existingSupervisor) {
@@ -96,6 +98,23 @@ const UserModal: React.FC<UserModalProps> = ({
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
+
+  const handleCrChange = (cr: string) => {
+    const newCrs = formData.cr.includes(cr)
+      ? formData.cr.filter(c => c !== cr)
+      : [...formData.cr, cr];
+    setFormData(prev => ({ ...prev, cr: newCrs }));
+    if (errors.cr) {
+      setErrors(prev => ({...prev, cr: ''}));
+    }
+  };
+
+  const filteredCrs = useMemo(() => {
+    return uniqueCrs.filter(cr =>
+      cr.toLowerCase().includes(crSearchTerm.toLowerCase())
+    );
+  }, [uniqueCrs, crSearchTerm]);
+
 
   if (!isOpen) return null;
 
@@ -146,16 +165,50 @@ const UserModal: React.FC<UserModalProps> = ({
               {supervisorWarning && <p className="mt-1 text-sm text-yellow-600">{supervisorWarning}</p>}
             </div>
 
-            {/* CR */}
-            <div>
+            {/* CR (Custom Multi-select) */}
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">CR (Centro de Custo) <span className="text-red-500">*</span></label>
-              <select value={formData.cr} onChange={(e) => handleInputChange('cr', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${errors.cr ? 'border-red-500' : 'border-gray-300'}`}>
-                <option value="">Selecione o CR</option>
-                {uniqueCrs.map(cr => (
-                  <option key={cr} value={cr}>{cr}</option>
-                ))}
-              </select>
+              <button
+                type="button"
+                onClick={() => setIsCrDropdownOpen(!isCrDropdownOpen)}
+                className={`w-full px-3 py-2 border rounded-md bg-white text-left flex items-center justify-between ${errors.cr ? 'border-red-500' : 'border-gray-300'}`}
+              >
+                <span className="truncate">
+                  {formData.cr.length > 0 ? `${formData.cr.length} selecionado(s)` : 'Selecione o(s) CR(s)'}
+                </span>
+                <ChevronDown className={`h-5 w-5 transform transition-transform ${isCrDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {isCrDropdownOpen && (
+                <div 
+                  className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto"
+                  onMouseLeave={() => setIsCrDropdownOpen(false)}
+                >
+                  <div className="p-2">
+                    <input
+                      type="text"
+                      placeholder="Buscar CR..."
+                      value={crSearchTerm}
+                      onChange={(e) => setCrSearchTerm(e.target.value)}
+                      className="w-full px-2 py-1 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <ul>
+                    {filteredCrs.map(cr => (
+                      <li key={cr} className="px-2 py-1 hover:bg-gray-100">
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={formData.cr.includes(cr)}
+                            onChange={() => handleCrChange(cr)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          />
+                          <span>{cr}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {errors.cr && <p className="mt-1 text-sm text-red-600">{errors.cr}</p>}
             </div>
           </div>
