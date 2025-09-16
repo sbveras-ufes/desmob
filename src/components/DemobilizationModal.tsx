@@ -69,13 +69,6 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -111,13 +104,13 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                       Ano/Modelo
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      CR
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Diretoria
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Cliente
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Residual
                     </th>
                   </tr>
                 </thead>
@@ -134,13 +127,13 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                         {vehicle.anoModelo}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
+                        {vehicle.cr}
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-500">
                         {vehicle.diretoria}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {vehicle.cliente}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-500">
-                        {formatCurrency(vehicle.residual)}
                       </td>
                     </tr>
                   ))}
@@ -195,13 +188,16 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Pátio Destino
               </label>
-              <input
-                type="text"
+              <select
                 value={formData.patioDestino}
                 onChange={(e) => handleInputChange('patioDestino', e.target.value)}
-                placeholder="Digite o pátio de destino..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              >
+                <option value="">Selecione o pátio de destino</option>
+                <option value="patio-sp">Pátio São Paulo</option>
+                <option value="patio-rj">Pátio Rio de Janeiro</option>
+                <option value="patio-mg">Pátio Belo Horizonte</option>
+              </select>
               <p className="mt-1 text-sm text-gray-500">Opcional - pode ser preenchido posteriormente</p>
             </div>
 
