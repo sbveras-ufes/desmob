@@ -3,6 +3,7 @@ export interface ApprovalVehicle {
   placa: string;
   modelo: string;
   anoModelo: string;
+  km: number;
   diretoria: string;
   cr: string;
   dataPrevista: string;
@@ -26,4 +27,7 @@ export interface ApprovalFilters {
   cliente?: string;
   cr?: string;
   diretoria?: string;
+  tipoDesmobilizacao?: string;
+  patioDestino?: string;
+  localDesmobilizacao?: string;
 }
