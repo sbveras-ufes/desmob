@@ -24,8 +24,11 @@ export interface DemobilizationFilters {
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
-  cr?: string;
+  cr?: string[];
   diretoria?: string;
+  tipoDesmobilizacao?: string;
+  patioDestino?: string;
+  localDesmobilizacao?: string;
 }
 
 export interface DemobilizationRequest {
