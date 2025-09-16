@@ -48,8 +48,8 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
       }
 
       // Filtro por CR
-      if (filters.cr) {
-        if (!vehicle.cr.includes(filters.cr)) {
+      if (filters.cr && filters.cr.length > 0) {
+        if (!filters.cr.includes(vehicle.cr)) {
           return false;
         }
       }
@@ -60,8 +60,8 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
           return false;
         }
       }
-
-      // Filtro por tipo (simulado baseado no modelo)
+      
+      // Filtro por tipo de veículo
       if (filters.tipo) {
         const isHeavyVehicle = vehicle.modelo.includes('HILUX') || 
                               vehicle.modelo.includes('RANGER') || 
@@ -72,6 +72,24 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
         }
         
         if (filters.tipo === 'leve' && isHeavyVehicle) {
+          return false;
+        }
+      }
+
+      if (filters.tipoDesmobilizacao) {
+        if (vehicle.tipoDesmobilizacao !== filters.tipoDesmobilizacao) {
+          return false;
+        }
+      }
+
+      if (filters.patioDestino) {
+        if (vehicle.patioDestino !== filters.patioDestino) {
+          return false;
+        }
+      }
+
+      if (filters.localDesmobilizacao) {
+        if (vehicle.localDesmobilizacao !== filters.localDesmobilizacao) {
           return false;
         }
       }
