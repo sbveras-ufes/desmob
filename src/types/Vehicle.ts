@@ -20,7 +20,6 @@ export interface DemobilizationFilters {
   periodoInicio?: string;
   periodoFim?: string;
   mes?: string;
-  placa?: string;
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
