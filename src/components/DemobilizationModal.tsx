@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { Vehicle, DemobilizationRequest } from '../types/Vehicle';
+import { mockVehicles } from '../data/mockData';
 
 interface DemobilizationModalProps {
   isOpen: boolean;
@@ -23,6 +24,10 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const uniqueLocais = useMemo(() => {
+    return [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -156,10 +161,9 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                 }`}
               >
                 <option value="">Selecione o local</option>
-                <option value="patio-sp">Pátio São Paulo</option>
-                <option value="patio-rj">Pátio Rio de Janeiro</option>
-                <option value="patio-mg">Pátio Belo Horizonte</option>
-                <option value="cliente-local">Local do Cliente</option>
+                {uniqueLocais.map(local => (
+                  <option key={local} value={local}>{local}</option>
+                ))}
               </select>
               {errors.localDesmobilizacao && (
                 <p className="mt-1 text-sm text-red-600">{errors.localDesmobilizacao}</p>
@@ -194,9 +198,9 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Selecione o pátio de destino</option>
-                <option value="patio-sp">Pátio São Paulo</option>
-                <option value="patio-rj">Pátio Rio de Janeiro</option>
-                <option value="patio-mg">Pátio Belo Horizonte</option>
+                <option value="Pátio SP">Pátio São Paulo</option>
+                <option value="Pátio RJ">Pátio Rio de Janeiro</option>
+                <option value="Pátio MG">Pátio Belo Horizonte</option>
               </select>
               <p className="mt-1 text-sm text-gray-500">Opcional - pode ser preenchido posteriormente</p>
             </div>
@@ -213,9 +217,9 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                 }`}
               >
                 <option value="">Selecione o tipo</option>
-                <option value="renovacao">Renovação da Frota</option>
-                <option value="reducao">Redução da Frota</option>
-                <option value="termino">Término Contrato</option>
+                <option value="Renovação de Frota">Renovação da Frota</option>
+                <option value="Redução de Frota">Redução da Frota</option>
+                <option value="Término Contrato">Término Contrato</option>
               </select>
               {errors.tipoDesmobilizacao && (
                 <p className="mt-1 text-sm text-red-600">{errors.tipoDesmobilizacao}</p>
