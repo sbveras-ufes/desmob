@@ -34,19 +34,6 @@ const UserManagement: React.FC = () => {
   };
 
   const handleSubmitUser = (userData: UserFormData) => {
-    // Verificar se está tentando criar/editar para Supervisor
-    if (userData.cargo === 'Supervisor') {
-      const existingSupervisor = users.find(user => 
-        user.cargo === 'Supervisor' && 
-        (!editingUser || user.id !== editingUser.id)
-      );
-      
-      if (existingSupervisor) {
-        alert(`Já existe um usuário com perfil Supervisor: ${existingSupervisor.nome}. Apenas um Supervisor é permitido por vez.`);
-        return;
-      }
-    }
-
     if (editingUser) {
       // Update existing user
       setUsers(prev => prev.map(user => 
@@ -63,7 +50,7 @@ const UserManagement: React.FC = () => {
       const newUser: User = {
         id: Date.now().toString(),
         ...userData,
-        cargo: userData.cargo as 'Gestor Contrato' | 'Supervisor',
+        cargo: userData.cargo as 'Gestor Contrato' | 'Supervisor' | 'Diretor',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
