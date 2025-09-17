@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import React, { useState, useMemo, useRef } from 'react';
+import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { ApprovalFilters } from '../types/Approval';
 import { mockVehicles } from '../data/mockData';
 
@@ -10,29 +10,61 @@ interface ApprovalFilterPanelProps {
 
 const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [crInput, setCrInput] = useState('');
+  const [showCrSuggestions, setShowCrSuggestions] = useState(false);
+  const crInputRef = useRef<HTMLInputElement>(null);
 
   const uniqueValues = useMemo(() => {
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
     const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
+    const descricoesCR = [...new Set(mockVehicles.map(v => v.descricaoCR))].sort();
     const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
     const locaisDesmobilizacao = [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
-    return { modelos, clientes, crs, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
+    return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
   }, []);
 
-  const handleFilterChange = (key: keyof ApprovalFilters, value: string) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value
-    });
+  const handleFilterChange = (key: keyof ApprovalFilters, value: any) => {
+    onFiltersChange({ ...filters, [key]: value });
+  };
+  
+  const handleAddCr = (cr: string) => {
+    if (cr && !filters.cr?.includes(cr)) {
+      const newCrs = [...(filters.cr || []), cr];
+      onFiltersChange({ ...filters, cr: newCrs });
+    }
+    setCrInput('');
+    setShowCrSuggestions(false);
+  };
+  
+  const handleRemoveCr = (crToRemove: string) => {
+    const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
+    onFiltersChange({ ...filters, cr: newCrs });
+  };
+
+  const crSuggestions = useMemo(() => {
+    if (!crInput) return [];
+    return uniqueValues.crs.filter(cr => 
+      cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
+    );
+  }, [crInput, uniqueValues.crs, filters.cr]);
+
+  const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && crInput) {
+      e.preventDefault();
+      const exactMatch = uniqueValues.crs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
+      if (exactMatch) {
+        handleAddCr(exactMatch);
+      }
+    }
   };
 
   const clearFilters = () => {
     onFiltersChange({});
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value && value !== '');
+  const hasActiveFilters = Object.values(filters).some(value => value && (Array.isArray(value) ? value.length > 0 : value !== ''));
 
   return (
     <div className="bg-white rounded-lg shadow-md mb-6">
@@ -49,11 +81,7 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 Ativo
               </span>
             )}
-            {isExpanded ? (
-              <ChevronUp className="h-5 w-5" />
-            ) : (
-              <ChevronDown className="h-5 w-5" />
-            )}
+            {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </button>
           
           {hasActiveFilters && (
@@ -175,17 +203,55 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
               </select>
             </div>
 
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">CR</label>
+              <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
+                <div 
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
+                  onClick={() => crInputRef.current?.focus()}
+                >
+                  {filters.cr?.map(cr => (
+                    <span key={cr} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+                      {cr}
+                      <button type="button" onClick={() => handleRemoveCr(cr)} className="text-gray-600 hover:text-black">
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    ref={crInputRef}
+                    type="text"
+                    value={crInput}
+                    onChange={(e) => setCrInput(e.target.value)}
+                    onFocus={() => setShowCrSuggestions(true)}
+                    onKeyDown={handleCrInputKeyDown}
+                    className="flex-grow bg-transparent outline-none text-sm"
+                    placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
+                  />
+                </div>
+                {showCrSuggestions && crSuggestions.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                    {crSuggestions.map(cr => (
+                      <button
+                        key={cr}
+                        type="button"
+                        onMouseDown={() => handleAddCr(cr)}
+                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm"
+                      >
+                        {cr}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                CR
-              </label>
-              <select
-                value={filters.cr || ''}
-                onChange={(e) => handleFilterChange('cr', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Selecione o CR</option>
-                {uniqueValues.crs.map(cr => <option key={cr} value={cr}>{cr}</option>)}
+              <label className="block text-sm font-medium text-gray-700 mb-2">Descrição CR</label>
+              <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Selecione a Descrição</option>
+                  {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
               </select>
             </div>
 
