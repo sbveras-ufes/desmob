@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { DemobilizationFilters } from '../types/Vehicle';
 import { mockVehicles } from '../data/mockData';
 
@@ -10,8 +10,11 @@ interface FilterPanelProps {
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
-  const [crSearchTerm, setCrSearchTerm] = useState('');
+  
+  // State for the new CR input
+  const [crInput, setCrInput] = useState('');
+  const [showCrSuggestions, setShowCrSuggestions] = useState(false);
+  const crInputRef = useRef<HTMLInputElement>(null);
 
   const uniqueValues = useMemo(() => {
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
@@ -26,21 +29,38 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
   const handleFilterChange = (key: keyof DemobilizationFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
   };
-
-  const handleCrChange = (cr: string) => {
-    const currentCrs = filters.cr || [];
-    const newCrs = currentCrs.includes(cr)
-      ? currentCrs.filter(c => c !== cr)
-      : [...currentCrs, cr];
+  
+  const handleAddCr = (cr: string) => {
+    if (cr && !filters.cr?.includes(cr)) {
+      const newCrs = [...(filters.cr || []), cr];
+      onFiltersChange({ ...filters, cr: newCrs });
+    }
+    setCrInput('');
+    setShowCrSuggestions(false);
+  };
+  
+  const handleRemoveCr = (crToRemove: string) => {
+    const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
     onFiltersChange({ ...filters, cr: newCrs });
   };
 
-  const filteredCrs = useMemo(() => {
-    return uniqueValues.crs.filter(cr =>
-      cr.toLowerCase().includes(crSearchTerm.toLowerCase())
+  const crSuggestions = useMemo(() => {
+    if (!crInput) return [];
+    return uniqueValues.crs.filter(cr => 
+      cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
-  }, [uniqueValues.crs, crSearchTerm]);
+  }, [crInput, uniqueValues.crs, filters.cr]);
 
+  const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && crInput) {
+      e.preventDefault();
+      const exactMatch = uniqueValues.crs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
+      if (exactMatch) {
+        handleAddCr(exactMatch);
+      }
+    }
+  };
+  
   const clearFilters = () => {
     onFiltersChange({});
   };
@@ -142,50 +162,48 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               </select>
             </div>
 
-            {/* CR (Custom Multi-select) */}
-            <div className="relative">
+            {/* CR (Tag input) */}
+            <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">CR</label>
-              <button
-                type="button"
-                onClick={() => setIsCrDropdownOpen(!isCrDropdownOpen)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between"
-              >
-                <span className="truncate">
-                  {filters.cr?.length > 0 ? `${filters.cr.length} selecionado(s)` : 'Selecione o(s) CR(s)'}
-                </span>
-                <ChevronDown className={`h-5 w-5 transform transition-transform ${isCrDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {isCrDropdownOpen && (
+              <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
                 <div 
-                  className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
-                  onMouseLeave={() => setIsCrDropdownOpen(false)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
+                  onClick={() => crInputRef.current?.focus()}
                 >
-                  <div className="p-2">
-                    <input
-                      type="text"
-                      placeholder="Buscar CR..."
-                      value={crSearchTerm}
-                      onChange={(e) => setCrSearchTerm(e.target.value)}
-                      className="w-full px-2 py-1 border border-gray-300 rounded-md"
-                    />
-                  </div>
-                  <ul>
-                    {filteredCrs.map(cr => (
-                      <li key={cr} className="px-2 py-1 hover:bg-gray-100">
-                        <label className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={filters.cr?.includes(cr) || false}
-                            onChange={() => handleCrChange(cr)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <span>{cr}</span>
-                        </label>
-                      </li>
-                    ))}
-                  </ul>
+                  {filters.cr?.map(cr => (
+                    <span key={cr} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+                      {cr}
+                      <button type="button" onClick={() => handleRemoveCr(cr)} className="text-gray-600 hover:text-black">
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    ref={crInputRef}
+                    type="text"
+                    value={crInput}
+                    onChange={(e) => setCrInput(e.target.value)}
+                    onFocus={() => setShowCrSuggestions(true)}
+                    onKeyDown={handleCrInputKeyDown}
+                    className="flex-grow bg-transparent outline-none text-sm"
+                    placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
+                  />
                 </div>
-              )}
+                {showCrSuggestions && crSuggestions.length > 0 && (
+                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                    {crSuggestions.map(cr => (
+                      <button
+                        key={cr}
+                        type="button"
+                        onMouseDown={() => handleAddCr(cr)}
+                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm"
+                      >
+                        {cr}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Diretoria */}
