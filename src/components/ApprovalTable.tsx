@@ -46,25 +46,6 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     return new Intl.NumberFormat('pt-BR').format(value);
   };
 
-  const formatTipoDesmobilizacao = (tipo: string) => {
-    const map: Record<string, string> = {
-      renovacao: 'Renovação da Frota',
-      reducao: 'Redução da Frota',
-      termino: 'Término Contrato'
-    };
-    return map[tipo] || tipo;
-  }
-
-  const formatLocalDesmobilizacao = (local: string) => {
-    const map: Record<string, string> = {
-      'patio-sp': 'Pátio São Paulo',
-      'patio-rj': 'Pátio Rio de Janeiro',
-      'patio-mg': 'Pátio Belo Horizonte',
-      'cliente-local': 'Local do Cliente'
-    };
-    return map[local] || local;
-  }
-
   const selectableVehicles = vehicles.filter(v => v.situacao === 'Aguardando aprovação');
   const isAllSelected = selectableVehicles.length > 0 && 
     selectableVehicles.every(v => selectedVehicles.includes(v.id));
@@ -171,13 +152,13 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   {vehicle.cr}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {formatTipoDesmobilizacao(vehicle.tipoDesmobilizacao)}
+                  {vehicle.tipoDesmobilizacao}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.patioDestino}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {formatLocalDesmobilizacao(vehicle.localDesmobilizacao)}
+                  {vehicle.localDesmobilizacao}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}
