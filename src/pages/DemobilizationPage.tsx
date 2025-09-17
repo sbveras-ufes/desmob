@@ -63,7 +63,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     // Adiciona os veículos à lista de aprovação
     onVehiclesDemobilized(approvalVehicles);
     
-    alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação/documentação.`);
+    alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
 
   return (
