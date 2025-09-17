@@ -19,6 +19,8 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
         return 'bg-blue-100 text-blue-800';
       case 'Supervisor':
         return 'bg-green-100 text-green-800';
+      case 'Diretor':
+        return 'bg-purple-100 text-purple-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -68,7 +70,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.cr.join(', ')}
+                  {Array.isArray(user.cr) ? user.cr.join(', ') : user.cr}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(user.createdAt)}
