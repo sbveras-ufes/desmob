@@ -26,7 +26,6 @@ const UserModal: React.FC<UserModalProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [supervisorWarning, setSupervisorWarning] = useState('');
   const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
   const [crSearchTerm, setCrSearchTerm] = useState('');
 
@@ -51,13 +50,7 @@ const UserModal: React.FC<UserModalProps> = ({
       });
     }
     setErrors({});
-    setSupervisorWarning('');
   }, [editingUser, isOpen]);
-
-  const existingSupervisor = existingUsers.find(user => 
-    user.cargo === 'Supervisor' && 
-    (!editingUser || user.id !== editingUser.id)
-  );
   
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -71,9 +64,6 @@ const UserModal: React.FC<UserModalProps> = ({
     if (!formData.cargo) newErrors.cargo = 'Cargo é obrigatório';
     if (formData.cr.length === 0) newErrors.cr = 'Pelo menos um CR deve ser selecionado';
 
-    if (formData.cargo === 'Supervisor' && existingSupervisor) {
-      newErrors.cargo = `Já existe um Supervisor: ${existingSupervisor.nome}`;
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -87,12 +77,6 @@ const UserModal: React.FC<UserModalProps> = ({
 
   const handleInputChange = (field: keyof Omit<UserFormData, 'cr'>, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
-    if (field === 'cargo' && value === 'Supervisor' && existingSupervisor) {
-      setSupervisorWarning(`Atenção: Já existe um Supervisor (${existingSupervisor.nome}).`);
-    } else {
-      setSupervisorWarning('');
-    }
     
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -157,12 +141,10 @@ const UserModal: React.FC<UserModalProps> = ({
                 className={`w-full px-3 py-2 border rounded-md ${errors.cargo ? 'border-red-500' : 'border-gray-300'}`}>
                 <option value="">Selecione o cargo</option>
                 <option value="Gestor Contrato">Gestor Contrato</option>
-                <option value="Supervisor" disabled={!!existingSupervisor}>
-                  Supervisor {existingSupervisor ? '(Já existe)' : ''}
-                </option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="Diretor">Diretor</option>
               </select>
               {errors.cargo && <p className="mt-1 text-sm text-red-600">{errors.cargo}</p>}
-              {supervisorWarning && <p className="mt-1 text-sm text-yellow-600">{supervisorWarning}</p>}
             </div>
 
             {/* CR (Custom Multi-select) */}
