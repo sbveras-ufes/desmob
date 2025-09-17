@@ -27,38 +27,33 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
       }
 
       // Filtro por placa
-      if (filters.placa) {
-        if (!vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
-          return false;
-        }
+      if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
+        return false;
       }
 
       // Filtro por modelo
-      if (filters.modelo) {
-        if (!vehicle.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
-          return false;
-        }
+      if (filters.modelo && !vehicle.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
+        return false;
       }
 
       // Filtro por cliente
-      if (filters.cliente) {
-        if (!vehicle.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) {
-          return false;
-        }
+      if (filters.cliente && !vehicle.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) {
+        return false;
       }
 
       // Filtro por CR
-      if (filters.cr) {
-        if (!vehicle.cr.includes(filters.cr)) {
-          return false;
-        }
+      if (filters.cr && filters.cr.length > 0 && !filters.cr.includes(vehicle.cr)) {
+        return false;
+      }
+      
+      // Filtro por Descrição CR
+      if (filters.descricaoCR && vehicle.descricaoCR !== filters.descricaoCR) {
+        return false;
       }
 
       // Filtro por diretoria
-      if (filters.diretoria) {
-        if (vehicle.diretoria !== filters.diretoria) {
-          return false;
-        }
+      if (filters.diretoria && vehicle.diretoria !== filters.diretoria) {
+        return false;
       }
 
       // Filtro por tipo (simulado baseado no modelo)
@@ -71,7 +66,7 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
           return false;
         }
         
-        if (filters.tipo === 'leve' && isHeavyVehicle) { // Corrigido para isHeavyVehicle
+        if (filters.tipo === 'leve' && isHeavyVehicle) {
           return false;
         }
       }
