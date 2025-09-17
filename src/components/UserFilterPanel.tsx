@@ -108,12 +108,13 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
               </label>
               <select
                 value={filters.cargo || ''}
-                onChange={(e) => handleFilterChange('cargo', e.target.value as 'Gestor Contrato' | 'Supervisor' | '')}
+                onChange={(e) => handleFilterChange('cargo', e.target.value as 'Gestor Contrato' | 'Supervisor' | 'Diretor' | '')}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Todos os cargos</option>
                 <option value="Gestor Contrato">Gestor Contrato</option>
                 <option value="Supervisor">Supervisor</option>
+                <option value="Diretor">Diretor</option>
               </select>
             </div>
             
