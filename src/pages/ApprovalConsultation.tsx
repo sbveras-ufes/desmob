@@ -5,6 +5,7 @@ import ApprovalBreadcrumb from '../components/ApprovalBreadcrumb';
 import ApprovalFilterPanel from '../components/ApprovalFilterPanel';
 import ApprovalTable from '../components/ApprovalTable';
 import ReprovationModal from '../components/ReprovationModal';
+import JustificationModal from '../components/JustificationModal';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 
@@ -20,6 +21,8 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
   const [filters, setFilters] = useState<ApprovalFilters>({});
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isReprovationModalOpen, setIsReprovationModalOpen] = useState(false);
+  const [isJustificationModalOpen, setIsJustificationModalOpen] = useState(false);
+  const [justificationDetails, setJustificationDetails] = useState('');
 
   const filteredVehicles = useApprovalFilter(approvalVehicles, filters);
   const selectedVehicles = approvalVehicles.filter(v => selectedVehicleIds.includes(v.id));
@@ -68,6 +71,13 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
     setIsReprovationModalOpen(false);
     
     alert(`${selectedVehicleIds.length} veículo(s) reprovado(s) com sucesso!`);
+  };
+
+  const handleShowJustification = (justification?: string) => {
+    if (justification) {
+      setJustificationDetails(justification);
+      setIsJustificationModalOpen(true);
+    }
   };
 
   return (
@@ -132,6 +142,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
             vehicles={filteredVehicles}
             selectedVehicles={selectedVehicleIds}
             onSelectionChange={setSelectedVehicleIds}
+            onShowJustification={handleShowJustification}
           />
         </div>
 
@@ -140,6 +151,12 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
           onClose={() => setIsReprovationModalOpen(false)}
           selectedVehicles={selectedVehicles}
           onSubmit={handleReprovationSubmit}
+        />
+
+        <JustificationModal
+          isOpen={isJustificationModalOpen}
+          onClose={() => setIsJustificationModalOpen(false)}
+          justification={justificationDetails}
         />
       </main>
     </div>
