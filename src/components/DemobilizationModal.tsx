@@ -109,10 +109,10 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                       Ano/Modelo
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      CR
+                      Diretoria
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                      Diretoria
+                      CR
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Cliente
@@ -132,10 +132,10 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                         {vehicle.anoModelo}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
-                        {vehicle.cr}
+                        {vehicle.diretoria}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
-                        {vehicle.diretoria}
+                        {vehicle.cr}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {vehicle.cliente}
