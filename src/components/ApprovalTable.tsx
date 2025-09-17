@@ -5,12 +5,14 @@ interface ApprovalTableProps {
   vehicles: ApprovalVehicle[];
   selectedVehicles: string[];
   onSelectionChange: (selectedIds: string[]) => void;
+  onShowJustification: (justification?: string) => void;
 }
 
 const ApprovalTable: React.FC<ApprovalTableProps> = ({ 
   vehicles, 
   selectedVehicles, 
-  onSelectionChange 
+  onSelectionChange,
+  onShowJustification
 }) => {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -36,7 +38,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
       case 'Aprovado':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 hover:bg-red-200 cursor-pointer';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -173,7 +175,10 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   {vehicle.gerente}
                 </td>
                 <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}
+                    onClick={() => vehicle.situacao === 'Reprovado' && onShowJustification(vehicle.justificativaReprovacao)}
+                  >
                     {vehicle.situacao}
                   </span>
                 </td>
