@@ -6,6 +6,7 @@ export interface ApprovalVehicle {
   km: number;
   diretoria: string;
   cr: string;
+  descricaoCR: string;
   dataPrevista: string;
   cliente: string;
   gerente: string;
