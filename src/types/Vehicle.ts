@@ -6,6 +6,7 @@ export interface Vehicle {
   km: number;
   diretoria: string;
   cr: string;
+  descricaoCR: string;
   tipoDesmobilizacao: 'Renovação de Frota' | 'Redução de Frota' | 'Término Contrato';
   patioDestino: string;
   localDesmobilizacao: string;
