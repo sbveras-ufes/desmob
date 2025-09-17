@@ -26,7 +26,8 @@ export interface ApprovalFilters {
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
-  cr?: string;
+  cr?: string[];
+  descricaoCR?: string;
   diretoria?: string;
   tipoDesmobilizacao?: string;
   patioDestino?: string;
