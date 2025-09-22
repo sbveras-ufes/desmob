@@ -81,10 +81,12 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
         }
       }
 
-      if (filters.localDesmobilizacao) {
-        if (vehicle.localDesmobilizacao !== filters.localDesmobilizacao) {
-          return false;
-        }
+      if (filters.uf && vehicle.uf !== filters.uf) {
+        return false;
+      }
+
+      if (filters.municipio && vehicle.municipio !== filters.municipio) {
+        return false;
       }
 
       return true;
