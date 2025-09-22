@@ -15,6 +15,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
   const [showCrSuggestions, setShowCrSuggestions] = useState(false);
   const crInputRef = useRef<HTMLInputElement>(null);
 
+  const [modeloInput, setModeloInput] = useState(filters.modelo || '');
+  const [showModeloSuggestions, setShowModeloSuggestions] = useState(false);
+
   const uniqueValues = useMemo(() => {
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
@@ -65,6 +68,18 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
       cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
   }, [crInput, availableCrs, filters.cr]);
+  
+  const filteredModelos = useMemo(() => {
+    return uniqueValues.modelos.filter(modelo => 
+      modelo.toLowerCase().includes(modeloInput.toLowerCase())
+    );
+  }, [uniqueValues.modelos, modeloInput]);
+
+  const handleModeloSelect = (modelo: string) => {
+    setModeloInput(modelo);
+    handleFilterChange('modelo', modelo);
+    setShowModeloSuggestions(false);
+  };
 
   const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && crInput) {
@@ -77,6 +92,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
   };
   
   const clearFilters = () => {
+    setModeloInput('');
     onFiltersChange({});
   };
 
@@ -157,14 +173,36 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               </select>
             </div>
 
-            {/* Modelo */}
-            <div>
+            {/* Modelo Autocomplete */}
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
-              <select value={filters.modelo || ''} onChange={(e) => handleFilterChange('modelo', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione o Modelo</option>
-                {uniqueValues.modelos.map(modelo => <option key={modelo} value={modelo}>{modelo}</option>)}
-              </select>
+              <input
+                type="text"
+                value={modeloInput}
+                onChange={(e) => {
+                  setModeloInput(e.target.value);
+                  handleFilterChange('modelo', e.target.value);
+                  setShowModeloSuggestions(true);
+                }}
+                onFocus={() => setShowModeloSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowModeloSuggestions(false), 200)}
+                placeholder="Digite o código ou modelo..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              {showModeloSuggestions && filteredModelos.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {filteredModelos.map((modelo, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onMouseDown={() => handleModeloSelect(modelo)}
+                      className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-sm"
+                    >
+                      {modelo}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Cliente */}
@@ -215,7 +253,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
                     onKeyDown={handleCrInputKeyDown}
                     className="flex-grow bg-transparent outline-none text-sm"
                     placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
-                    disabled={!filters.diretoria}
+                    disabled={!!filters.diretoria}
                   />
                 </div>
                 {showCrSuggestions && crSuggestions.length > 0 && (
