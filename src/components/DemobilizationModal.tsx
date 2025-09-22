@@ -7,7 +7,7 @@ interface DemobilizationModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedVehicles: Vehicle[];
-  onSubmit: (request: DemobilizationRequest) => void;
+  onSubmit: (request: Omit<DemobilizationRequest, 'tipoDesmobilizacao'>) => void;
 }
 
 const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
@@ -16,11 +16,10 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
   selectedVehicles,
   onSubmit
 }) => {
-  const [formData, setFormData] = useState<Omit<DemobilizationRequest, 'veiculos'>>({
+  const [formData, setFormData] = useState<Omit<DemobilizationRequest, 'veiculos' | 'tipoDesmobilizacao'>>({
     localDesmobilizacao: '',
     dataEntrega: '',
     patioDestino: '',
-    tipoDesmobilizacao: ''
   });
 
   const [localInput, setLocalInput] = useState('');
@@ -37,7 +36,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
 
   useEffect(() => {
     if (!isOpen) {
-      setFormData({ localDesmobilizacao: '', dataEntrega: '', patioDestino: '', tipoDesmobilizacao: '' });
+      setFormData({ localDesmobilizacao: '', dataEntrega: '', patioDestino: '' });
       setLocalInput('');
       setPatioInput('');
       setErrors({});
@@ -57,7 +56,6 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
       const entregaDate = new Date(formData.dataEntrega);
       if (entregaDate <= today) newErrors.dataEntrega = 'Data da entrega deve ser futura';
     }
-    if (!formData.tipoDesmobilizacao) newErrors.tipoDesmobilizacao = 'Tipo de desmobilização é obrigatório';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,6 +124,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descrição CR</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo Desmobilização</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
                   </tr>
                 </thead>
@@ -138,6 +137,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.diretoria}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.cr}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+                      <td className="px-4 py-3 text-sm text-gray-500">{vehicle.tipoDesmobilizacao}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.cliente}</td>
                     </tr>
                   ))}
@@ -196,28 +196,6 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                 </div>
               )}
               <p className="mt-1 text-sm text-gray-500">Opcional - pode ser preenchido posteriormente</p>
-            </div>
-
-            {/* Tipo Desmobilização */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tipo Desmobilização <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={formData.tipoDesmobilizacao}
-                onChange={(e) => handleInputChange('tipoDesmobilizacao', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.tipoDesmobilizacao ? 'border-red-500' : 'border-gray-300'
-                }`}
-              >
-                <option value="">Selecione o tipo</option>
-                <option value="Renovação de Frota">Renovação da Frota</option>
-                <option value="Redução de Frota">Redução da Frota</option>
-                <option value="Término Contrato">Término Contrato</option>
-              </select>
-              {errors.tipoDesmobilizacao && (
-                <p className="mt-1 text-sm text-red-600">{errors.tipoDesmobilizacao}</p>
-              )}
             </div>
           </div>
 
