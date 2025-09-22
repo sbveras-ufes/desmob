@@ -45,11 +45,6 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
       if (filters.cr && filters.cr.length > 0 && !filters.cr.includes(vehicle.cr)) {
         return false;
       }
-      
-      // Filtro por Descrição CR
-      if (filters.descricaoCR && vehicle.descricaoCR !== filters.descricaoCR) {
-        return false;
-      }
 
       // Filtro por diretoria
       if (filters.diretoria && vehicle.diretoria !== filters.diretoria) {
@@ -79,7 +74,11 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
         return false;
       }
 
-      if (filters.localDesmobilizacao && vehicle.localDesmobilizacao !== filters.localDesmobilizacao) {
+      if (filters.uf && vehicle.uf !== filters.uf) {
+        return false;
+      }
+
+      if (filters.municipio && vehicle.municipio !== filters.municipio) {
         return false;
       }
 
