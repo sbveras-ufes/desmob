@@ -35,6 +35,5 @@ export interface DemobilizationRequest {
   localDesmobilizacao: string;
   dataEntrega: string;
   patioDestino?: string;
-  tipoDesmobilizacao: string;
   veiculos: Vehicle[];
 }
