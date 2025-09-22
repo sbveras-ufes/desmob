@@ -51,7 +51,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       dataSolicitacao: new Date().toISOString(),
       localDesmobilizacao: request.localDesmobilizacao,
       dataEntrega: request.dataEntrega,
-      tipoDesmobilizacao: request.tipoDesmobilizacao
+      tipoDesmobilizacao: vehicle.tipoDesmobilizacao
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
