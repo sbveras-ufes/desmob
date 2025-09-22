@@ -11,7 +11,6 @@ interface FilterPanelProps {
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
-  // State for the new CR input
   const [crInput, setCrInput] = useState('');
   const [showCrSuggestions, setShowCrSuggestions] = useState(false);
   const crInputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +24,22 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
     const locaisDesmobilizacao = [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
     return { modelos, clientes, crs, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
   }, []);
+
+  const availableCrs = useMemo(() => {
+    if (!filters.diretoria) {
+      return uniqueValues.crs;
+    }
+    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
+  }, [filters.diretoria, uniqueValues.crs]);
+
+  useEffect(() => {
+    if (filters.diretoria && filters.cr) {
+      const newCrs = filters.cr.filter(cr => availableCrs.includes(cr));
+      if (newCrs.length !== filters.cr.length) {
+        onFiltersChange({ ...filters, cr: newCrs });
+      }
+    }
+  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange]);
 
   const handleFilterChange = (key: keyof DemobilizationFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -46,15 +61,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
 
   const crSuggestions = useMemo(() => {
     if (!crInput) return [];
-    return uniqueValues.crs.filter(cr => 
+    return availableCrs.filter(cr => 
       cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
-  }, [crInput, uniqueValues.crs, filters.cr]);
+  }, [crInput, availableCrs, filters.cr]);
 
   const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && crInput) {
       e.preventDefault();
-      const exactMatch = uniqueValues.crs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
+      const exactMatch = availableCrs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
       if (exactMatch) {
         handleAddCr(exactMatch);
       }
@@ -162,6 +177,19 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               </select>
             </div>
 
+            {/* Diretoria */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Diretoria</label>
+              <select value={filters.diretoria || ''} onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Todas as diretorias</option>
+                <option value="LETS">LETS</option>
+                <option value="COMERCIAL">COMERCIAL</option>
+                <option value="OPERAÇÕES">OPERAÇÕES</option>
+                <option value="FINANCEIRA">FINANCEIRA</option>
+              </select>
+            </div>
+
             {/* CR (Tag input) */}
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">CR</label>
@@ -187,6 +215,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
                     onKeyDown={handleCrInputKeyDown}
                     className="flex-grow bg-transparent outline-none text-sm"
                     placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
+                    disabled={!filters.diretoria}
                   />
                 </div>
                 {showCrSuggestions && crSuggestions.length > 0 && (
@@ -204,19 +233,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Diretoria */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Diretoria</label>
-              <select value={filters.diretoria || ''} onChange={(e) => handleFilterChange('diretoria', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Todas as diretorias</option>
-                <option value="LETS">LETS</option>
-                <option value="COMERCIAL">COMERCIAL</option>
-                <option value="OPERAÇÕES">OPERAÇÕES</option>
-                <option value="FINANCEIRA">FINANCEIRA</option>
-              </select>
             </div>
 
             {/* Tipo Desmobilização */}
