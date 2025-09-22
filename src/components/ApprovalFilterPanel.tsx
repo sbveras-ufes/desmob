@@ -24,8 +24,9 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     const descricoesCR = [...new Set(mockVehicles.map(v => v.descricaoCR))].sort();
     const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
-    const locaisDesmobilizacao = [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
-    return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
+    const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
+    const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
+    return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, ufs, municipios };
   }, []);
 
   const availableCrs = useMemo(() => {
@@ -34,6 +35,13 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     }
     return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
   }, [filters.diretoria, uniqueValues.crs]);
+  
+  const availableMunicipios = useMemo(() => {
+    if (!filters.uf) {
+      return uniqueValues.municipios;
+    }
+    return [...new Set(mockVehicles.filter(v => v.uf === filters.uf).map(v => v.municipio))].sort();
+  }, [filters.uf, uniqueValues.municipios]);
 
   useEffect(() => {
     if (filters.diretoria && filters.cr) {
@@ -42,10 +50,17 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
         onFiltersChange({ ...filters, cr: newCrs });
       }
     }
-  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange]);
+    if (filters.uf && filters.municipio && !availableMunicipios.includes(filters.municipio)) {
+      onFiltersChange({ ...filters, municipio: '' });
+    }
+  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange, filters.uf, filters.municipio, availableMunicipios]);
 
   const handleFilterChange = (key: keyof ApprovalFilters, value: any) => {
-    onFiltersChange({ ...filters, [key]: value });
+    const newFilters = { ...filters, [key]: value };
+    if (key === 'uf') {
+      newFilters.municipio = '';
+    }
+    onFiltersChange(newFilters);
   };
   
   const handleAddCr = (cr: string) => {
@@ -130,85 +145,45 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Período - Data Inicial
-              </label>
-              <input
-                type="date"
-                value={filters.periodoInicio || ''}
-                onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Período - Data Final
-              </label>
-              <input
-                type="date"
-                value={filters.periodoFim || ''}
-                onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mês
-              </label>
-              <select
-                value={filters.mes || ''}
-                onChange={(e) => handleFilterChange('mes', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todos os meses</option>
-                <option value="01">Janeiro</option>
-                <option value="02">Fevereiro</option>
-                <option value="03">Março</option>
-                <option value="04">Abril</option>
-                <option value="05">Maio</option>
-                <option value="06">Junho</option>
-                <option value="07">Julho</option>
-                <option value="08">Agosto</option>
-                <option value="09">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Placa
-              </label>
-              <input
-                type="text"
-                value={filters.placa || ''}
-                onChange={(e) => handleFilterChange('placa', e.target.value)}
-                placeholder="Ex: ABC1234"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tipo
-              </label>
-              <select
-                value={filters.tipo || ''}
-                onChange={(e) => handleFilterChange('tipo', e.target.value as 'leve' | 'pesado' | '')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todos os tipos</option>
-                <option value="leve">Leve</option>
-                <option value="pesado">Pesado</option>
-              </select>
-            </div>
-
+            <input
+              type="date"
+              value={filters.periodoInicio || ''}
+              onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="date"
+              value={filters.periodoFim || ''}
+              onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={filters.mes || ''}
+              onChange={(e) => handleFilterChange('mes', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todos os meses</option>
+              {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'].map((mes, i) => (
+                <option key={mes} value={i + 1}>{mes}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              value={filters.placa || ''}
+              onChange={(e) => handleFilterChange('placa', e.target.value)}
+              placeholder="Ex: ABC1234"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              value={filters.tipo || ''}
+              onChange={(e) => handleFilterChange('tipo', e.target.value as 'leve' | 'pesado' | '')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todos os tipos</option>
+              <option value="leve">Leve</option>
+              <option value="pesado">Pesado</option>
+            </select>
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Modelo</label>
               <input
                 type="text"
                 value={modeloInput}
@@ -237,40 +212,26 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 </div>
               )}
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cliente
-              </label>
-              <select
-                value={filters.cliente || ''}
-                onChange={(e) => handleFilterChange('cliente', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Selecione o Cliente</option>
-                {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Diretoria
-              </label>
-              <select
-                value={filters.diretoria || ''}
-                onChange={(e) => handleFilterChange('diretoria', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todas as diretorias</option>
-                <option value="LETS">LETS</option>
-                <option value="COMERCIAL">COMERCIAL</option>
-                <option value="OPERAÇÕES">OPERAÇÕES</option>
-                <option value="FINANCEIRA">FINANCEIRA</option>
-              </select>
-            </div>
-
+            <select
+              value={filters.cliente || ''}
+              onChange={(e) => handleFilterChange('cliente', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Selecione o Cliente</option>
+              {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
+            </select>
+            <select
+              value={filters.diretoria || ''}
+              onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todas as diretorias</option>
+              <option value="LETS">LETS</option>
+              <option value="COMERCIAL">COMERCIAL</option>
+              <option value="OPERAÇÕES">OPERAÇÕES</option>
+              <option value="FINANCEIRA">FINANCEIRA</option>
+            </select>
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">CR</label>
               <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
                 <div 
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
@@ -312,43 +273,32 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 )}
               </div>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Descrição CR</label>
-              <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione a Descrição</option>
-                  {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo Desmobilização</label>
-              <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione o Tipo</option>
-                  {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
-              </select>
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Pátio Destino</label>
-                <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Selecione o Pátio</option>
-                    {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
-                </select>
-            </div>
-
-            <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Local Desmobilização</label>
-                <select value={filters.localDesmobilizacao || ''} onChange={(e) => handleFilterChange('localDesmobilizacao', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Selecione o Local</option>
-                    {uniqueValues.locaisDesmobilizacao.map(local => <option key={local} value={local}>{local}</option>)}
-                </select>
-            </div>
-
+            <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione a Descrição</option>
+                {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
+            </select>
+            <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione o Tipo</option>
+                {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
+            </select>
+            <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione o Pátio</option>
+                {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+            </select>
+            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Todas as UFs</option>
+                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+            </select>
+            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!filters.uf}>
+                <option value="">Todos os Municípios</option>
+                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
           </div>
         </div>
       )}
