@@ -89,7 +89,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
         
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <h1 className="text-3xl font-bold text-gray-900">Aprovação do Gestor</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Aprovação</h1>
           </div>
           
           <div className="flex items-center space-x-3">
