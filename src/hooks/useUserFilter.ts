@@ -15,6 +15,10 @@ export const useUserFilter = (users: User[], filters: UserFilters) => {
       if (filters.cargo && user.cargo !== filters.cargo) {
         return false;
       }
+      
+      if (filters.diretoria && user.diretoria !== filters.diretoria) {
+        return false;
+      }
 
       if (filters.cr && filters.cr.length > 0) {
         if (!filters.cr.some(cr => user.cr.includes(cr))) {
