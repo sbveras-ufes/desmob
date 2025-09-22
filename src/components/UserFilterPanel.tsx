@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, ChevronUp, Filter } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { UserFilters } from '../types/User';
 import { mockVehicles } from '../data/mockData';
 
@@ -13,9 +13,27 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
   const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
   const [crSearchTerm, setCrSearchTerm] = useState('');
 
-  const uniqueCrs = useMemo(() => {
-    return [...new Set(mockVehicles.map(v => v.cr))].sort();
+  const { uniqueCrs, uniqueDiretorias } = useMemo(() => {
+    const uniqueCrs = [...new Set(mockVehicles.map(v => v.cr))].sort();
+    const uniqueDiretorias = [...new Set(mockVehicles.map(v => v.diretoria))].sort();
+    return { uniqueCrs, uniqueDiretorias };
   }, []);
+
+  const availableCrs = useMemo(() => {
+    if (!filters.diretoria) {
+      return uniqueCrs;
+    }
+    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
+  }, [filters.diretoria, uniqueCrs]);
+
+  useEffect(() => {
+    if (filters.diretoria && filters.cr) {
+      const newCrs = filters.cr.filter(cr => availableCrs.includes(cr));
+      if (newCrs.length !== filters.cr.length) {
+        onFiltersChange({ ...filters, cr: newCrs });
+      }
+    }
+  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange]);
 
   const handleFilterChange = (key: keyof UserFilters, value: string) => {
     onFiltersChange({
@@ -33,10 +51,10 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
   };
   
   const filteredCrs = useMemo(() => {
-    return uniqueCrs.filter(cr =>
+    return availableCrs.filter(cr =>
       cr.toLowerCase().includes(crSearchTerm.toLowerCase())
     );
-  }, [uniqueCrs, crSearchTerm]);
+  }, [availableCrs, crSearchTerm]);
 
   const clearFilters = () => {
     onFiltersChange({});
@@ -118,7 +136,21 @@ const UserFilterPanel: React.FC<UserFilterPanelProps> = ({ filters, onFiltersCha
               </select>
             </div>
             
-            <div className="relative">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Diretoria
+              </label>
+              <select
+                value={filters.diretoria || ''}
+                onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas as diretorias</option>
+                {uniqueDiretorias.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+
+            <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">CR (Centro de Custo)</label>
               <button
                 type="button"
