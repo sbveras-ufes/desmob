@@ -42,6 +42,9 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                 Cargo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Diretoria
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 CR
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -68,6 +71,9 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete }) => {
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getCargoColor(user.cargo)}`}>
                     {user.cargo}
                   </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {user.diretoria || '-'}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {Array.isArray(user.cr) ? user.cr.join(', ') : user.cr}
