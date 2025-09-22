@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { ApprovalFilters } from '../types/Approval';
 import { mockVehicles } from '../data/mockData';
@@ -25,6 +25,22 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, locaisDesmobilizacao };
   }, []);
 
+  const availableCrs = useMemo(() => {
+    if (!filters.diretoria) {
+      return uniqueValues.crs;
+    }
+    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
+  }, [filters.diretoria, uniqueValues.crs]);
+
+  useEffect(() => {
+    if (filters.diretoria && filters.cr) {
+      const newCrs = filters.cr.filter(cr => availableCrs.includes(cr));
+      if (newCrs.length !== filters.cr.length) {
+        onFiltersChange({ ...filters, cr: newCrs });
+      }
+    }
+  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange]);
+
   const handleFilterChange = (key: keyof ApprovalFilters, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
   };
@@ -45,15 +61,15 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
 
   const crSuggestions = useMemo(() => {
     if (!crInput) return [];
-    return uniqueValues.crs.filter(cr => 
+    return availableCrs.filter(cr => 
       cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
-  }, [crInput, uniqueValues.crs, filters.cr]);
+  }, [crInput, availableCrs, filters.cr]);
 
   const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && crInput) {
       e.preventDefault();
-      const exactMatch = uniqueValues.crs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
+      const exactMatch = availableCrs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
       if (exactMatch) {
         handleAddCr(exactMatch);
       }
@@ -203,6 +219,23 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
               </select>
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Diretoria
+              </label>
+              <select
+                value={filters.diretoria || ''}
+                onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas as diretorias</option>
+                <option value="LETS">LETS</option>
+                <option value="COMERCIAL">COMERCIAL</option>
+                <option value="OPERAÇÕES">OPERAÇÕES</option>
+                <option value="FINANCEIRA">FINANCEIRA</option>
+              </select>
+            </div>
+
             <div className="lg:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">CR</label>
               <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
@@ -227,6 +260,7 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                     onKeyDown={handleCrInputKeyDown}
                     className="flex-grow bg-transparent outline-none text-sm"
                     placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
+                    disabled={!filters.diretoria}
                   />
                 </div>
                 {showCrSuggestions && crSuggestions.length > 0 && (
@@ -252,23 +286,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="">Selecione a Descrição</option>
                   {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Diretoria
-              </label>
-              <select
-                value={filters.diretoria || ''}
-                onChange={(e) => handleFilterChange('diretoria', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todas as diretorias</option>
-                <option value="LETS">LETS</option>
-                <option value="COMERCIAL">COMERCIAL</option>
-                <option value="OPERAÇÕES">OPERAÇÕES</option>
-                <option value="FINANCEIRA">FINANCEIRA</option>
               </select>
             </div>
 
