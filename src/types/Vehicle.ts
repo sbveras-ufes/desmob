@@ -9,6 +9,8 @@ export interface Vehicle {
   descricaoCR: string;
   tipoDesmobilizacao: 'Renovação de Frota' | 'Redução de Frota' | 'Término Contrato';
   patioDestino: string;
+  uf: string;
+  municipio: string;
   localDesmobilizacao: string;
   dataPrevista: string;
   dataEntrega: string;
@@ -28,11 +30,13 @@ export interface DemobilizationFilters {
   diretoria?: string;
   tipoDesmobilizacao?: string;
   patioDestino?: string;
-  localDesmobilizacao?: string;
+  uf?: string;
+  municipio?: string;
 }
 
 export interface DemobilizationRequest {
-  localDesmobilizacao: string;
+  uf: string;
+  municipio: string;
   dataEntrega: string;
   patioDestino?: string;
   veiculos: Vehicle[];
