@@ -61,7 +61,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
         
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <h1 className="text-3xl font-bold text-gray-900">Iniciar Desmobilização</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Desmobilização</h1>
           </div>
           
           <button
