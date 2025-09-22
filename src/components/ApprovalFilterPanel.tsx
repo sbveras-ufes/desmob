@@ -21,12 +21,11 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
     const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
-    const descricoesCR = [...new Set(mockVehicles.map(v => v.descricaoCR))].sort();
     const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
     const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
     const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
-    return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, ufs, municipios };
+    return { modelos, clientes, crs, tiposDesmobilizacao, patiosDestino, ufs, municipios };
   }, []);
 
   const availableCrs = useMemo(() => {
@@ -273,11 +272,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 )}
               </div>
             </div>
-            <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione a Descrição</option>
-                {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
-            </select>
             <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Selecione o Tipo</option>
