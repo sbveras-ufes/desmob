@@ -30,39 +30,24 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     setIsModalOpen(true);
   };
 
-  const handleDemobilizationSubmit = (request: DemobilizationRequest) => {
-    // Remove os veículos desmobilizados da lista principal
+  const handleDemobilizationSubmit = (request: Omit<DemobilizationRequest, 'veiculos'> & { veiculos: Vehicle[] }) => {
     const vehicleIds = request.veiculos.map(v => v.id);
     
-    // Converte os veículos para o formato de aprovação
     const approvalVehicles: ApprovalVehicle[] = request.veiculos.map(vehicle => ({
-      id: vehicle.id,
-      placa: vehicle.placa,
-      modelo: vehicle.modelo,
-      anoModelo: vehicle.anoModelo,
-      km: vehicle.km,
-      diretoria: vehicle.diretoria,
-      cr: vehicle.cr,
-      descricaoCR: vehicle.descricaoCR,
-      dataPrevista: vehicle.dataPrevista,
-      cliente: vehicle.cliente,
-      gerente: vehicle.gerente,
+      ...vehicle,
       situacao: 'Aguardando aprovação' as const,
       dataSolicitacao: new Date().toISOString(),
-      localDesmobilizacao: request.localDesmobilizacao,
+      localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
-      tipoDesmobilizacao: vehicle.tipoDesmobilizacao
+      patioDestino: request.patioDestino || vehicle.patioDestino
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
     
-    // Limpa a seleção e fecha o modal
     setSelectedVehicleIds([]);
     setIsModalOpen(false);
     
-    // Simula confirmação
-    // Adiciona os veículos à lista de aprovação
-    onVehiclesDemobilized(approvalVehicles);
+    onVehiclesDemobilized(prev => [...prev, ...approvalVehicles]);
     
     alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
