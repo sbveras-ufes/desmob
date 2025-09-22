@@ -59,7 +59,7 @@ const Header: React.FC = () => {
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
-                    <span>Iniciar Desmobilização</span>
+                    <span>Desmobilização</span>
                   </a>
                 </li>
                 <li>
@@ -79,7 +79,7 @@ const Header: React.FC = () => {
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Bell className="h-5 w-5" />
-                    <span>Consultar Aprovação</span>
+                    <span>Aprovação</span>
                   </a>
                 </li>
               </ul>
