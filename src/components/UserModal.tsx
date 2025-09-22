@@ -22,6 +22,7 @@ const UserModal: React.FC<UserModalProps> = ({
     nome: '',
     email: '',
     cargo: '',
+    diretoria: '',
     cr: []
   });
 
@@ -29,9 +30,18 @@ const UserModal: React.FC<UserModalProps> = ({
   const [isCrDropdownOpen, setIsCrDropdownOpen] = useState(false);
   const [crSearchTerm, setCrSearchTerm] = useState('');
 
-  const uniqueCrs = useMemo(() => {
-    return [...new Set(mockVehicles.map(v => v.cr))].sort();
+  const { uniqueCrs, uniqueDiretorias } = useMemo(() => {
+    const uniqueCrs = [...new Set(mockVehicles.map(v => v.cr))].sort();
+    const uniqueDiretorias = [...new Set(mockVehicles.map(v => v.diretoria))].sort();
+    return { uniqueCrs, uniqueDiretorias };
   }, []);
+
+  const availableCrs = useMemo(() => {
+    if (!formData.diretoria) {
+      return uniqueCrs;
+    }
+    return [...new Set(mockVehicles.filter(v => v.diretoria === formData.diretoria).map(v => v.cr))].sort();
+  }, [formData.diretoria, uniqueCrs]);
 
   useEffect(() => {
     if (editingUser) {
@@ -39,6 +49,7 @@ const UserModal: React.FC<UserModalProps> = ({
         nome: editingUser.nome,
         email: editingUser.email,
         cargo: editingUser.cargo,
+        diretoria: editingUser.diretoria || '',
         cr: Array.isArray(editingUser.cr) ? editingUser.cr : [editingUser.cr],
       });
     } else {
@@ -46,6 +57,7 @@ const UserModal: React.FC<UserModalProps> = ({
         nome: '',
         email: '',
         cargo: '',
+        diretoria: '',
         cr: []
       });
     }
@@ -63,6 +75,7 @@ const UserModal: React.FC<UserModalProps> = ({
     }
     if (!formData.cargo) newErrors.cargo = 'Cargo é obrigatório';
     if (formData.cr.length === 0) newErrors.cr = 'Pelo menos um CR deve ser selecionado';
+    if (!formData.diretoria) newErrors.diretoria = 'Diretoria é obrigatória';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -76,7 +89,13 @@ const UserModal: React.FC<UserModalProps> = ({
   };
 
   const handleInputChange = (field: keyof Omit<UserFormData, 'cr'>, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const newFormData = { ...formData, [field]: value };
+    
+    if (field === 'diretoria') {
+      newFormData.cr = [];
+    }
+
+    setFormData(newFormData);
     
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -94,10 +113,10 @@ const UserModal: React.FC<UserModalProps> = ({
   };
 
   const filteredCrs = useMemo(() => {
-    return uniqueCrs.filter(cr =>
+    return availableCrs.filter(cr =>
       cr.toLowerCase().includes(crSearchTerm.toLowerCase())
     );
-  }, [uniqueCrs, crSearchTerm]);
+  }, [availableCrs, crSearchTerm]);
 
 
   if (!isOpen) return null;
@@ -145,6 +164,17 @@ const UserModal: React.FC<UserModalProps> = ({
                 <option value="Diretor">Diretor</option>
               </select>
               {errors.cargo && <p className="mt-1 text-sm text-red-600">{errors.cargo}</p>}
+            </div>
+
+            {/* Diretoria */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Diretoria</label>
+              <select value={formData.diretoria} onChange={(e) => handleInputChange('diretoria', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md ${errors.diretoria ? 'border-red-500' : 'border-gray-300'}`}>
+                <option value="">Selecione a diretoria</option>
+                {uniqueDiretorias.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+              {errors.diretoria && <p className="mt-1 text-sm text-red-600">{errors.diretoria}</p>}
             </div>
 
             {/* CR (Custom Multi-select) */}
