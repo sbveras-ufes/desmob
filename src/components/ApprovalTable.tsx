@@ -92,9 +92,6 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 CR
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Descrição CR
-              </th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tipo Desmob.
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -155,9 +152,6 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.cr}
-                </td>
-                <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.descricaoCR}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoDesmobilizacao}
