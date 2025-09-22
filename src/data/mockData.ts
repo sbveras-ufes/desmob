@@ -4,7 +4,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '1',
     placa: 'GIF4A43',
-    modelo: 'YBR 150 FACTOR ED/FLEX',
+    modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2023',
     km: 15000,
     diretoria: 'LETS',
@@ -22,7 +22,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '2',
     placa: 'GCE2F92',
-    modelo: 'YBR 150 FACTOR ED/FLEX',
+    modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2023',
     km: 18000,
     diretoria: 'LETS',
@@ -40,7 +40,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '3',
     placa: 'STB1G91',
-    modelo: 'YBR 150 FACTOR ED/FLEX',
+    modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2024',
     km: 5000,
     diretoria: 'LETS',
@@ -58,7 +58,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '4',
     placa: 'DJE7B52',
-    modelo: 'CIVIC TOURING',
+    modelo: '014088-0 - CIVIC TOURING',
     anoModelo: '2022',
     km: 45000,
     diretoria: 'COMERCIAL',
@@ -76,7 +76,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '5',
     placa: 'FVV4A24',
-    modelo: 'COROLLA CROSS XRE',
+    modelo: '002196-1 - COROLLA CROSS XRE',
     anoModelo: '2023',
     km: 32000,
     diretoria: 'OPERAÇÕES',
@@ -94,7 +94,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '6',
     placa: 'GHS1H64',
-    modelo: 'HILUX SW4 SRX',
+    modelo: '002199-6 - HILUX SW4 SRX',
     anoModelo: '2023',
     km: 60000,
     diretoria: 'OPERAÇÕES',
@@ -112,7 +112,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '7',
     placa: 'SVZ9F34',
-    modelo: 'RANGER XLT CD',
+    modelo: '003476-1 - RANGER XLT CD',
     anoModelo: '2024',
     km: 12000,
     diretoria: 'OPERAÇÕES',
@@ -130,7 +130,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '8',
     placa: 'FVB8F06',
-    modelo: 'ONIX LTZ TURBO',
+    modelo: '004501-1 - ONIX LTZ TURBO',
     anoModelo: '2023',
     km: 25000,
     diretoria: 'COMERCIAL',
@@ -148,7 +148,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '9',
     placa: 'FUD1J53',
-    modelo: 'COMPASS SPORT',
+    modelo: '011149-0 - COMPASS SPORT',
     anoModelo: '2022',
     km: 55000,
     diretoria: 'FINANCEIRA',
@@ -166,7 +166,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '10',
     placa: 'GEE9C35',
-    modelo: 'ECOSPORT TITANIUM',
+    modelo: '003474-5 - ECOSPORT TITANIUM',
     anoModelo: '2023',
     km: 22000,
     diretoria: 'LETS',
