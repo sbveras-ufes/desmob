@@ -7,7 +7,7 @@ interface DemobilizationModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedVehicles: Vehicle[];
-  onSubmit: (request: Omit<DemobilizationRequest, 'tipoDesmobilizacao'>) => void;
+  onSubmit: (request: Omit<DemobilizationRequest, 'localDesmobilizacao'>) => void;
 }
 
 const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
@@ -16,39 +16,43 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
   selectedVehicles,
   onSubmit
 }) => {
-  const [formData, setFormData] = useState<Omit<DemobilizationRequest, 'veiculos' | 'tipoDesmobilizacao'>>({
-    localDesmobilizacao: '',
+  const [formData, setFormData] = useState<Omit<DemobilizationRequest, 'veiculos'>>({
+    uf: '',
+    municipio: '',
     dataEntrega: '',
     patioDestino: '',
   });
 
-  const [localInput, setLocalInput] = useState('');
   const [patioInput, setPatioInput] = useState('');
-  const [showLocalSuggestions, setShowLocalSuggestions] = useState(false);
   const [showPatioSuggestions, setShowPatioSuggestions] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const { uniqueLocais, uniquePatios } = useMemo(() => {
-    const uniqueLocais = [...new Set(mockVehicles.map(v => v.localDesmobilizacao))].sort();
-    const uniquePatios = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
-    return { uniqueLocais, uniquePatios };
+  const { uniqueUFs, uniqueMunicipios, uniquePatios } = useMemo(() => {
+    const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
+    const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
+    const patios = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
+    return { uniqueUFs: ufs, uniqueMunicipios: municipios, uniquePatios: patios };
   }, []);
+
+  const availableMunicipios = useMemo(() => {
+    if (!formData.uf) return uniqueMunicipios;
+    return [...new Set(mockVehicles.filter(v => v.uf === formData.uf).map(v => v.municipio))].sort();
+  }, [formData.uf, uniqueMunicipios]);
 
   useEffect(() => {
     if (!isOpen) {
-      setFormData({ localDesmobilizacao: '', dataEntrega: '', patioDestino: '' });
-      setLocalInput('');
+      setFormData({ uf: '', municipio: '', dataEntrega: '', patioDestino: '' });
       setPatioInput('');
       setErrors({});
     }
   }, [isOpen]);
 
-  const filteredLocais = useMemo(() => uniqueLocais.filter(l => l.toLowerCase().includes(localInput.toLowerCase())), [uniqueLocais, localInput]);
   const filteredPatios = useMemo(() => uniquePatios.filter(p => p.toLowerCase().includes(patioInput.toLowerCase())), [uniquePatios, patioInput]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.localDesmobilizacao) newErrors.localDesmobilizacao = 'Local da desmobilização é obrigatório';
+    if (!formData.uf) newErrors.uf = 'UF é obrigatória';
+    if (!formData.municipio) newErrors.municipio = 'Município é obrigatório';
     if (!formData.dataEntrega) {
       newErrors.dataEntrega = 'Data da entrega é obrigatória';
     } else {
@@ -68,31 +72,21 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
   };
   
   const handleInputChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    const newFormData = { ...formData, [field]: value };
+    if (field === 'uf') {
+      newFormData.municipio = '';
+    }
+    setFormData(newFormData);
+
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
-
-  const handleAutocompleteChange = (field: 'localDesmobilizacao' | 'patioDestino', value: string) => {
-    if (field === 'localDesmobilizacao') {
-      setLocalInput(value);
-      handleInputChange(field, value);
-    } else if (field === 'patioDestino') {
-      setPatioInput(value);
-      handleInputChange(field, value);
-    }
-  };
   
-  const handleSelect = (field: 'localDesmobilizacao' | 'patioDestino', value: string) => {
-    if (field === 'localDesmobilizacao') {
-      setLocalInput(value);
-      setShowLocalSuggestions(false);
-    } else if (field === 'patioDestino') {
-      setPatioInput(value);
-      setShowPatioSuggestions(false);
-    }
-    handleInputChange(field, value);
+  const handlePatioSelect = (value: string) => {
+    setPatioInput(value);
+    setShowPatioSuggestions(false);
+    handleInputChange('patioDestino', value);
   };
 
 
@@ -148,24 +142,25 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
 
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Local da Desmobilização Autocomplete */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Local da Desmobilização <span className="text-red-500">*</span></label>
-              <input type="text" value={localInput}
-                onChange={(e) => handleAutocompleteChange('localDesmobilizacao', e.target.value)}
-                onFocus={() => setShowLocalSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowLocalSuggestions(false), 200)}
-                className={`w-full px-3 py-2 border rounded-md ${errors.localDesmobilizacao ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Digite o local..." />
-              {showLocalSuggestions && filteredLocais.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {filteredLocais.map((local) => (
-                    <button type="button" key={local} onMouseDown={() => handleSelect('localDesmobilizacao', local)}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-100">{local}</button>
-                  ))}
-                </div>
-              )}
-              {errors.localDesmobilizacao && <p className="mt-1 text-sm text-red-600">{errors.localDesmobilizacao}</p>}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">UF <span className="text-red-500">*</span></label>
+              <select value={formData.uf} onChange={(e) => handleInputChange('uf', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md ${errors.uf ? 'border-red-500' : 'border-gray-300'}`}>
+                <option value="">Selecione a UF</option>
+                {uniqueUFs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </select>
+              {errors.uf && <p className="mt-1 text-sm text-red-600">{errors.uf}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Município <span className="text-red-500">*</span></label>
+              <select value={formData.municipio} onChange={(e) => handleInputChange('municipio', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md ${errors.municipio ? 'border-red-500' : 'border-gray-300'}`}
+                disabled={!formData.uf}>
+                <option value="">Selecione o município</option>
+                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+              {errors.municipio && <p className="mt-1 text-sm text-red-600">{errors.municipio}</p>}
             </div>
 
             {/* Data da Entrega */}
@@ -182,7 +177,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">Pátio Destino</label>
               <input type="text" value={patioInput}
-                onChange={(e) => handleAutocompleteChange('patioDestino', e.target.value)}
+                onChange={(e) => setPatioInput(e.target.value)}
                 onFocus={() => setShowPatioSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowPatioSuggestions(false), 200)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -190,7 +185,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
               {showPatioSuggestions && filteredPatios.length > 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
                   {filteredPatios.map((patio) => (
-                    <button type="button" key={patio} onMouseDown={() => handleSelect('patioDestino', patio)}
+                    <button type="button" key={patio} onMouseDown={() => handlePatioSelect(patio)}
                       className="w-full px-3 py-2 text-left hover:bg-gray-100">{patio}</button>
                   ))}
                 </div>
