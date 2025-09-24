@@ -9,7 +9,8 @@ export const mockFlows: ApprovalFlow[] = [
     users: [
       { id: 1, userId: '2', role: 'Análise Supervisor' },
       { id: 2, userId: '1', role: 'Análise Gerente' },
-    ]
+    ],
+    status: 'Ativo',
   },
   {
     id: 'flow-2',
@@ -19,6 +20,7 @@ export const mockFlows: ApprovalFlow[] = [
     users: [
       { id: 1, userId: '2', role: 'Análise Supervisor' },
       { id: 2, userId: '4', role: 'Análise Diretor' },
-    ]
+    ],
+    status: 'Ativo',
   }
 ];
