@@ -1,6 +1,7 @@
 export interface Vehicle {
   id: string;
   placa: string;
+  chassi: string;
   modelo: string;
   anoModelo: string;
   km: number;
