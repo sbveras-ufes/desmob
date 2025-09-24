@@ -11,7 +11,7 @@ const Breadcrumb: React.FC = () => {
       <ChevronRight className="h-4 w-4" />
 
       {/* The current page text (not clickable) */}
-      <span className="font-semibold text-gray-900">Desmobilização</span>
+      <span className="font-semibold text-gray-900">Desmobilização de Ativos</span>
     </nav>
   );
 };
