@@ -113,6 +113,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ano/Modelo</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
@@ -126,6 +127,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
                   {selectedVehicles.map((vehicle, index) => (
                     <tr key={vehicle.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                       <td className="px-4 py-3 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                      <td className="px-4 py-3 text-sm text-gray-500">{vehicle.chassi}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.modelo}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.anoModelo}</td>
                       <td className="px-4 py-3 text-sm text-gray-500">{vehicle.diretoria}</td>
