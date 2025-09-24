@@ -59,7 +59,7 @@ const Header: React.FC = () => {
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
-                    <span>Desmobilização</span>
+                    <span>Desmobilização de Ativos</span>
                   </a>
                 </li>
                 <li>
