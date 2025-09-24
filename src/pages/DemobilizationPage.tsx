@@ -24,7 +24,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
   const [filters, setFilters] = useState<DemobilizationFilters>({});
 
   const filteredRadarVehicles = useVehicleFilter(vehicles, filters);
-  const filteredAcompanhamentoVehicles = useApprovalFilter(demobilizedVehicles, filters);
+  const filteredAcompanhamentoVehicles = useApprovalFilter(demobilizedVehicles, filters as any);
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleStartDemobilization = () => {
@@ -87,6 +87,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
         <FilterPanel
           filters={filters}
           onFiltersChange={setFilters}
+          activeTab={activeTab}
         />
 
         <div>
