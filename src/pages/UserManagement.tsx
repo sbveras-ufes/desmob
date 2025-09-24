@@ -129,35 +129,33 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
         <span>Novo Fluxo</span>
       </button>
     </div>
-    <div className="bg-white rounded-lg shadow-md">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição do Fluxo</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CRs Selecionados</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição do Fluxo</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CRs Selecionados</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {flows.map(flow => (
+            <tr key={flow.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <ActionsMenu flow={flow} onEdit={onEdit} onDelete={onDelete} onToggleStatus={onToggleStatus} />
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{flow.description}</td>
+              <td className="px-6 py-4 text-sm text-gray-500">{flow.crs.join(', ')}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${flow.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {flow.status}
+                </span>
+              </td>
             </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {flows.map(flow => (
-              <tr key={flow.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <ActionsMenu flow={flow} onEdit={onEdit} onDelete={onDelete} onToggleStatus={onToggleStatus} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{flow.description}</td>
-                <td className="px-6 py-4 text-sm text-gray-500">{flow.crs.join(', ')}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${flow.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {flow.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   </div>
 );
