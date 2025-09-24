@@ -10,7 +10,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles }) =
     switch (situacao) {
       case 'Aguardando aprovação':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Aprovado':
+      case 'Liberado para Desmobilização':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
         return 'bg-red-100 text-red-800';
@@ -163,7 +163,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles }) =
           </tbody>
         </table>
       </div>
-
+      
       {vehicles.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500">Nenhum veículo em acompanhamento.</p>
