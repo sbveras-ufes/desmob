@@ -63,6 +63,9 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
                 Placa
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Chassi
+              </th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Modelo
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -122,6 +125,9 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
                 </td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">
                   {vehicle.placa}
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.chassi}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.modelo}
