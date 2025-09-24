@@ -31,9 +31,6 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
         const mesFiltro = parseInt(filters.mes);
         if (mesVeiculo !== mesFiltro) return false;
       }
-      if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
-        return false;
-      }
       if (filters.modelo && !vehicle.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
         return false;
       }
@@ -73,6 +70,10 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
       }
 
       if (filters.municipio && vehicle.municipio !== filters.municipio) {
+        return false;
+      }
+      
+      if (filters.situacao && vehicle.situacao !== filters.situacao) {
         return false;
       }
 
