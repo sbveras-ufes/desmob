@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { X, Plus } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Vehicle } from '../types/Vehicle';
 import { mockUnlistedVehicles } from '../data/mockUnlistedVehicles';
 
@@ -13,10 +13,9 @@ interface AddVehicleModalProps {
 const AddVehicleModal: React.FC<AddVehicleModalProps> = ({ isOpen, onClose, onAddVehicles, currentVehicleIds }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchField, setSearchField] = useState<'placa' | 'chassi'>('placa');
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [vehiclesToAdd, setVehiclesToAdd] = useState<Vehicle[]>([]);
 
-  const availableVehicles = useMemo(() => 
+  const availableVehicles = useMemo(() =>
     mockUnlistedVehicles.filter(v => !currentVehicleIds.includes(v.id) && !vehiclesToAdd.some(added => added.id === v.id)),
   [currentVehicleIds, vehiclesToAdd]);
 
@@ -28,18 +27,10 @@ const AddVehicleModal: React.FC<AddVehicleModalProps> = ({ isOpen, onClose, onAd
   }, [searchTerm, searchField, availableVehicles]);
 
   const handleSelectVehicle = (vehicle: Vehicle) => {
-    setSelectedVehicle(vehicle);
-    setSearchTerm(vehicle[searchField]);
+    setVehiclesToAdd(prev => [...prev, { ...vehicle, tipoDesmobilizacao: '-' }]);
+    setSearchTerm('');
   };
 
-  const handleAddToList = () => {
-    if (selectedVehicle) {
-      setVehiclesToAdd(prev => [...prev, { ...selectedVehicle, tipoDesmobilizacao: '-' }]);
-      setSelectedVehicle(null);
-      setSearchTerm('');
-    }
-  };
-  
   const handleConfirmAdd = () => {
     if (vehiclesToAdd.length > 0) {
       onAddVehicles(vehiclesToAdd);
@@ -88,7 +79,7 @@ const AddVehicleModal: React.FC<AddVehicleModalProps> = ({ isOpen, onClose, onAd
               <span className="ml-2 text-sm">Chassi</span>
             </label>
           </div>
-          <div className="relative flex items-center gap-2">
+          <div className="relative">
             <input
               type="text"
               value={searchTerm}
@@ -96,10 +87,6 @@ const AddVehicleModal: React.FC<AddVehicleModalProps> = ({ isOpen, onClose, onAd
               placeholder={`Digite a ${searchField}`}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button onClick={handleAddToList} disabled={!selectedVehicle} className="px-4 py-2 bg-blue-600 text-white rounded-md disabled:bg-gray-300">
-              <Plus size={20} />
-            </button>
-
             {filteredVehicles.length > 0 && (
               <div className="absolute top-full z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
                 {filteredVehicles.map(vehicle => (
