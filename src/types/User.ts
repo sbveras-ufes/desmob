@@ -2,7 +2,6 @@ export interface User {
   id: string;
   nome: string;
   email: string;
-  cargo: 'Gestor Contrato' | 'Supervisor' | 'Diretor';
   diretoria?: string;
   cr: string[];
   createdAt: string;
@@ -12,7 +11,6 @@ export interface User {
 export interface UserFilters {
   nome?: string;
   email?: string;
-  cargo?: 'Gestor Contrato' | 'Supervisor' | 'Diretor' | '';
   diretoria?: string;
   cr?: string[];
 }
@@ -20,7 +18,6 @@ export interface UserFilters {
 export interface UserFormData {
   nome: string;
   email: string;
-  cargo: 'Gestor Contrato' | 'Supervisor' | 'Diretor' | '';
   diretoria: string;
   cr: string[];
 }
