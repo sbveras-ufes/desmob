@@ -129,7 +129,7 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
         <span>Novo Fluxo</span>
       </button>
     </div>
-    <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
