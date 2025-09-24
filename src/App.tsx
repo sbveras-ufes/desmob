@@ -64,7 +64,12 @@ function App() {
     );
   }
 
-  return <DemobilizationPage onVehiclesDemobilized={setApprovalVehicles} />;
+  return (
+    <DemobilizationPage 
+      onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])}
+      demobilizedVehicles={approvalVehicles} 
+    />
+  );
 }
 
 export default App;
