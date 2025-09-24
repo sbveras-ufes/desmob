@@ -10,4 +10,5 @@ export interface ApprovalFlow {
   diretoria: string;
   crs: string[];
   users: FlowUser[];
+  status: 'Ativo' | 'Inativo';
 }
