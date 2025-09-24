@@ -5,7 +5,7 @@ import { mockVehicles } from '../data/mockData';
 import { mockUsers } from '../data/mockUsers';
 import { mockFlows as initialFlows } from '../data/mockFlows';
 import { ApprovalFlow, FlowUser } from '../types/Flow';
-import { Edit, Eye, Plus, Trash2, MoreVertical, XCircle, CheckCircle } from 'lucide-react';
+import { Edit, Eye, Plus, Trash2, MoreVertical, XCircle, CheckCircle, X } from 'lucide-react';
 
 const FlowManagementPage: React.FC = () => {
   const [view, setView] = useState<'list' | 'form'>('list');
@@ -130,7 +130,6 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
       </button>
     </div>
     <div className="bg-white rounded-lg shadow-md">
-      <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -157,7 +156,6 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
             ))}
           </tbody>
         </table>
-      </div>
     </div>
   </div>
 );
@@ -175,6 +173,10 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
   const [selectedCRs, setSelectedCRs] = useState<string[]>(existingFlow?.crs || []);
   const [flowUsers, setFlowUsers] = useState<FlowUser[]>(existingFlow?.users || []);
 
+  const [crInput, setCrInput] = useState('');
+  const [showCrSuggestions, setShowCrSuggestions] = useState(false);
+  const crInputRef = useRef<HTMLInputElement>(null);
+
   const { uniqueDiretorias } = useMemo(() => {
     const uniqueDiretorias = [...new Set(mockVehicles.map(v => v.diretoria))].sort();
     return { uniqueDiretorias };
@@ -191,11 +193,34 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
     const allCrsForDiretoria = [...new Set(mockVehicles.filter(v => v.diretoria === newDiretoria).map(v => v.cr))].sort();
     setSelectedCRs(allCrsForDiretoria);
   };
+  
+  const handleAddCr = (cr: string) => {
+    if (cr && !selectedCRs.includes(cr)) {
+      setSelectedCRs([...selectedCRs, cr]);
+    }
+    setCrInput('');
+    setShowCrSuggestions(false);
+  };
 
-  const handleCrToggle = (cr: string) => {
-    setSelectedCRs(prev =>
-      prev.includes(cr) ? prev.filter(c => c !== cr) : [...prev, cr]
+  const handleRemoveCr = (crToRemove: string) => {
+    setSelectedCRs(selectedCRs.filter(cr => cr !== crToRemove));
+  };
+  
+  const crSuggestions = useMemo(() => {
+    if (!crInput) return [];
+    return availableCRs.filter(cr => 
+      cr.toLowerCase().includes(crInput.toLowerCase()) && !selectedCRs.includes(cr)
     );
+  }, [crInput, availableCRs, selectedCRs]);
+
+  const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && crInput) {
+      e.preventDefault();
+      const exactMatch = availableCRs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
+      if (exactMatch) {
+        handleAddCr(exactMatch);
+      }
+    }
   };
   
   const handleAddUser = () => {
@@ -249,23 +274,45 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
         </div>
         
         <div className="border border-gray-300 rounded-md p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Lista de CR (selecione para remover)</label>
-          <div className="max-h-32 overflow-y-auto">
-            {selectedDiretoria ? (
-              availableCRs.map(cr => (
-                <div key={cr} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={cr}
-                    checked={selectedCRs.includes(cr)}
-                    onChange={() => handleCrToggle(cr)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor={cr} className="ml-2 text-sm text-gray-700">{cr}</label>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-500">Selecione uma diretoria para ver os CRs.</p>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Lista de CR</label>
+           <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
+            <div 
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2 min-h-[42px]"
+              onClick={() => crInputRef.current?.focus()}
+            >
+              {selectedCRs.map(cr => (
+                <span key={cr} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+                  {cr}
+                  <button type="button" onClick={() => handleRemoveCr(cr)} className="text-gray-600 hover:text-black">
+                    <X size={14} />
+                  </button>
+                </span>
+              ))}
+              <input
+                ref={crInputRef}
+                type="text"
+                value={crInput}
+                onChange={(e) => setCrInput(e.target.value)}
+                onFocus={() => setShowCrSuggestions(true)}
+                onKeyDown={handleCrInputKeyDown}
+                className="flex-grow bg-transparent outline-none text-sm"
+                placeholder={selectedCRs.length > 0 ? '' : 'Digite para adicionar CR...'}
+                disabled={!selectedDiretoria}
+              />
+            </div>
+            {showCrSuggestions && crSuggestions.length > 0 && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {crSuggestions.map(cr => (
+                  <button
+                    key={cr}
+                    type="button"
+                    onMouseDown={() => handleAddCr(cr)}
+                    className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm"
+                  >
+                    {cr}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         </div>
