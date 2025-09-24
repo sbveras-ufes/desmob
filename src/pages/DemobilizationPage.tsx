@@ -12,9 +12,10 @@ import { ApprovalVehicle } from '../types/Approval';
 
 interface DemobilizationPageProps {
   onVehiclesDemobilized: (vehicles: ApprovalVehicle[]) => void;
+  demobilizedVehicles: ApprovalVehicle[];
 }
 
-const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemobilized }) => {
+const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemobilized, demobilizedVehicles }) => {
   const [activeTab, setActiveTab] = useState<'radar' | 'acompanhamento'>('radar');
   const [vehicles, setVehicles] = useState<Vehicle[]>(mockVehicles);
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
@@ -41,7 +42,9 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       dataSolicitacao: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
-      patioDestino: request.patioDestino || vehicle.patioDestino
+      patioDestino: request.patioDestino || vehicle.patioDestino,
+      // Retain the existing 'tipoDesmobilizacao' from the vehicle data
+      tipoDesmobilizacao: vehicle.tipoDesmobilizacao
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
@@ -49,7 +52,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     setSelectedVehicleIds([]);
     setIsModalOpen(false);
     
-    onVehiclesDemobilized(prev => [...prev, ...approvalVehicles]);
+    onVehiclesDemobilized(approvalVehicles);
     
     alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
@@ -135,7 +138,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
             </div>
           )}
 
-          {activeTab === 'acompanhamento' && <AcompanhamentoTab />}
+          {activeTab === 'acompanhamento' && <AcompanhamentoTab vehicles={demobilizedVehicles} />}
         </div>
 
         <DemobilizationModal
