@@ -35,7 +35,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     switch (situacao) {
       case 'Aguardando aprovação':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Aprovado':
+      case 'Liberado para Desmobilização':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
         return 'bg-red-100 text-red-800 hover:bg-red-200 cursor-pointer';
@@ -92,6 +92,9 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 CR
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Descrição CR
+              </th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tipo Desmob.
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -107,10 +110,10 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                 Data Entrega
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Cliente
+                Gerente
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Gerente
+                Cliente
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Situação
@@ -154,6 +157,9 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   {vehicle.cr}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.descricaoCR}
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoDesmobilizacao}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
@@ -169,10 +175,10 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                   {new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.cliente}
+                  {vehicle.gerente}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.gerente}
+                  {vehicle.cliente}
                 </td>
                 <td className="px-2 py-2 text-sm">
                   <span
