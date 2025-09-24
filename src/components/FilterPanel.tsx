@@ -142,23 +142,17 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <input type="date" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
+            <input type="date" placeholder="Data Inicial" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <input type="date" value={filters.periodoFim || ''} onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
+            <input type="date" placeholder="Data Final" value={filters.periodoFim || ''} onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <select value={filters.mes || ''} onChange={(e) => handleFilterChange('mes', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Todos os meses</option>
-              {['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'].map((mes, i) => (
-                <option key={mes} value={i + 1}>{mes}</option>
-              ))}
-            </select>
-            <select value={filters.tipo || ''} onChange={(e) => handleFilterChange('tipo', e.target.value as 'leve' | 'pesado' | '')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Todos os tipos</option>
-              <option value="leve">Leve</option>
-              <option value="pesado">Pesado</option>
-            </select>
+            <input type="text" placeholder="Chassi" value={filters.chassi || ''} onChange={(e) => handleFilterChange('chassi', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <input type="text" placeholder="Placa" value={filters.placa || ''} onChange={(e) => handleFilterChange('placa', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <input type="text" placeholder="Ano" value={filters.anoModelo || ''} onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            
             <div className="relative">
               <input
                 type="text"
