@@ -1,13 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import Header from '../components/Header';
 import UserBreadcrumb from '../components/UserBreadcrumb';
 import { mockVehicles } from '../data/mockData';
 import { mockUsers } from '../data/mockUsers';
 import { mockFlows as initialFlows } from '../data/mockFlows';
 import { ApprovalFlow, FlowUser } from '../types/Flow';
-import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { Edit, Eye, Plus, Trash2, MoreVertical, XCircle, CheckCircle } from 'lucide-react';
 
-// Renomeando a página para refletir a nova funcionalidade
 const FlowManagementPage: React.FC = () => {
   const [view, setView] = useState<'list' | 'form'>('list');
   const [flows, setFlows] = useState<ApprovalFlow[]>(initialFlows);
@@ -23,12 +22,12 @@ const FlowManagementPage: React.FC = () => {
     setView('form');
   };
 
-  const handleSave = (flowData: Omit<ApprovalFlow, 'id'>) => {
+  const handleSave = (flowData: Omit<ApprovalFlow, 'id' | 'status'>) => {
     if (editingFlow) {
       const updatedFlow = { ...editingFlow, ...flowData };
       setFlows(flows.map(f => f.id === editingFlow.id ? updatedFlow : f));
     } else {
-      const newFlow = { id: `flow-${Date.now()}`, ...flowData };
+      const newFlow = { id: `flow-${Date.now()}`, ...flowData, status: 'Ativo' as const };
       setFlows([...flows, newFlow]);
     }
     setView('list');
@@ -40,13 +39,17 @@ const FlowManagementPage: React.FC = () => {
     }
   };
 
+  const handleToggleStatus = (flowId: string) => {
+    setFlows(flows.map(f => f.id === flowId ? { ...f, status: f.status === 'Ativo' ? 'Inativo' : 'Ativo' } : f));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <UserBreadcrumb />
         {view === 'list' ? (
-          <FlowListPage flows={flows} onCreateNew={handleCreateNew} onEdit={handleEdit} onDelete={handleDelete} />
+          <FlowListPage flows={flows} onCreateNew={handleCreateNew} onEdit={handleEdit} onDelete={handleDelete} onToggleStatus={handleToggleStatus} />
         ) : (
           <FlowForm
             existingFlow={editingFlow}
@@ -59,15 +62,65 @@ const FlowManagementPage: React.FC = () => {
   );
 };
 
-// Componente para listar os fluxos
+// --- Sub-componente do Menu de Ações ---
+const ActionsMenu: React.FC<{ flow: ApprovalFlow; onEdit: (flow: ApprovalFlow) => void; onDelete: (flowId: string) => void; onToggleStatus: (flowId: string) => void; }> = ({ flow, onEdit, onDelete, onToggleStatus }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
+
+  return (
+    <div className="relative inline-block text-left" ref={menuRef}>
+      <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full hover:bg-gray-200">
+        <MoreVertical size={18} />
+      </button>
+      {isOpen && (
+        <div className="origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+          <div className="py-1" role="menu" aria-orientation="vertical">
+            <a href="#" onClick={(e) => { e.preventDefault(); onEdit(flow); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+              <Eye size={16} /> Visualizar
+            </a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onEdit(flow); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+              <Edit size={16} /> Editar
+            </a>
+            {flow.status === 'Ativo' ? (
+              <a href="#" onClick={(e) => { e.preventDefault(); onToggleStatus(flow.id); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100" role="menuitem">
+                <XCircle size={16} /> Inativar
+              </a>
+            ) : (
+              <a href="#" onClick={(e) => { e.preventDefault(); onToggleStatus(flow.id); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-green-600 hover:bg-gray-100" role="menuitem">
+                <CheckCircle size={16} /> Ativar
+              </a>
+            )}
+            <a href="#" onClick={(e) => { e.preventDefault(); onDelete(flow.id); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100" role="menuitem">
+              <Trash2 size={16} /> Excluir
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+// --- Sub-componente da Lista ---
 interface FlowListPageProps {
   flows: ApprovalFlow[];
   onCreateNew: () => void;
   onEdit: (flow: ApprovalFlow) => void;
   onDelete: (flowId: string) => void;
+  onToggleStatus: (flowId: string) => void;
 }
 
-const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit, onDelete }) => (
+const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit, onDelete, onToggleStatus }) => (
   <div>
     <div className="flex justify-between items-center mb-6">
       <h1 className="text-3xl font-bold text-gray-900">Fluxos de Aprovação</h1>
@@ -76,24 +129,28 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
         <span>Novo Fluxo</span>
       </button>
     </div>
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição do Fluxo</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CRs Selecionados</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {flows.map(flow => (
             <tr key={flow.id}>
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <ActionsMenu flow={flow} onEdit={onEdit} onDelete={onDelete} onToggleStatus={onToggleStatus} />
+              </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{flow.description}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{flow.crs.join(', ')}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                <button onClick={() => onEdit(flow)} className="text-blue-600 hover:text-blue-900"><Eye size={18} /></button>
-                <button onClick={() => onEdit(flow)} className="text-indigo-600 hover:text-indigo-900"><Edit size={18} /></button>
-                <button onClick={() => onDelete(flow.id)} className="text-red-600 hover:text-red-900"><Trash2 size={18} /></button>
+              <td className="px-6 py-4 text-sm text-gray-500">{flow.crs.join(', ')}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${flow.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {flow.status}
+                </span>
               </td>
             </tr>
           ))}
@@ -103,10 +160,10 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
   </div>
 );
 
-// Componente do formulário de criação/edição
+// --- Sub-componente do Formulário ---
 interface FlowFormProps {
   existingFlow: ApprovalFlow | null;
-  onSave: (flowData: Omit<ApprovalFlow, 'id'>) => void;
+  onSave: (flowData: Omit<ApprovalFlow, 'id' | 'status'>) => void;
   onCancel: () => void;
 }
 
@@ -152,8 +209,8 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
   };
 
   const handleSaveClick = () => {
-    if(!description || !selectedDiretoria || flowUsers.length === 0) {
-      alert('Preencha a descrição, diretoria e adicione pelo menos um usuário.');
+    if(!description || !selectedDiretoria || flowUsers.length === 0 || flowUsers.some(u => !u.userId || !u.role)) {
+      alert('Preencha todos os campos obrigatórios: Descrição, Diretoria e adicione/configure pelo menos um usuário com papel definido.');
       return;
     }
     const finalSelectedCRs = selectedCRs.length === 0 ? availableCRs : selectedCRs;
