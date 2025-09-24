@@ -11,7 +11,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Aprovado' | 'Reprovado';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado';
   dataSolicitacao: string;
   lastUpdated: string;
   localDesmobilizacao: string;
@@ -37,5 +37,5 @@ export interface ApprovalFilters {
   municipio?: string;
   chassi?: string;
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Aprovado' | 'Reprovado' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
 }
