@@ -4,6 +4,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '1',
     placa: 'GIF4A43',
+    chassi: '9BWAG45U0PT095287',
     modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2023',
     km: 15000,
@@ -24,6 +25,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '2',
     placa: 'GCE2F92',
+    chassi: '9BWAG45U2PT053137',
     modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2023',
     km: 18000,
@@ -44,6 +46,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '3',
     placa: 'STB1G91',
+    chassi: '9BD281A2DPYY50791',
     modelo: '057018-3 - YBR 150 FACTOR ED/FLEX',
     anoModelo: '2024',
     km: 5000,
@@ -64,6 +67,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '4',
     placa: 'DJE7B52',
+    chassi: '9BD281A2DPYY50283',
     modelo: '014088-0 - CIVIC TOURING',
     anoModelo: '2022',
     km: 45000,
@@ -84,6 +88,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '5',
     placa: 'FVV4A24',
+    chassi: '9BGEY69H0RG166477',
     modelo: '002196-1 - COROLLA CROSS XRE',
     anoModelo: '2023',
     km: 32000,
@@ -104,6 +109,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '6',
     placa: 'GHS1H64',
+    chassi: '9BGEY69H0RG198184',
     modelo: '002199-6 - HILUX SW4 SRX',
     anoModelo: '2023',
     km: 60000,
@@ -124,6 +130,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '7',
     placa: 'SVZ9F34',
+    chassi: '9BGEY69H0RG178366',
     modelo: '003476-1 - RANGER XLT CD',
     anoModelo: '2024',
     km: 12000,
@@ -144,6 +151,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '8',
     placa: 'FVB8F06',
+    chassi: '9BD195A4ZM0926333',
     modelo: '004501-1 - ONIX LTZ TURBO',
     anoModelo: '2023',
     km: 25000,
@@ -164,6 +172,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '9',
     placa: 'FUD1J53',
+    chassi: '8AJDA3CD8P1831540',
     modelo: '011149-0 - COMPASS SPORT',
     anoModelo: '2022',
     km: 55000,
@@ -184,6 +193,7 @@ export const mockVehicles: Vehicle[] = [
   {
     id: '10',
     placa: 'GEE9C35',
+    chassi: '9882261ZPRKF53697',
     modelo: '003474-5 - ECOSPORT TITANIUM',
     anoModelo: '2023',
     km: 22000,
