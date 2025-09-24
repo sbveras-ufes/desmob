@@ -29,6 +29,10 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles }) =
       currency: 'BRL'
     }).format(value);
   };
+  
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString('pt-BR');
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -74,6 +78,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles }) =
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Data Entrega
+              </th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Data/Hora Última Atualização
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Gerente
@@ -133,6 +140,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles }) =
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {formatDateTime(vehicle.lastUpdated)}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.gerente}
