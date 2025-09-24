@@ -251,7 +251,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                     onKeyDown={handleCrInputKeyDown}
                     className="flex-grow bg-transparent outline-none text-sm"
                     placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
-                    disabled={!filters.diretoria}
                   />
                 </div>
                 {showCrSuggestions && crSuggestions.length > 0 && (
