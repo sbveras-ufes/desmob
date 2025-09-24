@@ -6,9 +6,10 @@ import { mockVehicles } from '../data/mockData';
 interface FilterPanelProps {
   filters: DemobilizationFilters;
   onFiltersChange: (filters: DemobilizationFilters) => void;
+  activeTab: 'radar' | 'acompanhamento';
 }
 
-const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) => {
+const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, activeTab }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   
   const [crInput, setCrInput] = useState('');
@@ -258,6 +259,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange }) =
               <option value="">Todos os Municípios</option>
               {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
+            {activeTab === 'acompanhamento' && (
+              <div>
+                <select 
+                  value={filters.situacao || ''} 
+                  onChange={(e) => handleFilterChange('situacao', e.target.value as any)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Todas as Situações</option>
+                  <option value="Aguardando aprovação">Aguardando aprovação</option>
+                  <option value="Aprovado">Aprovado</option>
+                  <option value="Reprovado">Reprovado</option>
+                </select>
+              </div>
+            )}
           </div>
         </div>
       )}
