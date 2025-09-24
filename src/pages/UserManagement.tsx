@@ -129,7 +129,6 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
   const handleDiretoriaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newDiretoria = e.target.value;
     setSelectedDiretoria(newDiretoria);
-    // Seleciona todos os CRs da nova diretoria por padrão
     const allCrsForDiretoria = [...new Set(mockVehicles.filter(v => v.diretoria === newDiretoria).map(v => v.cr))].sort();
     setSelectedCRs(allCrsForDiretoria);
   };
@@ -230,7 +229,7 @@ const FlowForm: React.FC<FlowFormProps> = ({ existingFlow, onSave, onCancel }) =
             >
               <option value="">Selecione um usuário</option>
               {mockUsers.map(user => (
-                <option key={user.id} value={user.id}>{user.nome} ({user.cargo})</option>
+                <option key={user.id} value={user.id}>{user.nome}</option>
               ))}
             </select>
             <select
