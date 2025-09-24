@@ -39,7 +39,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
     if (confirmed) {
       const updatedVehicles = approvalVehicles.map(vehicle => 
         selectedVehicleIds.includes(vehicle.id)
-          ? { ...vehicle, situacao: 'Aprovado' as const, lastUpdated: new Date().toISOString() }
+          ? { ...vehicle, situacao: 'Liberado para Desmobilização' as const, lastUpdated: new Date().toISOString() }
           : vehicle
       );
       
