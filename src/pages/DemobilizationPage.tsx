@@ -42,6 +42,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       ...vehicle,
       situacao: 'Aguardando aprovação' as const,
       dataSolicitacao: new Date().toISOString(),
+      lastUpdated: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
       patioDestino: request.patioDestino || vehicle.patioDestino,
