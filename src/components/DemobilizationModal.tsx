@@ -99,9 +99,10 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
     handleInputChange('patioDestino', value);
   };
 
-  const handleAddVehicle = (newVehicle: Vehicle) => {
-    setVehiclesInModal(prev => [...prev, newVehicle]);
+  const handleAddVehicles = (newVehicles: Vehicle[]) => {
+    setVehiclesInModal(prev => [...prev, ...newVehicles]);
   };
+
 
   if (!isOpen) return null;
 
@@ -236,7 +237,7 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
       <AddVehicleModal
         isOpen={isAddVehicleModalOpen}
         onClose={() => setIsAddVehicleModalOpen(false)}
-        onAddVehicle={handleAddVehicle}
+        onAddVehicles={handleAddVehicles}
         currentVehicleIds={vehiclesInModal.map(v => v.id)}
       />
     </>
