@@ -42,9 +42,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       dataSolicitacao: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
-      patioDestino: request.patioDestino || vehicle.patioDestino,
-      // Retain the existing 'tipoDesmobilizacao' from the vehicle data
-      tipoDesmobilizacao: vehicle.tipoDesmobilizacao
+      patioDestino: request.patioDestino || vehicle.patioDestino
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
@@ -52,7 +50,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     setSelectedVehicleIds([]);
     setIsModalOpen(false);
     
-    onVehiclesDemobilized(approvalVehicles);
+    onVehiclesDemobilized(prev => [...prev, ...approvalVehicles]);
     
     alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
@@ -66,7 +64,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
         
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <h1 className="text-3xl font-bold text-gray-900">Desmobilização</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Desmobilização de Ativos</h1>
           </div>
           
           {activeTab === 'radar' && (
