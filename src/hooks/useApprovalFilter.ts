@@ -4,7 +4,15 @@ import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: ApprovalFilters) => {
   return useMemo(() => {
     return vehicles.filter((vehicle) => {
-      // Filtro por período
+      if (filters.chassi && !vehicle.chassi.toLowerCase().includes(filters.chassi.toLowerCase())) {
+        return false;
+      }
+      if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
+        return false;
+      }
+      if (filters.anoModelo && !vehicle.anoModelo.includes(filters.anoModelo)) {
+        return false;
+      }
       if (filters.periodoInicio || filters.periodoFim) {
         const dataPrevista = new Date(vehicle.dataPrevista);
         
@@ -18,40 +26,26 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
           if (dataPrevista > dataFim) return false;
         }
       }
-
-      // Filtro por mês
       if (filters.mes) {
         const mesVeiculo = new Date(vehicle.dataPrevista).getMonth() + 1;
         const mesFiltro = parseInt(filters.mes);
         if (mesVeiculo !== mesFiltro) return false;
       }
-
-      // Filtro por placa
       if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
         return false;
       }
-
-      // Filtro por modelo
       if (filters.modelo && !vehicle.modelo.toLowerCase().includes(filters.modelo.toLowerCase())) {
         return false;
       }
-
-      // Filtro por cliente
       if (filters.cliente && !vehicle.cliente.toLowerCase().includes(filters.cliente.toLowerCase())) {
         return false;
       }
-
-      // Filtro por CR
       if (filters.cr && filters.cr.length > 0 && !filters.cr.includes(vehicle.cr)) {
         return false;
       }
-
-      // Filtro por diretoria
       if (filters.diretoria && vehicle.diretoria !== filters.diretoria) {
         return false;
       }
-
-      // Filtro por tipo (simulado baseado no modelo)
       if (filters.tipo) {
         const isHeavyVehicle = vehicle.modelo.includes('HILUX') || 
                               vehicle.modelo.includes('RANGER') || 
