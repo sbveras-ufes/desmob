@@ -8,7 +8,7 @@ export interface Vehicle {
   diretoria: string;
   cr: string;
   descricaoCR: string;
-  tipoDesmobilizacao: 'Renovação de Frota' | 'Redução de Frota' | 'Término Contrato';
+  tipoDesmobilizacao: 'Renovação de Frota' | 'Redução de Frota' | 'Término Contrato' | '-';
   patioDestino: string;
   uf: string;
   municipio: string;
