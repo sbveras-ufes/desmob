@@ -8,7 +8,7 @@ import AcompanhamentoTab from '../components/AcompanhamentoTab';
 import { mockVehicles } from '../data/mockData';
 import { useVehicleFilter } from '../hooks/useVehicleFilter';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
-import { Vehicle, DemobilizationFilters } from '../types/Vehicle';
+import { Vehicle, DemobilizationFilters, DemobilizationRequest } from '../types/Vehicle';
 import { ApprovalVehicle } from '../types/Approval';
 
 interface DemobilizationPageProps {
@@ -44,7 +44,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       dataSolicitacao: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
-      patioDestino: request.patioDestino || vehicle.patioDestino
+      patioDestino: request.patioDestino || vehicle.patioDestino,
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
@@ -52,7 +52,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     setSelectedVehicleIds([]);
     setIsModalOpen(false);
     
-    onVehiclesDemobilized(prev => [...prev, ...approvalVehicles]);
+    onVehiclesDemobilized(approvalVehicles);
     
     alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
