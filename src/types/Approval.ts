@@ -34,4 +34,6 @@ export interface ApprovalFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
+  chassi?: string;
+  anoModelo?: string;
 }
