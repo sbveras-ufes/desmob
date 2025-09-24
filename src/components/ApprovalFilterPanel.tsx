@@ -295,6 +295,18 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 <option value="">Todos os Municípios</option>
                 {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
+            <div>
+              <select 
+                value={filters.situacao || ''} 
+                onChange={(e) => handleFilterChange('situacao', e.target.value as any)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Todas as Situações</option>
+                <option value="Aguardando aprovação">Aguardando aprovação</option>
+                <option value="Aprovado">Aprovado</option>
+                <option value="Reprovado">Reprovado</option>
+              </select>
+            </div>
           </div>
         </div>
       )}
