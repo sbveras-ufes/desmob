@@ -144,28 +144,33 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
 
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">UF <span className="text-red-500">*</span></label>
-              <select value={formData.uf} onChange={(e) => handleInputChange('uf', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${errors.uf ? 'border-red-500' : 'border-gray-300'}`}>
-                <option value="">Selecione a UF</option>
-                {uniqueUFs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-              </select>
-              {errors.uf && <p className="mt-1 text-sm text-red-600">{errors.uf}</p>}
+            <div className="md:col-span-1">
+              <fieldset className="border border-gray-300 rounded-md p-4">
+                <legend className="text-sm font-medium text-gray-700 px-2">Local de Desmobilização</legend>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">UF <span className="text-red-500">*</span></label>
+                    <select value={formData.uf} onChange={(e) => handleInputChange('uf', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-md ${errors.uf ? 'border-red-500' : 'border-gray-300'}`}>
+                      <option value="">Selecione a UF</option>
+                      {uniqueUFs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+                    </select>
+                    {errors.uf && <p className="mt-1 text-sm text-red-600">{errors.uf}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Município <span className="text-red-500">*</span></label>
+                    <select value={formData.municipio} onChange={(e) => handleInputChange('municipio', e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-md ${errors.municipio ? 'border-red-500' : 'border-gray-300'}`}
+                      disabled={!formData.uf}>
+                      <option value="">Selecione o município</option>
+                      {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    {errors.municipio && <p className="mt-1 text-sm text-red-600">{errors.municipio}</p>}
+                  </div>
+                </div>
+              </fieldset>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Município <span className="text-red-500">*</span></label>
-              <select value={formData.municipio} onChange={(e) => handleInputChange('municipio', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${errors.municipio ? 'border-red-500' : 'border-gray-300'}`}
-                disabled={!formData.uf}>
-                <option value="">Selecione o município</option>
-                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-              {errors.municipio && <p className="mt-1 text-sm text-red-600">{errors.municipio}</p>}
-            </div>
-
-            {/* Data da Entrega */}
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Data da Entrega <span className="text-red-500">*</span></label>
               <input type="date" value={formData.dataEntrega}
@@ -175,7 +180,6 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
               {errors.dataEntrega && <p className="mt-1 text-sm text-red-600">{errors.dataEntrega}</p>}
             </div>
 
-            {/* Pátio Destino Autocomplete */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">Pátio Destino</label>
               <input type="text" value={patioInput}
@@ -196,7 +200,6 @@ const DemobilizationModal: React.FC<DemobilizationModalProps> = ({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
             <button type="button" onClick={onClose}
               className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
