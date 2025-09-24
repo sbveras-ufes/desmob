@@ -7,7 +7,8 @@ import DemobilizationModal from '../components/DemobilizationModal';
 import AcompanhamentoTab from '../components/AcompanhamentoTab';
 import { mockVehicles } from '../data/mockData';
 import { useVehicleFilter } from '../hooks/useVehicleFilter';
-import { Vehicle, DemobilizationFilters, DemobilizationRequest } from '../types/Vehicle';
+import { useApprovalFilter } from '../hooks/useApprovalFilter';
+import { Vehicle, DemobilizationFilters } from '../types/Vehicle';
 import { ApprovalVehicle } from '../types/Approval';
 
 interface DemobilizationPageProps {
@@ -22,7 +23,8 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<DemobilizationFilters>({});
 
-  const filteredVehicles = useVehicleFilter(vehicles, filters);
+  const filteredRadarVehicles = useVehicleFilter(vehicles, filters);
+  const filteredAcompanhamentoVehicles = useApprovalFilter(demobilizedVehicles, filters);
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleStartDemobilization = () => {
@@ -82,8 +84,13 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
           )}
         </div>
 
+        <FilterPanel
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+
         <div>
-          <div className="border-b border-gray-200">
+          <div className="border-b border-gray-200 mt-8">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
               <button
                 onClick={() => setActiveTab('radar')}
@@ -110,15 +117,10 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
 
           {activeTab === 'radar' && (
             <div className="mt-8">
-              <FilterPanel
-                filters={filters}
-                onFiltersChange={setFilters}
-              />
-
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-700">
-                    Mostrando <span className="font-medium">{filteredVehicles.length}</span> veículo(s) 
+                    Mostrando <span className="font-medium">{filteredRadarVehicles.length}</span> veículo(s) 
                     {selectedVehicleIds.length > 0 && (
                       <span className="ml-2">
                         • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
@@ -128,7 +130,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                 </div>
                 
                 <VehicleTable
-                  vehicles={filteredVehicles}
+                  vehicles={filteredRadarVehicles}
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
                 />
@@ -136,7 +138,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
             </div>
           )}
 
-          {activeTab === 'acompanhamento' && <AcompanhamentoTab vehicles={demobilizedVehicles} />}
+          {activeTab === 'acompanhamento' && <AcompanhamentoTab vehicles={filteredAcompanhamentoVehicles} />}
         </div>
 
         <DemobilizationModal
