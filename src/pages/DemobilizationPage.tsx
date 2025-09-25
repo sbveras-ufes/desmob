@@ -69,20 +69,6 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
           <div className="flex items-center space-x-3">
             <h1 className="text-3xl font-bold text-gray-900">Desmobilização de Ativos</h1>
           </div>
-          
-          {activeTab === 'radar' && (
-            <button
-              onClick={handleStartDemobilization}
-              disabled={selectedVehicleIds.length === 0}
-              className={`px-6 py-3 rounded-md font-medium transition-colors duration-200 ${
-                selectedVehicleIds.length === 0
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  : 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-              }`}
-            >
-              Iniciar Desmobilização ({selectedVehicleIds.length})
-            </button>
-          )}
         </div>
 
         <FilterPanel
@@ -116,9 +102,26 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
               </button>
             </nav>
           </div>
+          
+          {activeTab === 'radar' && (
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={handleStartDemobilization}
+                disabled={selectedVehicleIds.length === 0}
+                className={`px-6 py-3 rounded-md font-medium transition-colors duration-200 ${
+                  selectedVehicleIds.length === 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                }`}
+              >
+                Iniciar Desmobilização ({selectedVehicleIds.length})
+              </button>
+            </div>
+          )}
+
 
           {activeTab === 'radar' && (
-            <div className="mt-8">
+            <div className="mt-4">
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-700">
