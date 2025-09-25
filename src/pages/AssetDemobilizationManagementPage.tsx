@@ -42,23 +42,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Gestão de Desmobilização de Ativos</h1>
-          {activeTab === 'acompanhamento' && (
-            <div className="flex items-center space-x-3">
-              <button 
-                onClick={() => setIsUpdateTransportModalOpen(true)}
-                disabled={selectedVehicleIds.length === 0}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                Atualizar Transporte
-              </button>
-              <button 
-                disabled={selectedVehicleIds.length === 0}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-              >
-                Checklist Análise Documental
-              </button>
-            </div>
-          )}
         </div>
 
         <div>
@@ -86,6 +69,24 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               </button>
             </nav>
           </div>
+          
+          {activeTab === 'acompanhamento' && (
+            <div className="flex justify-end space-x-3 mt-4">
+              <button 
+                onClick={() => setIsUpdateTransportModalOpen(true)}
+                disabled={selectedVehicleIds.length === 0}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                Atualizar Transporte
+              </button>
+              <button 
+                disabled={selectedVehicleIds.length === 0}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                Checklist Análise Documental
+              </button>
+            </div>
+          )}
 
           {activeTab === 'acompanhamento' && 
             <AcompanhamentoDesmobilizacaoTab 
