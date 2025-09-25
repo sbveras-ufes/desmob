@@ -4,12 +4,18 @@ import AcompanhamentoTable from './AcompanhamentoTable';
 
 interface AcompanhamentoDesmobilizacaoTabProps {
   vehicles: ApprovalVehicle[];
+  selectedVehicleIds: string[];
+  onSelectionChange: (selectedIds: string[]) => void;
 }
 
-const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabProps> = ({ vehicles }) => {
+const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabProps> = ({ vehicles, selectedVehicleIds, onSelectionChange }) => {
   return (
     <div className="mt-8">
-      <AcompanhamentoTable vehicles={vehicles} />
+      <AcompanhamentoTable 
+        vehicles={vehicles} 
+        selectedVehicles={selectedVehicleIds}
+        onSelectionChange={onSelectionChange}
+      />
     </div>
   );
 };
