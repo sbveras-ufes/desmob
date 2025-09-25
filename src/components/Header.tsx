@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Users, X } from 'lucide-react';
+import { Menu, Bell, Users, X, Briefcase } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -30,13 +30,11 @@ const Header: React.FC = () => {
       {/* Menu lateral */}
       {isMenuOpen && (
         <>
-          {/* Overlay para fechar o menu */}
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={closeMenu}
           />
           
-          {/* Menu lateral */}
           <div className="fixed top-0 left-0 h-full w-80 bg-blue-900 text-white shadow-xl z-50 transform transition-transform duration-300">
             <div className="p-4 border-b border-blue-800">
               <div className="flex items-center justify-between">
@@ -60,6 +58,16 @@ const Header: React.FC = () => {
                   >
                     <Menu className="h-5 w-5" />
                     <span>Desmobilização de Ativos</span>
+                  </a>
+                </li>
+                 <li>
+                  <a 
+                    href="#/gestao-desmobilizacao" 
+                    onClick={closeMenu}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
+                  >
+                    <Briefcase className="h-5 w-5" />
+                    <span>Gestão de Desmobilização</span>
                   </a>
                 </li>
                 <li>
