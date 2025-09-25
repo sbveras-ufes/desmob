@@ -4,13 +4,29 @@ import { ApprovalVehicle } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
 import CRTransicaoTab from '../components/CRTransicaoTab';
+import UpdateTransportModal from '../components/UpdateTransportModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
+  onUpdateVehicles: (updatedVehicles: ApprovalVehicle[]) => void;
 }
 
-const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementPageProps> = ({ liberatedVehicles }) => {
+const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementPageProps> = ({ liberatedVehicles, onUpdateVehicles }) => {
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
+  const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
+
+  const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
+
+  const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; patioVistoria: string }) => {
+    const updatedVehicles = liberatedVehicles.map(v => 
+      selectedVehicleIds.includes(v.id) 
+        ? { ...v, ...updatedData, lastUpdated: new Date().toISOString() } 
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -22,10 +38,17 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           <h1 className="text-3xl font-bold text-gray-900">Gestão de Desmobilização de Ativos</h1>
           {activeTab === 'acompanhamento' && (
             <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <button 
+                onClick={() => setIsUpdateTransportModalOpen(true)}
+                disabled={selectedVehicleIds.length === 0}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              >
                 Atualizar Transporte
               </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <button 
+                disabled={selectedVehicleIds.length === 0}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              >
                 Checklist Análise Documental
               </button>
             </div>
@@ -58,9 +81,22 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
             </nav>
           </div>
 
-          {activeTab === 'acompanhamento' && <AcompanhamentoDesmobilizacaoTab vehicles={liberatedVehicles} />}
+          {activeTab === 'acompanhamento' && 
+            <AcompanhamentoDesmobilizacaoTab 
+              vehicles={liberatedVehicles} 
+              selectedVehicleIds={selectedVehicleIds}
+              onSelectionChange={setSelectedVehicleIds}
+            />
+          }
           {activeTab === 'cr-transicao' && <CRTransicaoTab />}
         </div>
+        
+        <UpdateTransportModal 
+          isOpen={isUpdateTransportModalOpen}
+          onClose={() => setIsUpdateTransportModalOpen(false)}
+          vehicles={selectedVehicles}
+          onUpdate={handleUpdateTransport}
+        />
       </main>
     </div>
   );
