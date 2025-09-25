@@ -21,7 +21,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; patioVistoria: string }) => {
     const updatedVehicles = liberatedVehicles.map(v => 
       selectedVehicleIds.includes(v.id) 
-        ? { ...v, ...updatedData, lastUpdated: new Date().toISOString() } 
+        ? { 
+            ...v, 
+            patioDestino: updatedData.patioDestino || v.patioDestino,
+            patioVistoria: updatedData.patioVistoria || v.patioVistoria,
+            dataEntrega: updatedData.dataEntrega || v.dataEntrega,
+            lastUpdated: new Date().toISOString() 
+          } 
         : v
     );
     onUpdateVehicles(updatedVehicles);
