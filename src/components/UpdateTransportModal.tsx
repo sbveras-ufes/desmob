@@ -23,6 +23,9 @@ const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onC
     onUpdate({ dataEntrega, patioDestino, patioVistoria });
     onClose();
   };
+  
+  const formatDate = (dateString: string) => new Date(dateString).toLocaleDateString('pt-BR');
+
 
   if (!isOpen) return null;
 
@@ -51,6 +54,8 @@ const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onC
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descrição CR</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Data Prevista</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Data Entrega</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pátio Origem</th>
                   </tr>
                 </thead>
@@ -64,6 +69,8 @@ const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onC
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.diretoria}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.cr}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.descricaoCR}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{formatDate(v.dataPrevista)}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{formatDate(v.dataEntrega)}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.patioDestino}</td>
                     </tr>
                   ))}
