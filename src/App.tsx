@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import UserManagement from './pages/UserManagement';
 import DemobilizationPage from './pages/DemobilizationPage';
 import ApprovalConsultation from './pages/ApprovalConsultation';
+import AssetDemobilizationManagementPage from './pages/AssetDemobilizationManagementPage';
 import { ApprovalVehicle } from './types/Approval';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'demobilization' | 'users' | 'approval'>('demobilization');
+  const [currentPage, setCurrentPage] = useState<'demobilization' | 'users' | 'approval' | 'management'>('demobilization');
   const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>([]);
+  const [liberatedVehicles, setLiberatedVehicles] = useState<ApprovalVehicle[]>([]);
 
-  // Simple routing based on URL hash
   React.useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
@@ -16,6 +17,8 @@ function App() {
         setCurrentPage('users');
       } else if (hash === '#/aprovacao') {
         setCurrentPage('approval');
+      } else if (hash === '#/gestao-desmobilizacao') {
+        setCurrentPage('management');
       } else {
         setCurrentPage('demobilization');
       }
@@ -29,27 +32,18 @@ function App() {
     };
   }, []);
 
-  // Update header links to use hash routing
-  React.useEffect(() => {
-    const updateHeaderLinks = () => {
-      const demobilizationLink = document.querySelector('a[href="/"]');
-      const usersLink = document.querySelector('a[href="/usuarios"]');
-      const approvalLink = document.querySelector('a[href="/aprovacao"]');
-      
-      if (demobilizationLink) {
-        demobilizationLink.setAttribute('href', '#/');
-      }
-      if (usersLink) {
-        usersLink.setAttribute('href', '#/usuarios');
-      }
-      if (approvalLink) {
-        approvalLink.setAttribute('href', '#/aprovacao');
-      }
-    };
+  const handleUpdateApprovals = (updatedVehicles: ApprovalVehicle[]) => {
+    setApprovalVehicles(updatedVehicles);
+    
+    const newlyLiberated = updatedVehicles.filter(v => 
+      v.situacao === 'Liberado para Desmobilização' && 
+      !liberatedVehicles.some(lv => lv.id === v.id)
+    );
 
-    // Small delay to ensure DOM is ready
-    setTimeout(updateHeaderLinks, 100);
-  }, [currentPage]);
+    if (newlyLiberated.length > 0) {
+      setLiberatedVehicles(prev => [...prev, ...newlyLiberated]);
+    }
+  };
 
   if (currentPage === 'users') {
     return <UserManagement />;
@@ -59,9 +53,13 @@ function App() {
     return (
       <ApprovalConsultation 
         approvalVehicles={approvalVehicles} 
-        onUpdateVehicles={setApprovalVehicles}
+        onUpdateVehicles={handleUpdateApprovals}
       />
     );
+  }
+  
+  if (currentPage === 'management') {
+    return <AssetDemobilizationManagementPage liberatedVehicles={liberatedVehicles.filter(v => v.situacao === 'Liberado para Desmobilização')} />;
   }
 
   return (
