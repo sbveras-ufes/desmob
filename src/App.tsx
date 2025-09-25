@@ -8,7 +8,6 @@ import { ApprovalVehicle } from './types/Approval';
 function App() {
   const [currentPage, setCurrentPage] = useState<'demobilization' | 'users' | 'approval' | 'management'>('demobilization');
   const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>([]);
-  const [liberatedVehicles, setLiberatedVehicles] = useState<ApprovalVehicle[]>([]);
 
   React.useEffect(() => {
     const handleHashChange = () => {
@@ -34,15 +33,6 @@ function App() {
 
   const handleUpdateApprovals = (updatedVehicles: ApprovalVehicle[]) => {
     setApprovalVehicles(updatedVehicles);
-    
-    const newlyLiberated = updatedVehicles.filter(v => 
-      v.situacao === 'Liberado para Desmobilização' && 
-      !liberatedVehicles.some(lv => lv.id === v.id)
-    );
-
-    if (newlyLiberated.length > 0) {
-      setLiberatedVehicles(prev => [...prev, ...newlyLiberated]);
-    }
   };
 
   if (currentPage === 'users') {
@@ -59,7 +49,10 @@ function App() {
   }
   
   if (currentPage === 'management') {
-    return <AssetDemobilizationManagementPage liberatedVehicles={liberatedVehicles.filter(v => v.situacao === 'Liberado para Desmobilização')} />;
+    return <AssetDemobilizationManagementPage 
+             liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização')} 
+             onUpdateVehicles={setApprovalVehicles}
+           />;
   }
 
   return (
