@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { DemobilizationFilters } from '../types/Vehicle';
 import { mockVehicles } from '../data/mockData';
+import MultiSelectDropdown from './MultiSelectDropdown';
 
 interface FilterPanelProps {
   filters: DemobilizationFilters;
@@ -23,7 +24,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
     const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
-    const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
+    const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao).filter(t => t !== '-'))] as ('Renovação de Frota' | 'Redução de Frota' | 'Término Contrato')[];
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
     const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
     const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
@@ -237,11 +238,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                 )}
               </div>
             </div>
-            <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione o Tipo</option>
-                {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
-            </select>
+            <div>
+              <MultiSelectDropdown 
+                options={uniqueValues.tiposDesmobilizacao}
+                selectedOptions={filters.tipoDesmobilizacao || []}
+                onChange={(selected) => handleFilterChange('tipoDesmobilizacao', selected)}
+                placeholder="Selecione o Tipo"
+              />
+            </div>
             <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Selecione o Pátio</option>
@@ -269,6 +273,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                   <option value="Aguardando aprovação">Aguardando aprovação</option>
                   <option value="Liberado para Desmobilização">Liberado para Desmobilização</option>
                   <option value="Reprovado">Reprovado</option>
+                  <option value="Documentação Pendente">Documentação Pendente</option>
                 </select>
               </div>
             )}
