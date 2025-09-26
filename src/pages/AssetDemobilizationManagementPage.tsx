@@ -7,6 +7,7 @@ import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
 import Pagination from '../components/Pagination';
 import ChecklistModal from '../components/ChecklistModal';
+import LiberarLoteModal from '../components/LiberarLoteModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -18,6 +19,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
   const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false);
+  const [isLiberarLoteModalOpen, setIsLiberarLoteModalOpen] = useState(false);
   
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -59,6 +61,17 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     });
     onUpdateVehicles(updatedList);
     setSelectedVehicleIds([]);
+  };
+
+  const handleLiberarLoteConfirm = () => {
+     const updatedList = liberatedVehicles.map(v => 
+      selectedVehicleIds.includes(v.id) 
+        ? { ...v, situacao: 'Liberado para transferência' as const, lastUpdated: new Date().toISOString() } 
+        : v
+    );
+    onUpdateVehicles(updatedList);
+    setSelectedVehicleIds([]);
+    setIsLiberarLoteModalOpen(false);
   };
 
   return (
@@ -113,6 +126,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               >
                 Checklist Análise Documental
               </button>
+               <button 
+                onClick={() => setIsLiberarLoteModalOpen(true)}
+                disabled={selectedVehicleIds.length === 0}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+              >
+                Liberar para criar lote
+              </button>
             </div>
           )}
 
@@ -148,6 +168,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           onClose={() => setIsChecklistModalOpen(false)}
           vehicles={selectedVehicles}
           onSubmit={handleChecklistSubmit}
+        />
+        
+        <LiberarLoteModal
+          isOpen={isLiberarLoteModalOpen}
+          onClose={() => setIsLiberarLoteModalOpen(false)}
+          vehicles={selectedVehicles}
+          onConfirm={handleLiberarLoteConfirm}
         />
       </main>
     </div>
