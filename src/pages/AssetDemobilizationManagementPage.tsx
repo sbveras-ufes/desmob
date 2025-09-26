@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import { ApprovalVehicle } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
 import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
+import Pagination from '../components/Pagination';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -15,6 +16,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const paginatedVehicles = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return liberatedVehicles.slice(start, start + itemsPerPage);
+  }, [currentPage, itemsPerPage, liberatedVehicles]);
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
@@ -88,13 +97,23 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
             </div>
           )}
 
-          {activeTab === 'acompanhamento' && 
-            <AcompanhamentoDesmobilizacaoTab 
-              vehicles={liberatedVehicles} 
-              selectedVehicleIds={selectedVehicleIds}
-              onSelectionChange={setSelectedVehicleIds}
-            />
-          }
+          {activeTab === 'acompanhamento' && (
+            <>
+              <AcompanhamentoDesmobilizacaoTab 
+                vehicles={paginatedVehicles} 
+                totalVehicles={liberatedVehicles.length}
+                selectedVehicleIds={selectedVehicleIds}
+                onSelectionChange={setSelectedVehicleIds}
+              />
+              <Pagination 
+                totalItems={liberatedVehicles.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={setItemsPerPage}
+              />
+            </>
+          )}
           {activeTab === 'cr-transicao' && <CRTransicaoTab />}
         </div>
         
