@@ -6,6 +6,7 @@ import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobi
 import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
 import Pagination from '../components/Pagination';
+import ChecklistModal from '../components/ChecklistModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -16,6 +17,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
+  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false);
   
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -28,7 +30,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
-    const updatedVehicles = liberatedVehicles.map(v => 
+    const updatedList = liberatedVehicles.map(v => 
       selectedVehicleIds.includes(v.id) 
         ? { 
             ...v, 
@@ -38,7 +40,22 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           } 
         : v
     );
-    onUpdateVehicles(updatedVehicles);
+    onUpdateVehicles(updatedList);
+    setSelectedVehicleIds([]);
+  };
+
+  const handleChecklistSubmit = (data: { action: 'approve' | 'flag'; pendingTypes: any[]; observations: string; }) => {
+    const updatedList = liberatedVehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        return {
+          ...v,
+          tipoPendencia: data.action === 'approve' ? [] : data.pendingTypes,
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      return v;
+    });
+    onUpdateVehicles(updatedList);
     setSelectedVehicleIds([]);
   };
 
@@ -88,6 +105,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 Atualizar Transporte
               </button>
               <button 
+                onClick={() => setIsChecklistModalOpen(true)}
                 disabled={selectedVehicleIds.length === 0}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
               >
@@ -121,6 +139,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           onClose={() => setIsUpdateTransportModalOpen(false)}
           vehicles={selectedVehicles}
           onUpdate={handleUpdateTransport}
+        />
+
+        <ChecklistModal 
+          isOpen={isChecklistModalOpen}
+          onClose={() => setIsChecklistModalOpen(false)}
+          vehicles={selectedVehicles}
+          onSubmit={handleChecklistSubmit}
         />
       </main>
     </div>
