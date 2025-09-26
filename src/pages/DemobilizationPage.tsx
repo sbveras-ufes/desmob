@@ -50,6 +50,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       situacaoVistoria: 'Solicitado',
       dataVistoria: '',
       classificacaoVistoria: '',
+      tipoPendencia: [],
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
