@@ -151,7 +151,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 onPageChange={setCurrentPage}
                 onItemsPerPageChange={setItemsPerPage}
               />
-            </>
+            </div>
           )}
           {activeTab === 'cr-transicao' && <CRTransicaoTab />}
         </div>
@@ -180,5 +180,4 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     </div>
   );
 };
-
 export default AssetDemobilizationManagementPage;
