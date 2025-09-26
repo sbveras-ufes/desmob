@@ -24,6 +24,7 @@ export interface ApprovalVehicle {
   situacaoVistoria: 'Aprovado' | 'Reprovado' | 'Solicitado' | '';
   dataVistoria: string;
   classificacaoVistoria: string;
+  tipoPendencia: ('Recall' | 'RENAVAN' | 'Multa')[];
   residual: number;
 }
 
