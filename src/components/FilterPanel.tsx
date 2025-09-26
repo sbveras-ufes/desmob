@@ -12,7 +12,7 @@ interface FilterPanelProps {
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, activeTab }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const [crInput, setCrInput] = useState('');
   const [showCrSuggestions, setShowCrSuggestions] = useState(false);
   const crInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +37,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     }
     return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
   }, [filters.diretoria, uniqueValues.crs]);
-  
+
   const availableMunicipios = useMemo(() => {
     if (!filters.uf) {
       return uniqueValues.municipios;
@@ -64,7 +64,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     }
     onFiltersChange(newFilters);
   };
-  
+
   const handleAddCr = (cr: string) => {
     if (cr && !filters.cr?.includes(cr)) {
       const newCrs = [...(filters.cr || []), cr];
@@ -73,7 +73,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     setCrInput('');
     setShowCrSuggestions(false);
   };
-  
+
   const handleRemoveCr = (crToRemove: string) => {
     const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
     onFiltersChange({ ...filters, cr: newCrs });
@@ -81,13 +81,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
 
   const crSuggestions = useMemo(() => {
     if (!crInput) return [];
-    return availableCrs.filter(cr => 
+    return availableCrs.filter(cr =>
       cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
   }, [crInput, availableCrs, filters.cr]);
-  
+
   const filteredModelos = useMemo(() => {
-    return uniqueValues.modelos.filter(modelo => 
+    return uniqueValues.modelos.filter(modelo =>
       modelo.toLowerCase().includes(modeloInput.toLowerCase())
     );
   }, [uniqueValues.modelos, modeloInput]);
@@ -107,7 +107,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
       }
     }
   };
-  
+
   const clearFilters = () => {
     setModeloInput('');
     onFiltersChange({});
@@ -143,7 +143,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            
+
             <input type="date" placeholder="Data Inicial" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             <input type="date" placeholder="Data Final" value={filters.periodoFim || ''} onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
@@ -154,7 +154,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             <input type="text" placeholder="Ano" value={filters.anoModelo || ''} onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            
+
             <div className="relative">
               <input
                 type="text"
@@ -199,7 +199,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
             </select>
             <div className="lg:col-span-2">
               <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
-                <div 
+                <div
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
                   onClick={() => crInputRef.current?.focus()}
                 >
@@ -264,8 +264,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
             </select>
             {activeTab === 'acompanhamento' && (
               <div>
-                <select 
-                  value={filters.situacao || ''} 
+                <select
+                  value={filters.situacao || ''}
                   onChange={(e) => handleFilterChange('situacao', e.target.value as any)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
