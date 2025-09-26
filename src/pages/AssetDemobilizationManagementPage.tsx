@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import { ApprovalVehicle } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
@@ -22,7 +22,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const paginatedVehicles = React.useMemo(() => {
+  const paginatedVehicles = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return liberatedVehicles.slice(start, start + itemsPerPage);
   }, [currentPage, itemsPerPage, liberatedVehicles]);
@@ -47,9 +47,11 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const handleChecklistSubmit = (data: { action: 'approve' | 'flag'; pendingTypes: any[]; observations: string; }) => {
     const updatedList = liberatedVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
+        const isFlagAction = data.action === 'flag';
         return {
           ...v,
-          tipoPendencia: data.action === 'approve' ? [] : data.pendingTypes,
+          tipoPendencia: isFlagAction ? data.pendingTypes : [],
+          situacao: isFlagAction ? 'Documentação Pendente' : v.situacao,
           lastUpdated: new Date().toISOString()
         };
       }
