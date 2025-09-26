@@ -137,7 +137,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           )}
 
           {activeTab === 'acompanhamento' && (
-            <>
+            <div className="bg-white rounded-lg shadow-md mt-4">
               <AcompanhamentoDesmobilizacaoTab 
                 vehicles={paginatedVehicles} 
                 totalVehicles={liberatedVehicles.length}
