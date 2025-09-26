@@ -2,8 +2,89 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { DemobilizationFilters } from '../types/Vehicle';
 import { mockVehicles } from '../data/mockData';
-import MultiSelectDropdown from './MultiSelectDropdown';
 
+// --- Sub-componente MultiSelectDropdown ---
+interface MultiSelectDropdownProps {
+  options: string[];
+  selectedOptions: string[];
+  onChange: (selected: string[]) => void;
+  placeholder: string;
+}
+
+const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
+  options,
+  selectedOptions,
+  onChange,
+  placeholder,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
+
+  const handleToggleOption = (option: string) => {
+    const newSelectedOptions = selectedOptions.includes(option)
+      ? selectedOptions.filter(o => o !== option)
+      : [...selectedOptions, option];
+    onChange(newSelectedOptions);
+  };
+
+  return (
+    <div>
+      <div className="relative" ref={menuRef}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between"
+        >
+          <span className="truncate">
+            {selectedOptions.length > 0 ? `${selectedOptions.length} selecionado(s)` : placeholder}
+          </span>
+          <ChevronDown className={`h-5 w-5 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isOpen && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            <ul>
+              {options.map(option => (
+                <li key={option} className="px-2 py-1 hover:bg-gray-100">
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedOptions.includes(option)}
+                      onChange={() => handleToggleOption(option)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span>{option}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1 mt-2">
+        {selectedOptions.map(option => (
+          <span key={option} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+            {option}
+            <button type="button" onClick={() => handleToggleOption(option)} className="text-gray-600 hover:text-black">
+              <X size={14} />
+            </button>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// --- Componente Principal FilterPanel ---
 interface FilterPanelProps {
   filters: DemobilizationFilters;
   onFiltersChange: (filters: DemobilizationFilters) => void;
@@ -12,7 +93,7 @@ interface FilterPanelProps {
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, activeTab }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
+  
   const [crInput, setCrInput] = useState('');
   const [showCrSuggestions, setShowCrSuggestions] = useState(false);
   const crInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +118,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     }
     return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
   }, [filters.diretoria, uniqueValues.crs]);
-
+  
   const availableMunicipios = useMemo(() => {
     if (!filters.uf) {
       return uniqueValues.municipios;
@@ -64,7 +145,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     }
     onFiltersChange(newFilters);
   };
-
+  
   const handleAddCr = (cr: string) => {
     if (cr && !filters.cr?.includes(cr)) {
       const newCrs = [...(filters.cr || []), cr];
@@ -73,7 +154,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     setCrInput('');
     setShowCrSuggestions(false);
   };
-
+  
   const handleRemoveCr = (crToRemove: string) => {
     const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
     onFiltersChange({ ...filters, cr: newCrs });
@@ -81,13 +162,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
 
   const crSuggestions = useMemo(() => {
     if (!crInput) return [];
-    return availableCrs.filter(cr =>
+    return availableCrs.filter(cr => 
       cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
     );
   }, [crInput, availableCrs, filters.cr]);
-
+  
   const filteredModelos = useMemo(() => {
-    return uniqueValues.modelos.filter(modelo =>
+    return uniqueValues.modelos.filter(modelo => 
       modelo.toLowerCase().includes(modeloInput.toLowerCase())
     );
   }, [uniqueValues.modelos, modeloInput]);
@@ -107,7 +188,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
       }
     }
   };
-
+  
   const clearFilters = () => {
     setModeloInput('');
     onFiltersChange({});
@@ -143,7 +224,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
+            
             <input type="date" placeholder="Data Inicial" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             <input type="date" placeholder="Data Final" value={filters.periodoFim || ''} onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
@@ -154,7 +235,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             <input type="text" placeholder="Ano" value={filters.anoModelo || ''} onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-
+            
             <div className="relative">
               <input
                 type="text"
@@ -199,7 +280,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
             </select>
             <div className="lg:col-span-2">
               <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
-                <div
+                <div 
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
                   onClick={() => crInputRef.current?.focus()}
                 >
@@ -264,8 +345,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
             </select>
             {activeTab === 'acompanhamento' && (
               <div>
-                <select
-                  value={filters.situacao || ''}
+                <select 
+                  value={filters.situacao || ''} 
                   onChange={(e) => handleFilterChange('situacao', e.target.value as any)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
