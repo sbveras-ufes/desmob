@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import { ApprovalVehicle } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
@@ -20,20 +20,19 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const paginatedVehicles = useMemo(() => {
+  const paginatedVehicles = React.useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return liberatedVehicles.slice(start, start + itemsPerPage);
   }, [currentPage, itemsPerPage, liberatedVehicles]);
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; patioVistoria: string }) => {
+  const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const updatedVehicles = liberatedVehicles.map(v => 
       selectedVehicleIds.includes(v.id) 
         ? { 
             ...v, 
             patioDestino: updatedData.patioDestino || v.patioDestino,
-            patioVistoria: updatedData.patioVistoria || v.patioVistoria,
             dataEntrega: updatedData.dataEntrega || v.dataEntrega,
             lastUpdated: new Date().toISOString() 
           } 
