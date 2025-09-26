@@ -19,9 +19,7 @@ export interface ApprovalVehicle {
   tipoDesmobilizacao: string;
   justificativaReprovacao?: string;
   patioOrigem?: string;
-  patioVistoria?: string;
   patioDestino?: string;
-  residual: number;
 }
 
 export interface ApprovalFilters {
