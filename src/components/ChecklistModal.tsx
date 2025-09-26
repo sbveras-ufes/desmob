@@ -20,10 +20,9 @@ const ChecklistModal: React.FC<ChecklistModalProps> = ({ isOpen, onClose, vehicl
   const [pendingTypes, setPendingTypes] = useState<PendenciaType[]>([]);
   const [observations, setObservations] = useState('');
 
-  const handleTogglePendencia = (type: PendenciaType) => {
-    setPendingTypes(prev =>
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
-    );
+  const handlePendenciaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value as PendenciaType);
+    setPendingTypes(selectedOptions);
   };
 
   const handleAction = (action: 'approve' | 'flag') => {
@@ -80,19 +79,16 @@ const ChecklistModal: React.FC<ChecklistModalProps> = ({ isOpen, onClose, vehicl
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de pendência</label>
-              <div className="border rounded-md p-2 space-y-2">
+              <select
+                multiple
+                value={pendingTypes}
+                onChange={handlePendenciaChange}
+                className="w-full h-24 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
                 {PENDENCIA_OPTIONS.map(type => (
-                  <label key={type} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={pendingTypes.includes(type)}
-                      onChange={() => handleTogglePendencia(type)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm">{type}</span>
-                  </label>
+                  <option key={type} value={type} className="p-2">{type}</option>
                 ))}
-              </div>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Observações</label>
