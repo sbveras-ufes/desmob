@@ -37,6 +37,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? { 
             ...v, 
             patioDestino: updatedData.patioDestino || v.patioDestino,
+            patioVistoria: updatedData.patioDestino || v.patioVistoria, // Atualiza Pátio Vistoria
             dataEntrega: updatedData.dataEntrega || v.dataEntrega,
             lastUpdated: new Date().toISOString() 
           } 
@@ -180,4 +181,5 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     </div>
   );
 };
+
 export default AssetDemobilizationManagementPage;
