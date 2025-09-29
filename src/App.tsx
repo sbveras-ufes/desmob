@@ -50,7 +50,7 @@ function App() {
   
   if (currentPage === 'management') {
     return <AssetDemobilizationManagementPage 
-             liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização')} 
+             liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Liberado para Transferência')} 
              onUpdateVehicles={setApprovalVehicles}
            />;
   }
