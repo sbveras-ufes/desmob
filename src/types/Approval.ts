@@ -11,7 +11,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Documentação Pendente' | 'Liberado para transferência';
   dataSolicitacao: string;
   lastUpdated: string;
   localDesmobilizacao: string;
@@ -22,6 +22,10 @@ export interface ApprovalVehicle {
   patioVistoria?: string;
   patioDestino?: string;
   residual: number;
+  tipoPendencia: ('Recall' | 'RENAVAN' | 'Multa')[];
+  situacaoVistoria: "Aprovado" | "Reprovado" | "Solicitado" | "";
+  dataVistoria: string;
+  classificacaoVistoria: string;
 }
 
 export interface ApprovalFilters {
@@ -35,11 +39,11 @@ export interface ApprovalFilters {
   cr?: string[];
   descricaoCR?: string;
   diretoria?: string;
-  tipoDesmobilizacao?: string;
+  tipoDesmobilizacao?: string[];
   patioDestino?: string;
   uf?: string;
   municipio?: string;
   chassi?: string;
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Documentação Pendente' | 'Liberado para transferência' | '';
 }
