@@ -22,6 +22,9 @@ export interface ApprovalVehicle {
   patioVistoria?: string;
   patioDestino?: string;
   residual: number;
+  situacaoVistoria?: string;
+  dataVistoria?: string;
+  classificacaoVistoria?: string;
 }
 
 export interface ApprovalFilters {
