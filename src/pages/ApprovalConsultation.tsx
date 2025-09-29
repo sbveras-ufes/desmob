@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Check, X } from 'lucide-react';
 import Header from '../components/Header';
 import ApprovalBreadcrumb from '../components/ApprovalBreadcrumb';
@@ -6,7 +6,6 @@ import ApprovalFilterPanel from '../components/ApprovalFilterPanel';
 import ApprovalTable from '../components/ApprovalTable';
 import ReprovationModal from '../components/ReprovationModal';
 import JustificationModal from '../components/JustificationModal';
-import Pagination from '../components/Pagination';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 
@@ -24,16 +23,8 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
   const [isReprovationModalOpen, setIsReprovationModalOpen] = useState(false);
   const [isJustificationModalOpen, setIsJustificationModalOpen] = useState(false);
   const [justificationDetails, setJustificationDetails] = useState('');
-  
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const filteredVehicles = useApprovalFilter(approvalVehicles, filters);
-  const paginatedVehicles = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredVehicles.slice(start, start + itemsPerPage);
-  }, [currentPage, itemsPerPage, filteredVehicles]);
-  
   const selectedVehicles = approvalVehicles.filter(v => selectedVehicleIds.includes(v.id));
   const canApproveReprove = selectedVehicleIds.length > 0 && 
     selectedVehicles.every(v => v.situacao === 'Aguardando aprovação');
@@ -136,27 +127,23 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
           onFiltersChange={setFilters}
         />
 
-        <div className="bg-white rounded-lg shadow-md mt-8">
-          <div className="p-4">
-            <p className="text-sm text-gray-700 mb-4">
-              Mostrando <span className="font-medium">{paginatedVehicles.length}</span> de <span className="font-medium">{filteredVehicles.length}</span> solicitação(ões) de aprovação
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-gray-700">
+              Mostrando <span className="font-medium">{filteredVehicles.length}</span> solicitação(ões) de aprovação
               {selectedVehicleIds.length > 0 && (
-                <span className="ml-2">• <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span></span>
+                <span className="ml-2">
+                  • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
+                </span>
               )}
             </p>
-            <ApprovalTable 
-              vehicles={paginatedVehicles}
-              selectedVehicles={selectedVehicleIds}
-              onSelectionChange={setSelectedVehicleIds}
-              onShowJustification={handleShowJustification}
-            />
           </div>
-          <Pagination 
-            totalItems={filteredVehicles.length}
-            itemsPerPage={itemsPerPage}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
-            onItemsPerPageChange={setItemsPerPage}
+          
+          <ApprovalTable 
+            vehicles={filteredVehicles}
+            selectedVehicles={selectedVehicleIds}
+            onSelectionChange={setSelectedVehicleIds}
+            onShowJustification={handleShowJustification}
           />
         </div>
 

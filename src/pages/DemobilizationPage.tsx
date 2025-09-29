@@ -1,11 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import Breadcrumb from '../components/Breadcrumb';
 import FilterPanel from '../components/FilterPanel';
 import VehicleTable from '../components/VehicleTable';
 import DemobilizationModal from '../components/DemobilizationModal';
 import AcompanhamentoTab from '../components/AcompanhamentoTab';
-import Pagination from '../components/Pagination';
 import { mockVehicles } from '../data/mockData';
 import { useVehicleFilter } from '../hooks/useVehicleFilter';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
@@ -24,23 +23,9 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<DemobilizationFilters>({});
-  
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const filteredRadarVehicles = useVehicleFilter(vehicles, filters);
   const filteredAcompanhamentoVehicles = useApprovalFilter(demobilizedVehicles, filters as any);
-
-  const paginatedRadarVehicles = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredRadarVehicles.slice(start, start + itemsPerPage);
-  }, [currentPage, itemsPerPage, filteredRadarVehicles]);
-
-  const paginatedAcompanhamentoVehicles = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredAcompanhamentoVehicles.slice(start, start + itemsPerPage);
-  }, [currentPage, itemsPerPage, filteredAcompanhamentoVehicles]);
-  
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleStartDemobilization = () => {
@@ -62,10 +47,6 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
       patioDestino: request.patioDestino || vehicle.patioDestino,
-      situacaoVistoria: 'Solicitado',
-      dataVistoria: '',
-      classificacaoVistoria: '',
-      tipoPendencia: [],
     }));
     
     setVehicles(prev => prev.filter(v => !vehicleIds.includes(v.id)));
@@ -78,11 +59,6 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
     alert(`Desmobilização solicitada com sucesso para ${request.veiculos.length} veículo(s). As placas estão pendentes de aprovação.`);
   };
 
-  const handleTabChange = (tab: 'radar' | 'acompanhamento') => {
-    setActiveTab(tab);
-    setCurrentPage(1); // Reset page number when changing tabs
-  };
-
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -91,7 +67,9 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
         <Breadcrumb />
         
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Desmobilização de Ativos</h1>
+          <div className="flex items-center space-x-3">
+            <h1 className="text-3xl font-bold text-gray-900">Desmobilização de Ativos</h1>
+          </div>
         </div>
 
         <FilterPanel
@@ -104,7 +82,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
           <div className="border-b border-gray-200 mt-8">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
               <button
-                onClick={() => handleTabChange('radar')}
+                onClick={() => setActiveTab('radar')}
                 className={`${
                   activeTab === 'radar'
                     ? 'border-blue-500 text-blue-600'
@@ -114,7 +92,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                 Radar Desmobilização
               </button>
               <button
-                onClick={() => handleTabChange('acompanhamento')}
+                onClick={() => setActiveTab('acompanhamento')}
                 className={`${
                   activeTab === 'acompanhamento'
                     ? 'border-blue-500 text-blue-600'
@@ -142,49 +120,37 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
             </div>
           )}
 
+
           {activeTab === 'radar' && (
             <div className="mt-4">
-              <div className="bg-white rounded-lg shadow-md">
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm text-gray-700">
-                      Mostrando <span className="font-medium">{paginatedRadarVehicles.length}</span> de <span className="font-medium">{filteredRadarVehicles.length}</span> veículo(s) 
-                      {selectedVehicleIds.length > 0 && (
-                        <span className="ml-2">• <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span></span>
-                      )}
-                    </p>
-                    {filteredRadarVehicles.length > 0 && (
-                       <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
-                          <Download size={16} />
-                          <span>Exportar</span>
-                      </button>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-gray-700">
+                    Mostrando <span className="font-medium">{filteredRadarVehicles.length}</span> veículo(s) 
+                    {selectedVehicleIds.length > 0 && (
+                      <span className="ml-2">
+                        • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
+                      </span>
                     )}
-                  </div>
-                  <VehicleTable vehicles={paginatedRadarVehicles} selectedVehicles={selectedVehicleIds} onSelectionChange={setSelectedVehicleIds} />
+                  </p>
+                  {filteredRadarVehicles.length > 0 && (
+                     <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
+                        <Download size={16} />
+                        <span>Exportar</span>
+                    </button>
+                  )}
                 </div>
-                <Pagination 
-                  totalItems={filteredRadarVehicles.length}
-                  itemsPerPage={itemsPerPage}
-                  currentPage={currentPage}
-                  onPageChange={setCurrentPage}
-                  onItemsPerPageChange={setItemsPerPage}
+                
+                <VehicleTable
+                  vehicles={filteredRadarVehicles}
+                  selectedVehicles={selectedVehicleIds}
+                  onSelectionChange={setSelectedVehicleIds}
                 />
               </div>
             </div>
           )}
 
-          {activeTab === 'acompanhamento' && (
-            <>
-              <AcompanhamentoTab vehicles={paginatedAcompanhamentoVehicles} totalVehicles={filteredAcompanhamentoVehicles.length} />
-              <Pagination 
-                 totalItems={filteredAcompanhamentoVehicles.length}
-                 itemsPerPage={itemsPerPage}
-                 currentPage={currentPage}
-                 onPageChange={setCurrentPage}
-                 onItemsPerPageChange={setItemsPerPage}
-               />
-            </>
-           )}
+          {activeTab === 'acompanhamento' && <AcompanhamentoTab vehicles={filteredAcompanhamentoVehicles} />}
         </div>
 
         <DemobilizationModal
