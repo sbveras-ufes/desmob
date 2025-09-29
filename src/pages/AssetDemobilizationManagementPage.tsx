@@ -5,7 +5,7 @@ import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBrea
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
 import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
-import CreateLotModal from '../components/CreateLotModal'; // Import the new modal
+import CreateLotModal from '../components/CreateLotModal'; 
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -16,17 +16,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
-  const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false); // State for the new modal
+  const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false); 
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; patioVistoria: string }) => {
+  const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             patioDestino: updatedData.patioDestino || v.patioDestino,
-            patioVistoria: updatedData.patioVistoria || v.patioVistoria,
             dataEntrega: updatedData.dataEntrega || v.dataEntrega,
             lastUpdated: new Date().toISOString()
           }
