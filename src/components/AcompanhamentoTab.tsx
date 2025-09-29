@@ -1,72 +1,27 @@
-// src/components/AcompanhamentoTab.tsx
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { ApprovalVehicle } from '../types/Approval';
 import AcompanhamentoTable from './AcompanhamentoTable';
+import { Download } from 'lucide-react';
 
-// A interface deve ser a mesma usada no componente da tabela
-interface AcompanhamentoItem {
-  id: string | number;
-  ativo: string;
-  status: string;
-  dataPrevista: string;
-  responsavel: string;
+interface AcompanhamentoTabProps {
+  vehicles: ApprovalVehicle[];
 }
 
-// Dados de exemplo para simular uma resposta de API
-const mockAcompanhamentoData: AcompanhamentoItem[] = [
-  { id: 1, ativo: 'Notebook Dell XPS 15', status: 'Em transporte', dataPrevista: '2025-10-05', responsavel: 'Logística LTDA' },
-  { id: 2, ativo: 'Monitor LG UltraWide 34"', status: 'Aguardando coleta', dataPrevista: '2025-10-02', responsavel: 'Empresa X' },
-  { id: 3, ativo: 'Cadeira de Escritório Ergonômica', status: 'Entregue', dataPrevista: '2025-09-28', responsavel: 'Logística LTDA' },
-  { id: 4, ativo: 'Servidor PowerEdge R740', status: 'Em avaliação técnica', dataPrevista: '2025-10-15', responsavel: 'TI Interno' },
-];
-
-const AcompanhamentoTab: React.FC = () => {
-  const [data, setData] = useState<AcompanhamentoItem[] | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Esta função simula a busca de dados de uma API
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        // Simula um atraso de rede de 1 segundo
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Em uma aplicação real, você faria a chamada à API aqui.
-        // Por agora, usamos os dados de exemplo.
-        setData(mockAcompanhamentoData);
-
-      } catch (err: any) {
-        setError(err.message || 'Ocorreu um erro ao carregar os dados.');
-        setData([]); // Garante que a tabela não quebre em caso de erro
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []); // O array vazio [] garante que este efeito rode apenas uma vez
-
-  // Função para renderizar o conteúdo com base no estado (carregando, erro, sucesso)
-  const renderContent = () => {
-    if (isLoading) {
-      return <div className="p-4 text-center text-gray-500">Carregando dados de acompanhamento...</div>;
-    }
-
-    if (error) {
-      return <div className="p-4 text-center text-red-500">Erro: {error}</div>;
-    }
-
-    // Passa os dados carregados para o componente da tabela
-    return <AcompanhamentoTable data={data} />;
-  };
-
+const AcompanhamentoTab: React.FC<AcompanhamentoTabProps> = ({ vehicles }) => {
   return (
-    <div className="p-4 bg-gray-50 rounded-lg shadow-inner">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">Acompanhamento de Desmobilização</h2>
-      {renderContent()}
+    <div className="mt-8">
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-sm text-gray-700">
+          Mostrando <span className="font-medium">{vehicles.length}</span> veículo(s) em acompanhamento
+        </p>
+        {vehicles.length > 0 && (
+          <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
+            <Download size={16} />
+            <span>Exportar</span>
+          </button>
+        )}
+      </div>
+      <AcompanhamentoTable vehicles={vehicles} />
     </div>
   );
 };

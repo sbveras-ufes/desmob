@@ -7,19 +7,20 @@ interface UpdateTransportModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
-  onUpdate: (updatedData: { dataEntrega: string; patioDestino: string; }) => void;
+  onUpdate: (updatedData: { dataEntrega: string; patioDestino: string; patioVistoria: string }) => void;
 }
 
 const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onClose, vehicles, onUpdate }) => {
   const [dataEntrega, setDataEntrega] = useState('');
   const [patioDestino, setPatioDestino] = useState('');
+  const [patioVistoria, setPatioVistoria] = useState('');
 
   const uniquePatios = useMemo(() => {
     return [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
   }, []);
 
   const handleSubmit = () => {
-    onUpdate({ dataEntrega, patioDestino });
+    onUpdate({ dataEntrega, patioDestino, patioVistoria });
     onClose();
   };
   
@@ -79,7 +80,7 @@ const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onC
           </div>
 
           {/* Campos de Formulário */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Data de Entrega</label>
               <input
@@ -94,6 +95,17 @@ const UpdateTransportModal: React.FC<UpdateTransportModalProps> = ({ isOpen, onC
               <select
                 value={patioDestino}
                 onChange={(e) => setPatioDestino(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="">Selecione um pátio</option>
+                {uniquePatios.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Pátio Vistoria</label>
+              <select
+                value={patioVistoria}
+                onChange={(e) => setPatioVistoria(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
                 <option value="">Selecione um pátio</option>
