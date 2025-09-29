@@ -3,6 +3,89 @@ import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { DemobilizationFilters } from '../types/Vehicle';
 import { mockVehicles } from '../data/mockData';
 
+// --- Sub-componente MultiSelectDropdown ---
+interface MultiSelectDropdownProps {
+  options: string[];
+  selectedOptions: string[];
+  onChange: (selected: string[]) => void;
+  placeholder: string;
+}
+
+const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
+  options,
+  selectedOptions,
+  onChange,
+  placeholder,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
+
+  const handleToggleOption = (option: string) => {
+    const newSelectedOptions = selectedOptions.includes(option)
+      ? selectedOptions.filter(o => o !== option)
+      : [...selectedOptions, option];
+    onChange(newSelectedOptions);
+  };
+
+  return (
+    <div>
+      <div className="relative" ref={menuRef}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between"
+        >
+          <span className="truncate">
+            {selectedOptions.length > 0 ? `${selectedOptions.length} selecionado(s)` : placeholder}
+          </span>
+          <ChevronDown className={`h-5 w-5 transform transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isOpen && (
+          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            <ul>
+              {options.map(option => (
+                <li key={option} className="px-2 py-1 hover:bg-gray-100">
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedOptions.includes(option)}
+                      onChange={() => handleToggleOption(option)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span>{option}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1 mt-2">
+        {selectedOptions.map(option => (
+          <span key={option} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+            {option}
+            <button type="button" onClick={() => handleToggleOption(option)} className="text-gray-600 hover:text-black">
+              <X size={14} />
+            </button>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+// --- Componente Principal FilterPanel ---
 interface FilterPanelProps {
   filters: DemobilizationFilters;
   onFiltersChange: (filters: DemobilizationFilters) => void;
@@ -23,7 +106,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
     const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
-    const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
+    const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao).filter(t => t !== '-'))] as ('Renovação de Frota' | 'Redução de Frota' | 'Término Contrato')[];
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
     const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
     const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
@@ -237,11 +320,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                 )}
               </div>
             </div>
-            <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione o Tipo</option>
-                {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
-            </select>
+            <div>
+              <MultiSelectDropdown
+                options={uniqueValues.tiposDesmobilizacao}
+                selectedOptions={filters.tipoDesmobilizacao || []}
+                onChange={(selected) => handleFilterChange('tipoDesmobilizacao', selected)}
+                placeholder="Selecione o Tipo"
+              />
+            </div>
             <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Selecione o Pátio</option>
@@ -269,6 +355,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                   <option value="Aguardando aprovação">Aguardando aprovação</option>
                   <option value="Liberado para Desmobilização">Liberado para Desmobilização</option>
                   <option value="Reprovado">Reprovado</option>
+                  <option value="Documentação Pendente">Documentação Pendente</option>
+                  <option value="Liberado para transferência">Liberado para transferência</option>
                 </select>
               </div>
             )}
