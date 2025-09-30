@@ -6,6 +6,8 @@ import { mockUsers } from '../data/mockUsers';
 import { mockFlows as initialFlows } from '../data/mockFlows';
 import { ApprovalFlow, FlowUser } from '../types/Flow';
 import { Edit, Eye, Plus, Trash2, MoreVertical, XCircle, CheckCircle, X } from 'lucide-react';
+import { usePagination } from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 const FlowManagementPage: React.FC = () => {
   const [view, setView] = useState<'list' | 'form'>('list');
@@ -120,45 +122,54 @@ interface FlowListPageProps {
   onToggleStatus: (flowId: string) => void;
 }
 
-const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit, onDelete, onToggleStatus }) => (
-  <div>
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold text-gray-900">Fluxos de Aprovação</h1>
-      <button onClick={onCreateNew} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-        <Plus size={20} />
-        <span>Novo Fluxo</span>
-      </button>
-    </div>
-    <div className="bg-white rounded-lg shadow-md">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição do Fluxo</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CRs Selecionados</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {flows.map(flow => (
-              <tr key={flow.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <ActionsMenu flow={flow} onEdit={onEdit} onDelete={onDelete} onToggleStatus={onToggleStatus} />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{flow.description}</td>
-                <td className="px-6 py-4 text-sm text-gray-500">{flow.crs.join(', ')}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${flow.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {flow.status}
-                  </span>
-                </td>
+const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit, onDelete, onToggleStatus }) => {
+  const pagination = usePagination(flows);
+  
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Fluxos de Aprovação</h1>
+        <button onClick={onCreateNew} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+          <Plus size={20} />
+          <span>Novo Fluxo</span>
+        </button>
+      </div>
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição do Fluxo</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CRs Selecionados</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {pagination.paginatedItems.map(flow => (
+                <tr key={flow.id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <ActionsMenu flow={flow} onEdit={onEdit} onDelete={onDelete} onToggleStatus={onToggleStatus} />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{flow.description}</td>
+                  <td className="px-6 py-4 text-sm text-gray-500">{flow.crs.join(', ')}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${flow.status === 'Ativo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                      {flow.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination 
+            {...pagination}
+            onItemsPerPageChange={pagination.changeItemsPerPage}
+            onPageChange={pagination.goToPage}
+          />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // --- Sub-componente do Formulário ---
 interface FlowFormProps {
