@@ -4,9 +4,26 @@ import { ApprovalVehicle } from '../types/Approval';
 interface FiscalAnalysisTableProps {
   vehicles: ApprovalVehicle[];
   paginationComponent: React.ReactNode;
+  selectedVehicles?: string[];
+  onSelectionChange?: (ids: string[]) => void;
 }
 
-const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent }) => {
+const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange }) => {
+
+  const handleSelectAll = (checked: boolean) => {
+    onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
+  };
+
+  const handleSelectVehicle = (vehicleId: string, checked: boolean) => {
+    onSelectionChange?.(
+      checked
+        ? [...selectedVehicles, vehicleId]
+        : selectedVehicles.filter(id => id !== vehicleId)
+    );
+  };
+  
+  const isAllSelected = vehicles.length > 0 && selectedVehicles.length === vehicles.length;
+
 
   const getSituacaoColor = (situacao?: string) => {
     switch (situacao) {
@@ -27,6 +44,16 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
+              {onSelectionChange && (
+                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                </th>
+              )}
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
@@ -47,6 +74,16 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map(vehicle => (
               <tr key={vehicle.id}>
+                 {onSelectionChange && (
+                  <td className="px-2 py-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selectedVehicles.includes(vehicle.id)}
+                      onChange={(e) => handleSelectVehicle(vehicle.id, e.target.checked)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                  </td>
+                )}
                 <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.placa}</td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.chassi}</td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.modelo}</td>
@@ -62,8 +99,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.situacao}</td>
                 <td className="px-4 py-2 whitespace-nowrap text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal || 'Pendente')}`}>
-                    {vehicle.situacaoAnaliseFiscal || 'Pendente'}
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental || 'Pendente')}`}>
+                    {vehicle.situacaoAnaliseDocumental || 'Pendente'}
                   </span>
                 </td>
               </tr>
