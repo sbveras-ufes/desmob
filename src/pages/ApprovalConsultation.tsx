@@ -8,6 +8,8 @@ import ReprovationModal from '../components/ReprovationModal';
 import JustificationModal from '../components/JustificationModal';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
+import { usePagination } from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 interface ApprovalConsultationProps {
   approvalVehicles: ApprovalVehicle[];
@@ -25,6 +27,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
   const [justificationDetails, setJustificationDetails] = useState('');
 
   const filteredVehicles = useApprovalFilter(approvalVehicles, filters);
+  const pagination = usePagination(filteredVehicles);
   const selectedVehicles = approvalVehicles.filter(v => selectedVehicleIds.includes(v.id));
   const canApproveReprove = selectedVehicleIds.length > 0 && 
     selectedVehicles.every(v => v.situacao === 'Aguardando aprovação');
@@ -130,7 +133,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-gray-700">
-              Mostrando <span className="font-medium">{filteredVehicles.length}</span> solicitação(ões) de aprovação
+              Mostrando <span className="font-medium">{pagination.endIndex - pagination.startIndex}</span> de <span className="font-medium">{pagination.totalItems}</span> solicitação(ões) de aprovação
               {selectedVehicleIds.length > 0 && (
                 <span className="ml-2">
                   • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
@@ -140,10 +143,17 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
           </div>
           
           <ApprovalTable 
-            vehicles={filteredVehicles}
+            vehicles={pagination.paginatedItems}
             selectedVehicles={selectedVehicleIds}
             onSelectionChange={setSelectedVehicleIds}
             onShowJustification={handleShowJustification}
+            paginationComponent={
+              <Pagination 
+                {...pagination}
+                onItemsPerPageChange={pagination.changeItemsPerPage}
+                onPageChange={pagination.goToPage}
+              />
+            }
           />
         </div>
 
