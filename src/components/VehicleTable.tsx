@@ -5,12 +5,14 @@ interface VehicleTableProps {
   vehicles: Vehicle[];
   selectedVehicles: string[];
   onSelectionChange: (selectedIds: string[]) => void;
+  paginationComponent?: React.ReactNode;
 }
 
 const VehicleTable: React.FC<VehicleTableProps> = ({
   vehicles,
   selectedVehicles,
-  onSelectionChange
+  onSelectionChange,
+  paginationComponent
 }) => {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -182,6 +184,7 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
           <p className="text-gray-500">Nenhum veículo encontrado</p>
         </div>
       )}
+      {paginationComponent}
     </div>
   );
 };
