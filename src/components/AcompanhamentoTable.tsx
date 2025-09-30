@@ -5,9 +5,10 @@ interface AcompanhamentoTableProps {
   vehicles: ApprovalVehicle[];
   selectedVehicles?: string[];
   onSelectionChange?: (selectedIds: string[]) => void;
+  paginationComponent?: React.ReactNode;
 }
 
-const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles, selectedVehicles = [], onSelectionChange }) => {
+const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles, selectedVehicles = [], onSelectionChange, paginationComponent }) => {
   const handleSelectAll = (checked: boolean) => {
     onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
   };
@@ -181,6 +182,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles, sel
           <p className="text-gray-500">Nenhum veículo liberado para desmobilização.</p>
         </div>
       )}
+      {paginationComponent}
     </div>
   );
 };
