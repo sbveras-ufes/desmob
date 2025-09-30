@@ -15,7 +15,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
 
   const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização');
-  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Documentação Aprovada' || v.situacaoAnaliseFiscal === 'Documentação Pendente');
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente');
 
 
   const acompanhamentoPagination = usePagination(acompanhamentoVehicles);
@@ -39,7 +39,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   activeTab === 'acompanhamento'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Acompanhamento
               </button>
@@ -49,7 +49,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   activeTab === 'concluidas'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
                 Concluídas
               </button>
@@ -75,7 +75,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                     <Pagination
                       {...acompanhamentoPagination}
                       onItemsPerPageChange={acompanhamentoPagination.changeItemsPerPage}
-                      goToPage={acompanhamentoPagination.goToPage}
+                      onPageChange={acompanhamentoPagination.goToPage}
                     />
                   }
                 />
@@ -90,7 +90,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   <Pagination
                     {...concluidasPagination}
                     onItemsPerPageChange={concluidasPagination.changeItemsPerPage}
-                    goToPage={concluidasPagination.goToPage}
+                    onPageChange={concluidasPagination.goToPage}
                   />
                 }
               />
