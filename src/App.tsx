@@ -4,23 +4,16 @@ import DemobilizationPage from './pages/DemobilizationPage';
 import ApprovalConsultation from './pages/ApprovalConsultation';
 import AssetDemobilizationManagementPage from './pages/AssetDemobilizationManagementPage';
 import { ApprovalVehicle } from './types/Approval';
+import FiscalAnalysisPage from './pages/FiscalAnalysisPage'; // Import the new page
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'demobilization' | 'users' | 'approval' | 'management'>('demobilization');
+  const [currentPage, setCurrentPage] = useState<string>('demobilization');
   const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>([]);
 
   React.useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash === '#/usuarios') {
-        setCurrentPage('users');
-      } else if (hash === '#/aprovacao') {
-        setCurrentPage('approval');
-      } else if (hash === '#/gestao-desmobilizacao') {
-        setCurrentPage('management');
-      } else {
-        setCurrentPage('demobilization');
-      }
+      const hash = window.location.hash.replace('#/', '');
+      setCurrentPage(hash || 'demobilization');
     };
 
     handleHashChange();
@@ -35,32 +28,23 @@ function App() {
     setApprovalVehicles(updatedVehicles);
   };
 
-  if (currentPage === 'users') {
-    return <UserManagement />;
-  }
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'usuarios':
+        return <UserManagement />;
+      case 'aprovacao':
+        return <ApprovalConsultation approvalVehicles={approvalVehicles} onUpdateVehicles={handleUpdateApprovals} />;
+      case 'gestao-desmobilizacao':
+        return <AssetDemobilizationManagementPage liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Liberado para Transferência')} onUpdateVehicles={setApprovalVehicles} />;
+      case 'analise-fiscal':
+        return <FiscalAnalysisPage vehicles={approvalVehicles} />;
+      case 'demobilization':
+      default:
+        return <DemobilizationPage onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])} demobilizedVehicles={approvalVehicles} />;
+    }
+  };
 
-  if (currentPage === 'approval') {
-    return (
-      <ApprovalConsultation 
-        approvalVehicles={approvalVehicles} 
-        onUpdateVehicles={handleUpdateApprovals}
-      />
-    );
-  }
-  
-  if (currentPage === 'management') {
-    return <AssetDemobilizationManagementPage 
-             liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Liberado para Transferência')} 
-             onUpdateVehicles={setApprovalVehicles}
-           />;
-  }
-
-  return (
-    <DemobilizationPage 
-      onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])}
-      demobilizedVehicles={approvalVehicles} 
-    />
-  );
+  return renderPage();
 }
 
 export default App;
