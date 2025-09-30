@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell, Users, X, Briefcase } from 'lucide-react';
+import { Menu, Bell, Users, X, Briefcase, FileCheck } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -68,6 +68,16 @@ const Header: React.FC = () => {
                   >
                     <Briefcase className="h-5 w-5" />
                     <span>Gestão de Desmobilização</span>
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#/analise-fiscal" 
+                    onClick={closeMenu}
+                    className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
+                  >
+                    <FileCheck className="h-5 w-5" />
+                    <span>Análise Fiscal</span>
                   </a>
                 </li>
                 <li>
