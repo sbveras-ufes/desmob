@@ -22,6 +22,10 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
+  const transitionCRVehicles = liberatedVehicles.filter(
+    v => v.situacao === 'Liberado para Desmobilização' && v.isTransitionCR
+  );
+
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
@@ -152,7 +156,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               onSelectionChange={setSelectedVehicleIds}
             />
           }
-          {activeTab === 'cr-transicao' && <CRTransicaoTab />}
+          {activeTab === 'cr-transicao' && <CRTransicaoTab vehicles={transitionCRVehicles} />}
         </div>
 
         <UpdateTransportModal
