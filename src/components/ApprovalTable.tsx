@@ -6,13 +6,15 @@ interface ApprovalTableProps {
   selectedVehicles: string[];
   onSelectionChange: (selectedIds: string[]) => void;
   onShowJustification: (justification?: string) => void;
+  paginationComponent?: React.ReactNode;
 }
 
 const ApprovalTable: React.FC<ApprovalTableProps> = ({ 
   vehicles, 
   selectedVehicles, 
   onSelectionChange,
-  onShowJustification
+  onShowJustification,
+  paginationComponent
 }) => {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -142,6 +144,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
           <p className="text-gray-500">Nenhuma solicitação de aprovação encontrada</p>
         </div>
       )}
+      {paginationComponent}
     </div>
   );
 };
