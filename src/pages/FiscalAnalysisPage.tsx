@@ -12,6 +12,7 @@ interface FiscalAnalysisPageProps {
 
 const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => {
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
 
   const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização');
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Documentação Aprovada' || v.situacaoAnaliseFiscal === 'Documentação Pendente');
@@ -27,6 +28,12 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
         <FiscalAnalysisBreadcrumb />
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Análise Fiscal</h1>
+          <button
+            disabled={selectedVehicleIds.length === 0}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+          >
+            Checklist Análise Fiscal
+          </button>
         </div>
 
         <div>
@@ -59,6 +66,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
             {activeTab === 'acompanhamento' && (
               <FiscalAnalysisTable
                 vehicles={acompanhamentoPagination.paginatedItems}
+                selectedVehicles={selectedVehicleIds}
+                onSelectionChange={setSelectedVehicleIds}
                 paginationComponent={
                   <Pagination
                     {...acompanhamentoPagination}
@@ -70,6 +79,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
             {activeTab === 'concluidas' && (
                <FiscalAnalysisTable
                 vehicles={concluidasPagination.paginatedItems}
+                selectedVehicles={selectedVehicleIds}
+                onSelectionChange={setSelectedVehicleIds}
                 paginationComponent={
                   <Pagination
                     {...concluidasPagination}
