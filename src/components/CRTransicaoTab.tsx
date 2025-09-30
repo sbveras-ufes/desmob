@@ -1,13 +1,16 @@
 import React from 'react';
 import { Download } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
+import { usePagination } from '../hooks/usePagination';
+import Pagination from './Pagination';
 
 interface CRTransicaoTabProps {
   vehicles: ApprovalVehicle[];
 }
 
 const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
-  
+  const pagination = usePagination(vehicles);
+
   const calculateDaysInCR = (startDate?: string) => {
     if (!startDate) return '-';
     const start = new Date(startDate);
@@ -21,7 +24,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-700">
-          Mostrando <span className="font-medium">{vehicles.length}</span> registro(s)
+          Mostrando <span className="font-medium">{pagination.endIndex - pagination.startIndex}</span> de <span className="font-medium">{pagination.totalItems}</span> registro(s)
         </p>
         <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled={vehicles.length === 0}>
           <Download size={16} />
@@ -53,7 +56,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {vehicles.map(vehicle => (
+              {pagination.paginatedItems.map(vehicle => (
                 <tr key={vehicle.id}>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.placa}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.chassi}</td>
@@ -82,6 +85,11 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
             <p className="text-gray-500">Nenhum veículo em CR de transição no momento.</p>
           </div>
         )}
+        <Pagination 
+          {...pagination}
+          onItemsPerPageChange={pagination.changeItemsPerPage}
+          onPageChange={pagination.goToPage}
+        />
       </div>
     </div>
   );
