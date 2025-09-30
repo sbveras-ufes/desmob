@@ -28,12 +28,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
         <FiscalAnalysisBreadcrumb />
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Análise Fiscal</h1>
-          <button
-            disabled={selectedVehicleIds.length === 0}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-          >
-            Checklist Análise Fiscal
-          </button>
         </div>
 
         <div>
@@ -45,7 +39,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   activeTab === 'acompanhamento'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                }`}
               >
                 Acompanhamento
               </button>
@@ -55,7 +49,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   activeTab === 'concluidas'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+                }`}
               >
                 Concluídas
               </button>
@@ -64,17 +58,28 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
 
           <div className="mt-8">
             {activeTab === 'acompanhamento' && (
-              <FiscalAnalysisTable
-                vehicles={acompanhamentoPagination.paginatedItems}
-                selectedVehicles={selectedVehicleIds}
-                onSelectionChange={setSelectedVehicleIds}
-                paginationComponent={
-                  <Pagination
-                    {...acompanhamentoPagination}
-                    onItemsPerPageChange={acompanhamentoPagination.changeItemsPerPage}
-                  />
-                }
-              />
+              <div>
+                <div className="flex justify-end mb-4">
+                  <button
+                    disabled={selectedVehicleIds.length === 0}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+                  >
+                    Checklist Análise Fiscal
+                  </button>
+                </div>
+                <FiscalAnalysisTable
+                  vehicles={acompanhamentoPagination.paginatedItems}
+                  selectedVehicles={selectedVehicleIds}
+                  onSelectionChange={setSelectedVehicleIds}
+                  paginationComponent={
+                    <Pagination
+                      {...acompanhamentoPagination}
+                      onItemsPerPageChange={acompanhamentoPagination.changeItemsPerPage}
+                      goToPage={acompanhamentoPagination.goToPage}
+                    />
+                  }
+                />
+              </div>
             )}
             {activeTab === 'concluidas' && (
                <FiscalAnalysisTable
@@ -85,6 +90,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   <Pagination
                     {...concluidasPagination}
                     onItemsPerPageChange={concluidasPagination.changeItemsPerPage}
+                    goToPage={concluidasPagination.goToPage}
                   />
                 }
               />
