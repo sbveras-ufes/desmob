@@ -6,7 +6,7 @@ import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobi
 import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
 import CreateLotModal from '../components/CreateLotModal';
-import DocumentAnalysisModal from '../components/DocumentAnalysisModal'; // Import the new modal
+import DocumentAnalysisModal from '../components/DocumentAnalysisModal'; 
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -18,7 +18,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
-  const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false); // State for the new modal
+  const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false); 
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
@@ -57,7 +57,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseFiscal: 'Aprovada' as const,
+            situacaoAnaliseFiscal: 'Documentação Aprovada' as const,
             observacaoAnaliseFiscal: observation,
             lastUpdated: new Date().toISOString()
           }
@@ -72,7 +72,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseFiscal: 'Pendente' as const,
+            situacaoAnaliseFiscal: 'Documentação Pendente' as const,
             tipoPendencia: pendencies,
             observacaoAnaliseFiscal: observation,
             lastUpdated: new Date().toISOString()
