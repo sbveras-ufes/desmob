@@ -30,8 +30,8 @@ export const mockVehicles: Vehicle[] = [
     anoModelo: '2023',
     km: 18000,
     diretoria: 'LETS',
-    cr: '301045540',
-    descricaoCR: 'SUZANO MUCURI',
+    cr: 'TRANSICAO_01',
+    descricaoCR: 'CR DE TRANSICAO 1',
     tipoDesmobilizacao: 'Renovação de Frota',
     patioDestino: 'Pátio SP',
     uf: 'SP',
@@ -41,7 +41,9 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-04-28',
     gerente: 'Maria Santos',
     cliente: 'STONE NACIONAL',
-    residual: 8200.00
+    residual: 8200.00,
+    isTransitionCR: true,
+    dataInicioCR: '2025-09-15T10:00:00Z'
   },
   {
     id: '3',
@@ -93,8 +95,8 @@ export const mockVehicles: Vehicle[] = [
     anoModelo: '2023',
     km: 32000,
     diretoria: 'OPERAÇÕES',
-    cr: '301045542',
-    descricaoCR: 'TEL TELECOMUNICAÇÕES',
+    cr: 'TRANSICAO_02',
+    descricaoCR: 'CR DE TRANSICAO 2',
     tipoDesmobilizacao: 'Renovação de Frota',
     patioDestino: 'Pátio SP',
     uf: 'SP',
@@ -104,7 +106,9 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-04-20',
     gerente: 'Pedro Oliveira',
     cliente: 'LOGÍSTICA BRASIL',
-    residual: 52000.00
+    residual: 52000.00,
+    isTransitionCR: true,
+    dataInicioCR: '2025-09-20T10:00:00Z'
   },
   {
     id: '6',
