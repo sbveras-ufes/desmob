@@ -11,6 +11,8 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { Vehicle, DemobilizationFilters, DemobilizationRequest } from '../types/Vehicle';
 import { ApprovalVehicle } from '../types/Approval';
 import { Download } from 'lucide-react';
+import { usePagination } from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
 
 interface DemobilizationPageProps {
   onVehiclesDemobilized: (vehicles: ApprovalVehicle[]) => void;
@@ -27,6 +29,8 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
   const filteredRadarVehicles = useVehicleFilter(vehicles, filters);
   const filteredAcompanhamentoVehicles = useApprovalFilter(demobilizedVehicles, filters as any);
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
+  
+  const radarPagination = usePagination(filteredRadarVehicles);
 
   const handleStartDemobilization = () => {
     if (selectedVehicleIds.length === 0) {
@@ -126,7 +130,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-700">
-                    Mostrando <span className="font-medium">{filteredRadarVehicles.length}</span> veículo(s) 
+                    Mostrando <span className="font-medium">{radarPagination.endIndex - radarPagination.startIndex}</span> de <span className="font-medium">{radarPagination.totalItems}</span> veículo(s) 
                     {selectedVehicleIds.length > 0 && (
                       <span className="ml-2">
                         • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
@@ -142,9 +146,16 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                 </div>
                 
                 <VehicleTable
-                  vehicles={filteredRadarVehicles}
+                  vehicles={radarPagination.paginatedItems}
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
+                  paginationComponent={
+                    <Pagination
+                      {...radarPagination}
+                      onItemsPerPageChange={radarPagination.changeItemsPerPage}
+                      onPageChange={radarPagination.goToPage}
+                    />
+                  }
                 />
               </div>
             </div>
