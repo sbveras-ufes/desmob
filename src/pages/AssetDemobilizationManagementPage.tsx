@@ -5,7 +5,8 @@ import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBrea
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
 import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
-import CreateLotModal from '../components/CreateLotModal'; 
+import CreateLotModal from '../components/CreateLotModal';
+import DocumentAnalysisModal from '../components/DocumentAnalysisModal'; // Import the new modal
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -16,7 +17,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
-  const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false); 
+  const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
+  const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false); // State for the new modal
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
@@ -50,6 +52,36 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsCreateLotModalOpen(false);
   };
 
+  const handleDocumentAnalysisApprove = (observation: string) => {
+    const updatedVehicles = liberatedVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacaoAnaliseFiscal: 'Aprovada' as const,
+            observacaoAnaliseFiscal: observation,
+            lastUpdated: new Date().toISOString()
+          }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+  };
+
+  const handleDocumentAnalysisPendency = (pendencies: string[], observation: string) => {
+    const updatedVehicles = liberatedVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacaoAnaliseFiscal: 'Pendente' as const,
+            tipoPendencia: pendencies,
+            observacaoAnaliseFiscal: observation,
+            lastUpdated: new Date().toISOString()
+          }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -97,6 +129,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 Atualizar Transporte
               </button>
               <button
+                onClick={() => setIsDocumentAnalysisModalOpen(true)}
                 disabled={selectedVehicleIds.length === 0}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
               >
@@ -134,6 +167,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           onClose={() => setIsCreateLotModalOpen(false)}
           vehicles={selectedVehicles}
           onConfirm={handleCreateLotConfirm}
+        />
+
+        <DocumentAnalysisModal
+          isOpen={isDocumentAnalysisModalOpen}
+          onClose={() => setIsDocumentAnalysisModalOpen(false)}
+          vehicles={selectedVehicles}
+          onApprove={handleDocumentAnalysisApprove}
+          onSignalPendency={handleDocumentAnalysisPendency}
         />
       </main>
     </div>
