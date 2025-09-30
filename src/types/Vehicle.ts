@@ -18,6 +18,8 @@ export interface Vehicle {
   gerente: string;
   cliente: string;
   residual: number;
+  isTransitionCR?: boolean;
+  dataInicioCR?: string;
 }
 
 export interface DemobilizationFilters {
