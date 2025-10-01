@@ -75,7 +75,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.classificacaoVistoria || '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.valorPrecificacao ? vehicle.valorPrecificacao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(vehicle.lastUpdated).toLocaleDateString('pt-BR')}</td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(vehicle.lastUpdated).toLocaleString('pt-BR')}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.responsavelAtualizacao || '-'}</td>
                 </tr>
               ))}
