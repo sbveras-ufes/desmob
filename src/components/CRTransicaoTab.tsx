@@ -24,7 +24,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-700">
-          Mostrando <span className="font-medium">{pagination.endIndex - pagination.startIndex}</span> de <span className="font-medium">{pagination.totalItems}</span> registro(s)
+          Mostrando <span className="font-medium">{pagination.endIndex > 0 ? pagination.endIndex - pagination.startIndex : 0}</span> de <span className="font-medium">{pagination.totalItems}</span> registro(s)
         </p>
         <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled={vehicles.length === 0}>
           <Download size={16} />
@@ -53,6 +53,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data da Precificação</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor da Precificação</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Última Atualização</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Responsável pela atualização</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -75,6 +76,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.valorPrecificacao ? vehicle.valorPrecificacao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(vehicle.lastUpdated).toLocaleDateString('pt-BR')}</td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.responsavelAtualizacao || '-'}</td>
                 </tr>
               ))}
             </tbody>
