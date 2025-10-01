@@ -13,7 +13,7 @@ export interface ApprovalVehicle {
   gerente: string;
   situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência';
   dataSolicitacao: string;
-  lastUpdated: string;
+  lastUpdated?: string;
   localDesmobilizacao: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
