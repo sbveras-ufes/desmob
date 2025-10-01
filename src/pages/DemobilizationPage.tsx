@@ -47,7 +47,6 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
       ...vehicle,
       situacao: 'Aguardando aprovação' as const,
       dataSolicitacao: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
       dataEntrega: request.dataEntrega,
       patioDestino: request.patioDestino || vehicle.patioDestino,
@@ -130,7 +129,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-sm text-gray-700">
-                    Mostrando <span className="font-medium">{radarPagination.endIndex - radarPagination.startIndex}</span> de <span className="font-medium">{radarPagination.totalItems}</span> veículo(s) 
+                    Mostrando <span className="font-medium">{radarPagination.endIndex > 0 ? radarPagination.endIndex - radarPagination.startIndex : 0}</span> de <span className="font-medium">{radarPagination.totalItems}</span> veículo(s) 
                     {selectedVehicleIds.length > 0 && (
                       <span className="ml-2">
                         • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
@@ -153,7 +152,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                     <Pagination
                       {...radarPagination}
                       onItemsPerPageChange={radarPagination.changeItemsPerPage}
-                      onPageChange={radarPagination.goToPage}
+                      goToPage={radarPagination.goToPage}
                     />
                   }
                 />
