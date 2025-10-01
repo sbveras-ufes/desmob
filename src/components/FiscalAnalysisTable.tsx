@@ -54,21 +54,21 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                   />
                 </th>
               )}
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ano/Modelo</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">KM</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descrição CR</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pátio Destino</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Local Desmob.</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gerente</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Residual</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Situação</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Situação Análise Fiscal</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -87,21 +87,21 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                     />
                   </td>
                 )}
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.placa}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.chassi}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.modelo}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.anoModelo}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.km.toLocaleString('pt-BR')}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.diretoria}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.cr}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.descricaoCR}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.patioDestino}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.localDesmobilizacao}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.gerente}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.cliente}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.situacao}</td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm">
+                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
+                <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental || 'Pendente')}`}>
                     {vehicle.situacaoAnaliseDocumental || 'Pendente'}
                   </span>
