@@ -40,47 +40,47 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ano/Modelo</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descrição CR</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Inicio CR</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dias no CR</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Entrega</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pátio Destino</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Situação da Vistoria</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pátio da Vistoria</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data da Vistoria</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Classificação da Vistoria</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data da Precificação</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor da Precificação</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Última Atualização</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Responsável pela atualização</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Inicio CR</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dias no CR</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Entrega</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio da Vistoria</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Precificação</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor da Precificação</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {pagination.paginatedItems.map(vehicle => (
-                <tr key={vehicle.id}>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.placa}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.chassi}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.modelo}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.anoModelo}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.cr}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.descricaoCR}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataInicioCR ? new Date(vehicle.dataInicioCR).toLocaleDateString('pt-BR') : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{calculateDaysInCR(vehicle.dataInicioCR)}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.patioDestino || '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.situacaoVistoria || '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.patioVistoria || '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.classificacaoVistoria || '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.valorPrecificacao ? vehicle.valorPrecificacao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.responsavelAtualizacao || '-'}</td>
+              {pagination.paginatedItems.map((vehicle, index) => (
+                <tr key={vehicle.id} className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataInicioCR ? new Date(vehicle.dataInicioCR).toLocaleDateString('pt-BR') : '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{calculateDaysInCR(vehicle.dataInicioCR)}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino || '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.valorPrecificacao ? vehicle.valorPrecificacao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
+                  <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
                 </tr>
               ))}
             </tbody>
