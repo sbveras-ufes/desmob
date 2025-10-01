@@ -69,6 +69,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -106,6 +108,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                     {vehicle.situacaoAnaliseDocumental || 'Pendente'}
                   </span>
                 </td>
+                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.lastUpdated).toLocaleDateString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
             ))}
           </tbody>
