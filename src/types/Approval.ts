@@ -32,6 +32,7 @@ export interface ApprovalVehicle {
   dataInicioCR?: string;
   dataPrecificacao?: string;
   valorPrecificacao?: number;
+  responsavelAtualizacao?: string;
 }
 
 export interface ApprovalFilters {
