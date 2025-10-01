@@ -179,7 +179,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.lastUpdated).toLocaleDateString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.lastUpdated).toLocaleString('pt-BR')}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
             ))}
