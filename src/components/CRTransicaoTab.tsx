@@ -20,6 +20,10 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
     return diffDays;
   };
 
+  const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between mb-4">
@@ -75,7 +79,7 @@ const CRTransicaoTab: React.FC<CRTransicaoTabProps> = ({ vehicles }) => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.classificacaoVistoria || '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.valorPrecificacao ? vehicle.valorPrecificacao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
-                  <td className="px-4 py-2 whitespace-nowrap text-sm">{new Date(vehicle.lastUpdated).toLocaleString('pt-BR')}</td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm">{formatDateTime(vehicle.lastUpdated)}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm">{vehicle.responsavelAtualizacao || '-'}</td>
                 </tr>
               ))}
