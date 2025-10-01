@@ -5,18 +5,50 @@ import { ApprovalVehicle } from '../types/Approval';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 import FiscalAnalysisTable from '../components/FiscalAnalysisTable';
+import FiscalAnalysisModal from '../components/FiscalAnalysisModal';
+import { mockUsers } from '../data/mockUsers';
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
+  onUpdateVehicles: (vehicles: ApprovalVehicle[]) => void;
 }
 
-const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => {
+const getRandomUser = () => {
+  const randomIndex = Math.floor(Math.random() * mockUsers.length);
+  return mockUsers[randomIndex].nome;
+};
+
+const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpdateVehicles }) => {
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização');
-  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente');
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente');
+  
+  const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
+  const handleApprove = (observation: string) => {
+    const randomUserName = getRandomUser();
+    const updatedVehicles = vehicles.map(v => 
+      selectedVehicleIds.includes(v.id)
+        ? { ...v, situacaoAnaliseFiscal: 'Aprovada' as const, observacaoAnaliseFiscal: observation, lastUpdated: new Date().toISOString(), responsavelAtualizacao: randomUserName }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+  };
+  
+  const handleSignalPendency = (pendencies: string[], observation: string) => {
+    const randomUserName = getRandomUser();
+    const updatedVehicles = vehicles.map(v => 
+      selectedVehicleIds.includes(v.id)
+        ? { ...v, situacaoAnaliseFiscal: 'Pendente' as const, tipoPendencia: pendencies, observacaoAnaliseFiscal: observation, lastUpdated: new Date().toISOString(), responsavelAtualizacao: randomUserName }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+  };
 
   const acompanhamentoPagination = usePagination(acompanhamentoVehicles);
   const concluidasPagination = usePagination(concluidasVehicles);
@@ -61,6 +93,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
               <div>
                 <div className="flex justify-end mb-4">
                   <button
+                    onClick={() => setIsModalOpen(true)}
                     disabled={selectedVehicleIds.length === 0}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                   >
@@ -75,7 +108,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                     <Pagination
                       {...acompanhamentoPagination}
                       onItemsPerPageChange={acompanhamentoPagination.changeItemsPerPage}
-                      onPageChange={acompanhamentoPagination.goToPage}
+                      goToPage={acompanhamentoPagination.goToPage}
                     />
                   }
                 />
@@ -90,13 +123,20 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles }) => 
                   <Pagination
                     {...concluidasPagination}
                     onItemsPerPageChange={concluidasPagination.changeItemsPerPage}
-                    onPageChange={concluidasPagination.goToPage}
+                    goToPage={concluidasPagination.goToPage}
                   />
                 }
               />
             )}
           </div>
         </div>
+        <FiscalAnalysisModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          vehicles={selectedVehicles}
+          onApprove={handleApprove}
+          onSignalPendency={handleSignalPendency}
+        />
       </main>
     </div>
   );
