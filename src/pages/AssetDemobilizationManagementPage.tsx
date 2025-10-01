@@ -72,8 +72,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
-            observacaoAnaliseDocumental: observation,
+            situacaoAnaliseFiscal: 'Aprovada' as const,
+            observacaoAnaliseFiscal: observation,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -89,9 +89,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseDocumental: 'Documentação Pendente' as const,
+            situacaoAnaliseFiscal: 'Pendente' as const,
             tipoPendencia: pendencies,
-            observacaoAnaliseDocumental: observation,
+            observacaoAnaliseFiscal: observation,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
