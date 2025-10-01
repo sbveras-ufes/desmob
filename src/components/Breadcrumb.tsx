@@ -10,6 +10,10 @@ const Breadcrumb: React.FC = () => {
       {/* The separator icon (self-closing tag) */}
       <ChevronRight className="h-4 w-4" />
 
+      <span className="hover:text-blue-600 cursor-pointer">Operacional</span>
+      
+      <ChevronRight className="h-4 w-4" />
+
       {/* The current page text (not clickable) */}
       <span className="font-semibold text-gray-900">Desmobilização de Ativos</span>
     </nav>
