@@ -4,7 +4,7 @@ import DemobilizationPage from './pages/DemobilizationPage';
 import ApprovalConsultation from './pages/ApprovalConsultation';
 import AssetDemobilizationManagementPage from './pages/AssetDemobilizationManagementPage';
 import { ApprovalVehicle } from './types/Approval';
-import FiscalAnalysisPage from './pages/FiscalAnalysisPage'; // Import the new page
+import FiscalAnalysisPage from './pages/FiscalAnalysisPage'; 
 
 function App() {
   const [currentPage, setCurrentPage] = useState<string>('demobilization');
@@ -37,7 +37,7 @@ function App() {
       case 'gestao-desmobilizacao':
         return <AssetDemobilizationManagementPage liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Liberado para Transferência')} onUpdateVehicles={setApprovalVehicles} />;
       case 'analise-fiscal':
-        return <FiscalAnalysisPage vehicles={approvalVehicles} />;
+        return <FiscalAnalysisPage vehicles={approvalVehicles} onUpdateVehicles={setApprovalVehicles} />;
       case 'demobilization':
       default:
         return <DemobilizationPage onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])} demobilizedVehicles={approvalVehicles} />;
