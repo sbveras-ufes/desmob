@@ -7,11 +7,17 @@ import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
 import CreateLotModal from '../components/CreateLotModal';
 import DocumentAnalysisModal from '../components/DocumentAnalysisModal'; 
+import { mockUsers } from '../data/mockUsers';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
   onUpdateVehicles: (updatedVehicles: ApprovalVehicle[]) => void;
 }
+
+const getRandomUser = () => {
+  const randomIndex = Math.floor(Math.random() * mockUsers.length);
+  return mockUsers[randomIndex].nome;
+};
 
 const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementPageProps> = ({ liberatedVehicles, onUpdateVehicles }) => {
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
@@ -27,13 +33,15 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   );
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
+    const randomUserName = getRandomUser();
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             patioDestino: updatedData.patioDestino || v.patioDestino,
             dataEntrega: updatedData.dataEntrega || v.dataEntrega,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
           }
         : v
     );
@@ -42,12 +50,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   };
 
   const handleCreateLotConfirm = () => {
+    const randomUserName = getRandomUser();
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             situacao: 'Liberado para Transferência' as const,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
           }
         : v
     );
@@ -57,13 +67,15 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   };
 
   const handleDocumentAnalysisApprove = (observation: string) => {
+    const randomUserName = getRandomUser();
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
             observacaoAnaliseDocumental: observation,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
           }
         : v
     );
@@ -72,6 +84,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   };
 
   const handleDocumentAnalysisPendency = (pendencies: string[], observation: string) => {
+    const randomUserName = getRandomUser();
     const updatedVehicles = liberatedVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
@@ -79,7 +92,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
             situacaoAnaliseDocumental: 'Documentação Pendente' as const,
             tipoPendencia: pendencies,
             observacaoAnaliseDocumental: observation,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
           }
         : v
     );
