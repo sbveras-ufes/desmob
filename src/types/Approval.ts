@@ -25,9 +25,9 @@ export interface ApprovalVehicle {
   situacaoVistoria?: string;
   dataVistoria?: string;
   classificacaoVistoria?: string;
-  situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
   tipoPendencia?: string[];
-  observacaoAnaliseDocumental?: string;
+  observacaoAnaliseFiscal?: string;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
   dataPrecificacao?: string;
