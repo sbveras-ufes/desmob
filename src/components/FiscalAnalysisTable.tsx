@@ -27,12 +27,10 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
 
   const getSituacaoColor = (situacao?: string) => {
     switch (situacao) {
-      case 'Documentação Aprovada':
+      case 'Aprovada':
         return 'bg-green-100 text-green-800';
-      case 'Documentação Pendente':
-        return 'bg-red-100 text-red-800';
       case 'Pendente':
-         return 'bg-yellow-100 text-yellow-800';
+         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -108,8 +106,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
                 <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental || 'Pendente')}`}>
-                    {vehicle.situacaoAnaliseDocumental || 'Pendente'}
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
+                    {vehicle.situacaoAnaliseFiscal || '-'}
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
