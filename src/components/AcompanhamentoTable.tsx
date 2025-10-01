@@ -53,6 +53,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
 
   const formatKilometer = (value: number) => new Intl.NumberFormat('pt-BR').format(value);
   const formatCurrency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
 
   const CommonHeaders = () => (
     <>
@@ -179,7 +182,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.lastUpdated).toLocaleString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
             ))}
