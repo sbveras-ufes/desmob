@@ -32,6 +32,7 @@ const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabP
         selectedVehicles={selectedVehicleIds}
         onSelectionChange={onSelectionChange}
         showSituacaoAnaliseDocumental={true}
+        layout="assetManagement"
         paginationComponent={
           <Pagination 
             {...pagination}
