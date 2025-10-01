@@ -15,7 +15,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   selectedVehicles = [], 
   onSelectionChange, 
   paginationComponent, 
-  showSituacaoAnaliseDocumental = false,
+  showSituacaoAnaliseDocumental: showSituacaoAnaliseFiscal = false,
   layout = 'default' 
 }) => {
   const handleSelectAll = (checked: boolean) => {
@@ -42,9 +42,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
         return 'bg-blue-100 text-blue-800';
-      case 'Documentação Aprovada':
+      case 'Aprovada':
         return 'bg-green-100 text-green-800';
-      case 'Documentação Pendente':
+      case 'Pendente':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -124,9 +124,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
                 </>
               )}
-              {showSituacaoAnaliseDocumental && (
+              {showSituacaoAnaliseFiscal && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Situação Análise Documental
+                  Situação Análise Fiscal
                 </th>
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
@@ -171,10 +171,10 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </td>
                   </>
                 )}
-                {showSituacaoAnaliseDocumental && (
+                {showSituacaoAnaliseFiscal && (
                   <td className="px-2 py-2 text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
-                      {vehicle.situacaoAnaliseDocumental || '-'}
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
+                      {vehicle.situacaoAnaliseFiscal || '-'}
                     </span>
                   </td>
                 )}
