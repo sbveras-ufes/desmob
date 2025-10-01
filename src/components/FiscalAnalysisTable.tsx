@@ -72,8 +72,11 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {vehicles.map(vehicle => (
-              <tr key={vehicle.id}>
+            {vehicles.map((vehicle, index) => (
+              <tr 
+                key={vehicle.id}
+                className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
+              >
                  {onSelectionChange && (
                   <td className="px-2 py-2 text-sm">
                     <input
