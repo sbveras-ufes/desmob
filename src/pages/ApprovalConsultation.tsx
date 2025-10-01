@@ -10,11 +10,17 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
+import { mockUsers } from '../data/mockUsers';
 
 interface ApprovalConsultationProps {
   approvalVehicles: ApprovalVehicle[];
   onUpdateVehicles: (vehicles: ApprovalVehicle[]) => void;
 }
+
+const getRandomUser = () => {
+  const randomIndex = Math.floor(Math.random() * mockUsers.length);
+  return mockUsers[randomIndex].nome;
+};
 
 const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({ 
   approvalVehicles, 
@@ -40,9 +46,15 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
     );
 
     if (confirmed) {
+      const randomUserName = getRandomUser();
       const updatedVehicles = approvalVehicles.map(vehicle => 
         selectedVehicleIds.includes(vehicle.id)
-          ? { ...vehicle, situacao: 'Liberado para Desmobilização' as const, lastUpdated: new Date().toISOString() }
+          ? { 
+              ...vehicle, 
+              situacao: 'Liberado para Desmobilização' as const, 
+              lastUpdated: new Date().toISOString(),
+              responsavelAtualizacao: randomUserName
+            }
           : vehicle
       );
       
@@ -59,13 +71,15 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
   };
 
   const handleReprovationSubmit = (justificativa: string) => {
+    const randomUserName = getRandomUser();
     const updatedVehicles = approvalVehicles.map(vehicle => 
       selectedVehicleIds.includes(vehicle.id)
         ? { 
             ...vehicle, 
             situacao: 'Reprovado' as const,
             justificativaReprovacao: justificativa,
-            lastUpdated: new Date().toISOString()
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
           }
         : vehicle
     );
