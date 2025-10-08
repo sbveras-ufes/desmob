@@ -216,38 +216,26 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data Prevista De</label>
-              <input
-                type="date"
-                value={filters.periodoInicio || ''}
-                onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data Prevista Até</label>
-              <input
-                type="date"
-                value={filters.periodoFim || ''}
-                onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            <input
+              type="date"
+              value={filters.periodoInicio || ''}
+              onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Data Inicial"
+            />
+            <input
+              type="date"
+              value={filters.periodoFim || ''}
+              onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Data Final"
+            />
+             <input type="date" placeholder="Data Entrega Inicial" value={filters.entregaInicio || ''} onChange={(e) => handleFilterChange('entregaInicio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <input type="date" placeholder="Data Entrega Final" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Entrega De</label>
-              <input type="date" value={filters.entregaInicio || ''} onChange={(e) => handleFilterChange('entregaInicio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Entrega Até</label>
-              <input type="date" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            </div>
-            
             <div className="relative" onBlur={() => setTimeout(() => setShowChassiSuggestions(false), 200)}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Chassi</label>
               <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => chassiInputRef.current?.focus()}>
                 {filters.chassi?.map(c => (
                   <span key={c} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
@@ -266,7 +254,6 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
             </div>
 
             <div className="relative" onBlur={() => setTimeout(() => setShowPlacaSuggestions(false), 200)}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Placa</label>
               <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => placaInputRef.current?.focus()}>
                 {filters.placa?.map(p => (
                   <span key={p} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
@@ -284,18 +271,14 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
               )}
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ano</label>
-              <input
-                type="text"
-                value={filters.anoModelo || ''}
-                onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
-                placeholder="Ano"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            <input
+              type="text"
+              value={filters.anoModelo || ''}
+              onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
+              placeholder="Ano"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
               <input
                 type="text"
                 value={modeloInput}
@@ -324,33 +307,26 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 </div>
               )}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-              <select
-                value={filters.cliente || ''}
-                onChange={(e) => handleFilterChange('cliente', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Selecione o Cliente</option>
-                {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Diretoria</label>
-              <select
-                value={filters.diretoria || ''}
-                onChange={(e) => handleFilterChange('diretoria', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Todas as diretorias</option>
-                <option value="LETS">LETS</option>
-                <option value="COMERCIAL">COMERCIAL</option>
-                <option value="OPERAÇÕES">OPERAÇÕES</option>
-                <option value="FINANCEIRA">FINANCEIRA</option>
-              </select>
-            </div>
+            <select
+              value={filters.cliente || ''}
+              onChange={(e) => handleFilterChange('cliente', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Selecione o Cliente</option>
+              {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
+            </select>
+            <select
+              value={filters.diretoria || ''}
+              onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Todas as diretorias</option>
+              <option value="LETS">LETS</option>
+              <option value="COMERCIAL">COMERCIAL</option>
+              <option value="OPERAÇÕES">OPERAÇÕES</option>
+              <option value="FINANCEIRA">FINANCEIRA</option>
+            </select>
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">CR</label>
               <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
                 <div 
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
@@ -391,47 +367,32 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 )}
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descrição CR</label>
-              <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione a Descrição</option>
-                  {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipo Desmobilização</label>
-              <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione o Tipo</option>
-                  {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Pátio Destino</label>
-              <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione o Pátio</option>
-                  {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">UF</label>
-              <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Todas as UFs</option>
-                  {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Município</label>
-              <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={!filters.uf}>
-                  <option value="">Todos os Municípios</option>
-                  {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </div>
+            <select value={filters.descricaoCR || ''} onChange={(e) => handleFilterChange('descricaoCR', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione a Descrição</option>
+                {uniqueValues.descricoesCR.map(desc => <option key={desc} value={desc}>{desc}</option>)}
+            </select>
+            <select value={filters.tipoDesmobilizacao || ''} onChange={(e) => handleFilterChange('tipoDesmobilizacao', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione o Tipo</option>
+                {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
+            </select>
+            <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione o Pátio</option>
+                {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+            </select>
+            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Todas as UFs</option>
+                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+            </select>
+            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!filters.uf}>
+                <option value="">Todos os Municípios</option>
+                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
           </div>
         </div>
       )}
