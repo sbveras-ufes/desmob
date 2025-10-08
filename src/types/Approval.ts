@@ -1,5 +1,6 @@
 export interface ApprovalVehicle {
   id: string;
+  demobilizationCode?: string;
   placa: string;
   chassi: string;
   modelo: string;
@@ -13,7 +14,7 @@ export interface ApprovalVehicle {
   gerente: string;
   situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência';
   dataSolicitacao: string;
-  lastUpdated: string;
+  lastUpdated?: string;
   localDesmobilizacao: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
@@ -34,8 +35,10 @@ export interface ApprovalVehicle {
 export interface ApprovalFilters {
   periodoInicio?: string;
   periodoFim?: string;
+  entregaInicio?: string;
+  entregaFim?: string;
   mes?: string;
-  placa?: string;
+  placa?: string[];
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
@@ -46,7 +49,8 @@ export interface ApprovalFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string;
+  chassi?: string[];
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
+  comPendencias?: boolean;
 }
