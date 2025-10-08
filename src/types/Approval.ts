@@ -1,5 +1,6 @@
 export interface ApprovalVehicle {
   id: string;
+  demobilizationCode?: string;
   placa: string;
   chassi: string;
   modelo: string;
