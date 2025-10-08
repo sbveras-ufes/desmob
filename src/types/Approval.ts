@@ -1,6 +1,5 @@
 export interface ApprovalVehicle {
   id: string;
-  demobilizationCode?: string;
   placa: string;
   chassi: string;
   modelo: string;
@@ -14,7 +13,7 @@ export interface ApprovalVehicle {
   gerente: string;
   situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência';
   dataSolicitacao: string;
-  lastUpdated?: string;
+  lastUpdated: string;
   localDesmobilizacao: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
@@ -26,21 +25,15 @@ export interface ApprovalVehicle {
   situacaoVistoria?: string;
   dataVistoria?: string;
   classificacaoVistoria?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
+  situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
   tipoPendencia?: string[];
-  observacaoAnaliseFiscal?: string;
-  isTransitionCR?: boolean;
-  dataInicioCR?: string;
-  dataPrecificacao?: string;
-  valorPrecificacao?: number;
-  responsavelAtualizacao?: string;
+  observacaoAnaliseDocumental?: string;
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
 }
 
 export interface ApprovalFilters {
   periodoInicio?: string;
   periodoFim?: string;
-  entregaInicio?: string;
-  entregaFim?: string;
   mes?: string;
   placa?: string;
   tipo?: 'leve' | 'pesado' | '';
