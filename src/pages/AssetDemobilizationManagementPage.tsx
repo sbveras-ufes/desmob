@@ -49,7 +49,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => v.situacao === 'Reprovado' || v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente'
+    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
@@ -94,8 +94,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseFiscal: 'Aprovada' as const,
-            observacaoAnaliseFiscal: observation,
+            situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
+            observacaoAnaliseDocumental: observation,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -111,9 +111,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacaoAnaliseFiscal: 'Pendente' as const,
+            situacaoAnaliseDocumental: 'Documentação Pendente' as const,
             tipoPendencia: pendencies,
-            observacaoAnaliseFiscal: observation,
+            observacaoAnaliseDocumental: observation,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
