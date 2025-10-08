@@ -42,9 +42,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
         return 'bg-blue-100 text-blue-800';
-      case 'Aprovada':
+      case 'Documentação Aprovada':
         return 'bg-green-100 text-green-800';
-      case 'Pendente':
+      case 'Documentação Pendente':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -111,6 +111,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   />
                 </th>
               )}
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
               {layout === 'default' && (
                 <>
                   <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
@@ -150,6 +151,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     />
                   </td>
                 )}
+                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.demobilizationCode || '-'}</td>
                 {layout === 'default' && (
                   <>
                     <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
