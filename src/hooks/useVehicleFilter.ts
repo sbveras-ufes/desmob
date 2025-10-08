@@ -4,10 +4,10 @@ import { Vehicle, DemobilizationFilters } from '../types/Vehicle';
 export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFilters) => {
   return useMemo(() => {
     return vehicles.filter((vehicle) => {
-      if (filters.chassi && filters.chassi.length > 0 && !filters.chassi.includes(vehicle.chassi)) {
+      if (filters.chassi && !vehicle.chassi.toLowerCase().includes(filters.chassi.toLowerCase())) {
         return false;
       }
-      if (filters.placa && filters.placa.length > 0 && !filters.placa.includes(vehicle.placa)) {
+      if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
         return false;
       }
       if (filters.anoModelo && !vehicle.anoModelo.includes(filters.anoModelo)) {
@@ -24,19 +24,6 @@ export const useVehicleFilter = (vehicles: Vehicle[], filters: DemobilizationFil
         if (filters.periodoFim) {
           const dataFim = new Date(filters.periodoFim);
           if (dataPrevista > dataFim) return false;
-        }
-      }
-      if (filters.entregaInicio || filters.entregaFim) {
-        const dataEntrega = new Date(vehicle.dataEntrega);
-
-        if (filters.entregaInicio) {
-          const dataInicio = new Date(filters.entregaInicio);
-          if (dataEntrega < dataInicio) return false;
-        }
-
-        if (filters.entregaFim) {
-          const dataFim = new Date(filters.entregaFim);
-          if (dataEntrega > dataFim) return false;
         }
       }
       if (filters.mes) {

@@ -14,14 +14,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
   const [showCrSuggestions, setShowCrSuggestions] = useState(false);
   const crInputRef = useRef<HTMLInputElement>(null);
 
-  const [chassiInput, setChassiInput] = useState('');
-  const [showChassiSuggestions, setShowChassiSuggestions] = useState(false);
-  const chassiInputRef = useRef<HTMLInputElement>(null);
-
-  const [placaInput, setPlacaInput] = useState('');
-  const [showPlacaSuggestions, setShowPlacaSuggestions] = useState(false);
-  const placaInputRef = useRef<HTMLInputElement>(null);
-
   const [modeloInput, setModeloInput] = useState(filters.modelo || '');
   const [showModeloSuggestions, setShowModeloSuggestions] = useState(false);
 
@@ -29,14 +21,12 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
     const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
     const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
-    const chassis = [...new Set(mockVehicles.map(v => v.chassi))].sort();
-    const placas = [...new Set(mockVehicles.map(v => v.placa))].sort();
     const descricoesCR = [...new Set(mockVehicles.map(v => v.descricaoCR))].sort();
     const tiposDesmobilizacao = [...new Set(mockVehicles.map(v => v.tipoDesmobilizacao))].sort();
     const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
     const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
     const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
-    return { modelos, clientes, crs, chassis, placas, descricoesCR, tiposDesmobilizacao, patiosDestino, ufs, municipios };
+    return { modelos, clientes, crs, descricoesCR, tiposDesmobilizacao, patiosDestino, ufs, municipios };
   }, []);
 
   const availableCrs = useMemo(() => {
@@ -86,34 +76,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
     onFiltersChange({ ...filters, cr: newCrs });
   };
-  
-  const handleAddChassi = (chassi: string) => {
-    if (chassi && !filters.chassi?.includes(chassi)) {
-      const newChassis = [...(filters.chassi || []), chassi];
-      onFiltersChange({ ...filters, chassi: newChassis });
-    }
-    setChassiInput('');
-    setShowChassiSuggestions(false);
-  };
-  
-  const handleRemoveChassi = (chassiToRemove: string) => {
-    const newChassis = filters.chassi?.filter(chassi => chassi !== chassiToRemove);
-    onFiltersChange({ ...filters, chassi: newChassis });
-  };
-
-  const handleAddPlaca = (placa: string) => {
-    if (placa && !filters.placa?.includes(placa)) {
-      const newPlacas = [...(filters.placa || []), placa];
-      onFiltersChange({ ...filters, placa: newPlacas });
-    }
-    setPlacaInput('');
-    setShowPlacaSuggestions(false);
-  };
-
-  const handleRemovePlaca = (placaToRemove: string) => {
-    const newPlacas = filters.placa?.filter(placa => placa !== placaToRemove);
-    onFiltersChange({ ...filters, placa: newPlacas });
-  };
 
   const crSuggestions = useMemo(() => {
     if (!crInput) return [];
@@ -122,43 +84,13 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
     );
   }, [crInput, availableCrs, filters.cr]);
 
-  const chassiSuggestions = useMemo(() => {
-    if (!chassiInput) return [];
-    return uniqueValues.chassis.filter(c => 
-      c.toLowerCase().includes(chassiInput.toLowerCase()) && !filters.chassi?.includes(c)
-    );
-  }, [chassiInput, uniqueValues.chassis, filters.chassi]);
-
-  const placaSuggestions = useMemo(() => {
-    if (!placaInput) return [];
-    return uniqueValues.placas.filter(p => 
-      p.toLowerCase().includes(placaInput.toLowerCase()) && !filters.placa?.includes(p)
-    );
-  }, [placaInput, uniqueValues.placas, filters.placa]);
-
   const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && crInput) {
       e.preventDefault();
       const exactMatch = availableCrs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
-      if (exactMatch) handleAddCr(exactMatch);
-    }
-  };
-
-  const handleChassiInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && chassiInput) {
-      e.preventDefault();
-      const exactMatch = uniqueValues.chassis.find(c => c.toLowerCase() === chassiInput.toLowerCase());
-      if (exactMatch) handleAddChassi(exactMatch);
-      else handleAddChassi(chassiInput);
-    }
-  };
-
-  const handlePlacaInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && placaInput) {
-      e.preventDefault();
-      const exactMatch = uniqueValues.placas.find(p => p.toLowerCase() === placaInput.toLowerCase());
-      if (exactMatch) handleAddPlaca(exactMatch);
-      else handleAddPlaca(placaInput);
+      if (exactMatch) {
+        handleAddCr(exactMatch);
+      }
     }
   };
 
@@ -176,9 +108,6 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
 
   const clearFilters = () => {
     setModeloInput('');
-    setChassiInput('');
-    setPlacaInput('');
-    setCrInput('');
     onFiltersChange({});
   };
 
@@ -230,47 +159,20 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Data Final"
             />
-             <input type="date" placeholder="Data Entrega Inicial" value={filters.entregaInicio || ''} onChange={(e) => handleFilterChange('entregaInicio', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <input type="date" placeholder="Data Entrega Final" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-
-            <div className="relative" onBlur={() => setTimeout(() => setShowChassiSuggestions(false), 200)}>
-              <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => chassiInputRef.current?.focus()}>
-                {filters.chassi?.map(c => (
-                  <span key={c} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
-                    {c} <button type="button" onClick={() => handleRemoveChassi(c)} className="text-gray-600 hover:text-black"><X size={14} /></button>
-                  </span>
-                ))}
-                <input ref={chassiInputRef} type="text" value={chassiInput} onChange={(e) => setChassiInput(e.target.value)} onFocus={() => setShowChassiSuggestions(true)} onKeyDown={handleChassiInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={filters.chassi?.length > 0 ? '' : 'Chassi...'}/>
-              </div>
-              {showChassiSuggestions && chassiSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {chassiSuggestions.map(c => (
-                    <button key={c} type="button" onMouseDown={() => handleAddChassi(c)} className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm">{c}</button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="relative" onBlur={() => setTimeout(() => setShowPlacaSuggestions(false), 200)}>
-              <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => placaInputRef.current?.focus()}>
-                {filters.placa?.map(p => (
-                  <span key={p} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
-                    {p} <button type="button" onClick={() => handleRemovePlaca(p)} className="text-gray-600 hover:text-black"><X size={14} /></button>
-                  </span>
-                ))}
-                <input ref={placaInputRef} type="text" value={placaInput} onChange={(e) => setPlacaInput(e.target.value)} onFocus={() => setShowPlacaSuggestions(true)} onKeyDown={handlePlacaInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={filters.placa?.length > 0 ? '' : 'Placa...'}/>
-              </div>
-              {showPlacaSuggestions && placaSuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {placaSuggestions.map(p => (
-                    <button key={p} type="button" onMouseDown={() => handleAddPlaca(p)} className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm">{p}</button>
-                  ))}
-                </div>
-              )}
-            </div>
-
+            <input
+              type="text"
+              value={filters.chassi || ''}
+              onChange={(e) => handleFilterChange('chassi', e.target.value)}
+              placeholder="Chassi"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              value={filters.placa || ''}
+              onChange={(e) => handleFilterChange('placa', e.target.value)}
+              placeholder="Placa"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             <input
               type="text"
               value={filters.anoModelo || ''}
@@ -383,17 +285,20 @@ const ApprovalFilterPanel: React.FC<ApprovalFilterPanelProps> = ({ filters, onFi
                 {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
             </select>
             
-            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Todas as UFs</option>
-                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-            </select>
-            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={!filters.uf}>
-                <option value="">Todos os Municípios</option>
-                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
+            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <legend className="text-sm font-medium text-gray-700 px-1">Local Desmobilização</legend>
+              <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Todas as UFs</option>
+                  {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </select>
+              <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={!filters.uf}>
+                  <option value="">Todos os Municípios</option>
+                  {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </fieldset>
 
             <div>
               <select 

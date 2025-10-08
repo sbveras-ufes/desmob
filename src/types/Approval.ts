@@ -39,10 +39,8 @@ export interface ApprovalVehicle {
 export interface ApprovalFilters {
   periodoInicio?: string;
   periodoFim?: string;
-  entregaInicio?: string;
-  entregaFim?: string;
   mes?: string;
-  placa?: string[];
+  placa?: string;
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
@@ -53,7 +51,7 @@ export interface ApprovalFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string[];
+  chassi?: string;
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
 }

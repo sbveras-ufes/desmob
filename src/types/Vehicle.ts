@@ -25,8 +25,6 @@ export interface Vehicle {
 export interface DemobilizationFilters {
   periodoInicio?: string;
   periodoFim?: string;
-  entregaInicio?: string;
-  entregaFim?: string;
   mes?: string;
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
@@ -37,8 +35,8 @@ export interface DemobilizationFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string[];
-  placa?: string[];
+  chassi?: string;
+  placa?: string;
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
 }
