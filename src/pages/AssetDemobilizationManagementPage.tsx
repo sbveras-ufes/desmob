@@ -3,15 +3,16 @@ import Header from '../components/Header';
 import { ApprovalVehicle } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
-import CRTransicaoTab from '../components/CRTransicaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
 import CreateLotModal from '../components/CreateLotModal';
-import DocumentAnalysisModal from '../components/DocumentAnalysisModal'; 
+import DocumentAnalysisModal from '../components/DocumentAnalysisModal';
 import { mockUsers } from '../data/mockUsers';
+import ConcluidosTab from '../components/ConcluidosTab';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
   onUpdateVehicles: (updatedVehicles: ApprovalVehicle[]) => void;
+  allVehicles: ApprovalVehicle[];
 }
 
 const getRandomUser = () => {
@@ -19,22 +20,22 @@ const getRandomUser = () => {
   return mockUsers[randomIndex].nome;
 };
 
-const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementPageProps> = ({ liberatedVehicles, onUpdateVehicles }) => {
-  const [activeTab, setActiveTab] = useState<'acompanhamento' | 'cr-transicao'>('acompanhamento');
+const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementPageProps> = ({ liberatedVehicles, onUpdateVehicles, allVehicles }) => {
+  const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidos'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
-  const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false); 
+  const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
 
   const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  const transitionCRVehicles = liberatedVehicles.filter(
-    v => v.situacao === 'Liberado para Desmobilização' && v.isTransitionCR
+  const concluidosVehicles = allVehicles.filter(
+    v => v.situacao === 'Reprovado' || v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente'
   );
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = liberatedVehicles.map(v =>
+    const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
@@ -51,7 +52,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const handleCreateLotConfirm = () => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = liberatedVehicles.map(v =>
+    const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
@@ -68,7 +69,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const handleDocumentAnalysisApprove = (observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = liberatedVehicles.map(v =>
+    const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
@@ -85,7 +86,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const handleDocumentAnalysisPendency = (pendencies: string[], observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = liberatedVehicles.map(v =>
+    const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
@@ -125,14 +126,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 Acompanhamento Desmobilização
               </button>
               <button
-                onClick={() => setActiveTab('cr-transicao')}
+                onClick={() => setActiveTab('concluidos')}
                 className={`${
-                  activeTab === 'cr-transicao'
+                  activeTab === 'concluidos'
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
-                CR de Transição
+                Concluídos
               </button>
             </nav>
           </div>
@@ -170,7 +171,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               onSelectionChange={setSelectedVehicleIds}
             />
           }
-          {activeTab === 'cr-transicao' && <CRTransicaoTab vehicles={transitionCRVehicles} />}
+          {activeTab === 'concluidos' && <ConcluidosTab vehicles={concluidosVehicles} />}
         </div>
 
         <UpdateTransportModal
