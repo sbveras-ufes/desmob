@@ -37,8 +37,8 @@ export interface DemobilizationFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string;
-  placa?: string;
+  chassi?: string[];
+  placa?: string[];
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
 }
