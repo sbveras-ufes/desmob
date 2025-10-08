@@ -10,13 +10,13 @@ interface AcompanhamentoTableProps {
   layout?: 'default' | 'assetManagement';
 }
 
-const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ 
-  vehicles, 
-  selectedVehicles = [], 
-  onSelectionChange, 
-  paginationComponent, 
+const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
+  vehicles,
+  selectedVehicles = [],
+  onSelectionChange,
+  paginationComponent,
   showSituacaoAnaliseDocumental: showSituacaoAnaliseFiscal = false,
-  layout = 'default' 
+  layout = 'default'
 }) => {
   const handleSelectAll = (checked: boolean) => {
     onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
@@ -57,8 +57,21 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
-  const CommonHeaders = () => (
-    <>
+  const headers = (
+    <tr>
+      {onSelectionChange && (
+        <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <input
+            type="checkbox"
+            checked={isAllSelected}
+            onChange={(e) => handleSelectAll(e.target.checked)}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+        </th>
+      )}
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+      {layout === 'default' && <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>}
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
@@ -73,71 +86,26 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
       <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
-    </>
-  );
-
-  const CommonCells = ({ vehicle }: { vehicle: ApprovalVehicle }) => (
-    <>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
-      <td className="px-2 py-2 text-sm text-gray-500">{formatCurrency(vehicle.residual)}</td>
-    </>
+      {layout === 'assetManagement' && <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>}
+      {showSituacaoAnaliseFiscal && (
+        <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Situação Análise Documental
+        </th>
+      )}
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio de Vistoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
+    </tr>
   );
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {onSelectionChange && (
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                </th>
-              )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-              {layout === 'default' && (
-                <>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
-                </>
-              )}
-              <CommonHeaders />
-              {layout === 'assetManagement' && (
-                <>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-                  <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
-                </>
-              )}
-              {showSituacaoAnaliseFiscal && (
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Situação Análise Fiscal
-                </th>
-              )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio de Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
-            </tr>
-          </thead>
+          <thead className="bg-gray-50">{headers}</thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map((vehicle) => (
               <tr key={vehicle.id} className="hover:bg-gray-50">
@@ -151,27 +119,35 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     />
                   </td>
                 )}
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.demobilizationCode || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
+                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 {layout === 'default' && (
-                  <>
-                    <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                    <td className="px-2 py-2 text-sm">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
-                        {vehicle.situacao}
-                      </span>
-                    </td>
-                  </>
+                  <td className="px-2 py-2 text-sm">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
+                      {vehicle.situacao}
+                    </span>
+                  </td>
                 )}
-                <CommonCells vehicle={vehicle} />
-                 {layout === 'assetManagement' && (
-                  <>
-                    <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                    <td className="px-2 py-2 text-sm">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
-                        {vehicle.situacao}
-                      </span>
-                    </td>
-                  </>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatCurrency(vehicle.residual)}</td>
+                {layout === 'assetManagement' && (
+                  <td className="px-2 py-2 text-sm">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
+                      {vehicle.situacao}
+                    </span>
+                  </td>
                 )}
                 {showSituacaoAnaliseFiscal && (
                   <td className="px-2 py-2 text-sm">
