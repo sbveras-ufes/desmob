@@ -26,6 +26,19 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
           if (dataPrevista > dataFim) return false;
         }
       }
+      if (filters.entregaInicio || filters.entregaFim) {
+        const dataEntrega = new Date(vehicle.dataEntrega);
+
+        if (filters.entregaInicio) {
+          const dataInicio = new Date(filters.entregaInicio);
+          if (dataEntrega < dataInicio) return false;
+        }
+
+        if (filters.entregaFim) {
+          const dataFim = new Date(filters.entregaFim);
+          if (dataEntrega > dataFim) return false;
+        }
+      }
       if (filters.mes) {
         const mesVeiculo = new Date(vehicle.dataPrevista).getMonth() + 1;
         const mesFiltro = parseInt(filters.mes);
