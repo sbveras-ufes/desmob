@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
-import { ApprovalVehicle } from '../types/Approval';
+import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 import AssetDemobilizationBreadcrumb from '../components/AssetDemobilizationBreadcrumb';
 import AcompanhamentoDesmobilizacaoTab from '../components/AcompanhamentoDesmobilizacaoTab';
 import UpdateTransportModal from '../components/UpdateTransportModal';
@@ -8,6 +8,8 @@ import CreateLotModal from '../components/CreateLotModal';
 import DocumentAnalysisModal from '../components/DocumentAnalysisModal';
 import { mockUsers } from '../data/mockUsers';
 import ConcluidosTab from '../components/ConcluidosTab';
+import AssetDemobilizationFilterPanel from '../components/AssetDemobilizationFilterPanel';
+import { useApprovalFilter } from '../hooks/useApprovalFilter';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -26,12 +28,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
   const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
+  const [filters, setFilters] = useState<ApprovalFilters>({});
 
-  const selectedVehicles = liberatedVehicles.filter(v => selectedVehicleIds.includes(v.id));
-
-  const concluidosVehicles = allVehicles.filter(
+  const filteredLiberatedVehicles = useApprovalFilter(liberatedVehicles, filters);
+  const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
     v => v.situacao === 'Reprovado' || v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente'
-  );
+  ), filters);
+
+  const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const randomUserName = getRandomUser();
@@ -112,6 +116,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           <h1 className="text-3xl font-bold text-gray-900">Gestão de Desmobilização de Ativos</h1>
         </div>
 
+        <AssetDemobilizationFilterPanel filters={filters} onFiltersChange={setFilters} />
+
         <div>
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8" aria-label="Tabs">
@@ -166,12 +172,12 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
           {activeTab === 'acompanhamento' &&
             <AcompanhamentoDesmobilizacaoTab
-              vehicles={liberatedVehicles}
+              vehicles={filteredLiberatedVehicles}
               selectedVehicleIds={selectedVehicleIds}
               onSelectionChange={setSelectedVehicleIds}
             />
           }
-          {activeTab === 'concluidos' && <ConcluidosTab vehicles={concluidosVehicles} />}
+          {activeTab === 'concluidos' && <ConcluidosTab vehicles={filteredConcluidosVehicles} />}
         </div>
 
         <UpdateTransportModal
