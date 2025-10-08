@@ -115,7 +115,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
                     <div className="h-4 w-4"></div>
                   )}
                 </td>
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.demobilizationCode || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
