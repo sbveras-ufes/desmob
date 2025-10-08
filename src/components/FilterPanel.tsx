@@ -268,7 +268,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
             </select>
             <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione o Pátio</option>
+                <option value="">Selecione o Pátio de Destino</option>
                 {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
             </select>
 
