@@ -29,7 +29,11 @@ export interface ApprovalVehicle {
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
   tipoPendencia?: string[];
   observacaoAnaliseDocumental?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
+  isTransitionCR?: boolean;
+  dataInicioCR?: string;
+  dataPrecificacao?: string;
+  valorPrecificacao?: number;
+  responsavelAtualizacao?: string;
 }
 
 export interface ApprovalFilters {
