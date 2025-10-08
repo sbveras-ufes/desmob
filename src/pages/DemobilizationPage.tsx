@@ -10,7 +10,7 @@ import { useVehicleFilter } from '../hooks/useVehicleFilter';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import { Vehicle, DemobilizationFilters, DemobilizationRequest } from '../types/Vehicle';
 import { ApprovalVehicle } from '../types/Approval';
-import { Download } from 'lucide-react';
+import { Download, Upload } from 'lucide-react';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 
@@ -139,10 +139,16 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                     )}
                   </p>
                   {filteredRadarVehicles.length > 0 && (
-                     <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
-                        <Download size={16} />
-                        <span>Exportar</span>
-                    </button>
+                     <div className="flex items-center space-x-2">
+                        <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
+                          <Upload size={16} />
+                          <span>Importar</span>
+                        </button>
+                        <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
+                          <Download size={16} />
+                          <span>Exportar</span>
+                        </button>
+                     </div>
                   )}
                 </div>
                 
