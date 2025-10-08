@@ -92,7 +92,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                     />
                   </td>
                 )}
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.demobilizationCode || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
@@ -108,7 +108,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
                 <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal || 'Pendente')}`}>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
                     {vehicle.situacaoAnaliseFiscal || '-'}
                   </span>
                 </td>
