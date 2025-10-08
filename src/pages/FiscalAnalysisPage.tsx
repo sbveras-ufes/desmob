@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import FiscalAnalysisBreadcrumb from '../components/FiscalAnalysisBreadcrumb';
-import { ApprovalVehicle } from '../types/Approval';
+import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from '../components/Pagination';
 import FiscalAnalysisTable from '../components/FiscalAnalysisTable';
 import FiscalAnalysisModal from '../components/FiscalAnalysisModal';
 import { mockUsers } from '../data/mockUsers';
+import { useApprovalFilter } from '../hooks/useApprovalFilter';
+import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -22,10 +24,14 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filters, setFilters] = useState<ApprovalFilters>({});
 
   const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização');
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente');
   
+  const filteredAcompanhamento = useApprovalFilter(acompanhamentoVehicles, filters);
+  const filteredConcluidas = useApprovalFilter(concluidasVehicles, filters);
+
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
   const handleApprove = (observation: string) => {
@@ -50,8 +56,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
 
-  const acompanhamentoPagination = usePagination(acompanhamentoVehicles);
-  const concluidasPagination = usePagination(concluidasVehicles);
+  const acompanhamentoPagination = usePagination(filteredAcompanhamento);
+  const concluidasPagination = usePagination(filteredConcluidas);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -61,6 +67,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Análise Fiscal</h1>
         </div>
+
+        <FiscalAnalysisFilterPanel filters={filters} onFiltersChange={setFilters} />
 
         <div>
           <div className="border-b border-gray-200">
