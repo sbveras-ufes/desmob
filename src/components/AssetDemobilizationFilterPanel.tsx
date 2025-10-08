@@ -284,17 +284,20 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 <option value="">Selecione o Pátio</option>
                 {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
             </select>
-            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Todas as UFs</option>
-                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-            </select>
-            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={!filters.uf}>
-                <option value="">Todos os Municípios</option>
-                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
+            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <legend className="text-sm font-medium text-gray-700 px-1">Local Desmobilização</legend>
+              <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Todas as UFs</option>
+                  {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </select>
+              <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={!filters.uf}>
+                  <option value="">Todos os Municípios</option>
+                  {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </fieldset>
           </div>
         </div>
       )}
