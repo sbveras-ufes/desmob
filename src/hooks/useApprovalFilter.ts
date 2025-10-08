@@ -4,10 +4,10 @@ import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
 export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: ApprovalFilters) => {
   return useMemo(() => {
     return vehicles.filter((vehicle) => {
-      if (filters.chassi && !vehicle.chassi.toLowerCase().includes(filters.chassi.toLowerCase())) {
+      if (filters.chassi && filters.chassi.length > 0 && !filters.chassi.includes(vehicle.chassi)) {
         return false;
       }
-      if (filters.placa && !vehicle.placa.toLowerCase().includes(filters.placa.toLowerCase())) {
+      if (filters.placa && filters.placa.length > 0 && !filters.placa.includes(vehicle.placa)) {
         return false;
       }
       if (filters.anoModelo && !vehicle.anoModelo.includes(filters.anoModelo)) {
