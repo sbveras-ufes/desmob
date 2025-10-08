@@ -25,6 +25,8 @@ export interface Vehicle {
 export interface DemobilizationFilters {
   periodoInicio?: string;
   periodoFim?: string;
+  entregaInicio?: string;
+  entregaFim?: string;
   mes?: string;
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
