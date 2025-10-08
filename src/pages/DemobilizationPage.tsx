@@ -42,9 +42,11 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
 
   const handleDemobilizationSubmit = (request: Omit<DemobilizationRequest, 'veiculos'> & { veiculos: Vehicle[] }) => {
     const vehicleIds = request.veiculos.map(v => v.id);
+    const demobilizationCode = `D${Date.now()}`;
     
     const approvalVehicles: ApprovalVehicle[] = request.veiculos.map(vehicle => ({
       ...vehicle,
+      demobilizationCode,
       situacao: 'Aguardando aprovação' as const,
       dataSolicitacao: new Date().toISOString(),
       localDesmobilizacao: `${request.municipio} - ${request.uf}`,
