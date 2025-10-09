@@ -67,7 +67,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div>
-                <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data Início Manutenção</label>
+                <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data de Início</label>
                 <input
                   id="dataInicioManutencao"
                   type="date"
