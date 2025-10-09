@@ -35,7 +35,15 @@ function App() {
       case 'aprovacao':
         return <ApprovalConsultation approvalVehicles={approvalVehicles} onUpdateVehicles={handleUpdateApprovals} />;
       case 'gestao-desmobilizacao':
-        return <AssetDemobilizationManagementPage allVehicles={approvalVehicles} liberatedVehicles={approvalVehicles.filter(v => v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Liberado para Transferência')} onUpdateVehicles={setApprovalVehicles} />;
+        return <AssetDemobilizationManagementPage 
+                 allVehicles={approvalVehicles} 
+                 liberatedVehicles={approvalVehicles.filter(v => 
+                   v.situacao === 'Liberado para Desmobilização' || 
+                   v.situacao === 'Liberado para Transferência' ||
+                   v.situacao === 'Em Manutenção'
+                 )} 
+                 onUpdateVehicles={setApprovalVehicles} 
+               />;
       case 'analise-fiscal':
         return <FiscalAnalysisPage vehicles={approvalVehicles} onUpdateVehicles={setApprovalVehicles} />;
       case 'demobilization':
