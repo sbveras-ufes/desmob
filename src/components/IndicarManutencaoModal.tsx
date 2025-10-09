@@ -12,11 +12,19 @@ interface IndicarManutencaoModalProps {
 const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm }) => {
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
+  const [dataInicio, setDataInicio] = useState('');
 
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      setDataInicio(`${year}-${month}-${day}`);
+    } else {
       setTipoManutencao('');
       setObservacao('');
+      setDataInicio('');
     }
   }, [isOpen]);
 
@@ -57,22 +65,34 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
             </div>
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="tipoManutencao" className="block text-sm font-medium text-gray-700 mb-2">Tipo de Manutenção</label>
-            <select
-              id="tipoManutencao"
-              value={tipoManutencao}
-              onChange={(e) => setTipoManutencao(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            >
-              <option value="">Selecione um tipo</option>
-              <option value="Fiscal">Fiscal</option>
-              <option value="Documental">Documental</option>
-              <option value="Vistoria">Vistoria</option>
-            </select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div>
+                <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data Início Manutenção</label>
+                <input
+                  id="dataInicioManutencao"
+                  type="date"
+                  value={dataInicio}
+                  onChange={(e) => setDataInicio(e.target.value)}
+                  className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+            </div>
+            <div>
+              <label htmlFor="tipoManutencao" className="block text-sm font-medium text-gray-700 mb-2">Tipo de Manutenção</label>
+              <select
+                id="tipoManutencao"
+                value={tipoManutencao}
+                onChange={(e) => setTipoManutencao(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="">Selecione um tipo</option>
+                <option value="Fiscal">Fiscal</option>
+                <option value="Documental">Documental</option>
+                <option value="Vistoria">Vistoria</option>
+              </select>
+            </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mt-6">
             <label htmlFor="observacao" className="block text-sm font-medium text-gray-700">Observação</label>
             <textarea
               id="observacao"
