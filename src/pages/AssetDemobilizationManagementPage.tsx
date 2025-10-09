@@ -10,6 +10,7 @@ import { mockUsers } from '../data/mockUsers';
 import ConcluidosTab from '../components/ConcluidosTab';
 import AssetDemobilizationFilterPanel from '../components/AssetDemobilizationFilterPanel';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
+import IndicarManutencaoModal from '../components/IndicarManutencaoModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -28,6 +29,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [isUpdateTransportModalOpen, setIsUpdateTransportModalOpen] = useState(false);
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
   const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
+  const [isIndicarManutencaoModalOpen, setIsIndicarManutencaoModalOpen] = useState(false);
   const [filters, setFilters] = useState<ApprovalFilters>({});
   const [crTypeFilter, setCrTypeFilter] = useState<'Todos' | 'Desmobilização' | 'Desativação'>('Todos');
 
@@ -180,6 +182,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
               <div className="flex justify-end space-x-3 mt-4">
                 <button
+                  onClick={() => setIsIndicarManutencaoModalOpen(true)}
+                  disabled={selectedVehicleIds.length === 0}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:bg-gray-400"
+                >
+                  Indicar Manutenção
+                </button>
+                <button
                   onClick={() => setIsUpdateTransportModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
@@ -234,6 +243,12 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           vehicles={selectedVehicles}
           onApprove={handleDocumentAnalysisApprove}
           onSignalPendency={handleDocumentAnalysisPendency}
+        />
+        
+        <IndicarManutencaoModal
+          isOpen={isIndicarManutencaoModalOpen}
+          onClose={() => setIsIndicarManutencaoModalOpen(false)}
+          vehicles={selectedVehicles}
         />
       </main>
     </div>
