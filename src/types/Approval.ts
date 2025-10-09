@@ -12,7 +12,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
@@ -29,11 +29,7 @@ export interface ApprovalVehicle {
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
   tipoPendencia?: string[];
   observacaoAnaliseDocumental?: string;
-  isTransitionCR?: boolean;
-  dataInicioCR?: string;
-  dataPrecificacao?: string;
-  valorPrecificacao?: number;
-  responsavelAtualizacao?: string;
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
 }
 
 export interface ApprovalFilters {
