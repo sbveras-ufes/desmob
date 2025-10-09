@@ -124,6 +124,23 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
+  
+  const handleIndicarManutencao = () => {
+    const randomUserName = getRandomUser();
+    const updatedVehicles = allVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacao: 'Em Manutenção' as const,
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
+          }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+    setIsIndicarManutencaoModalOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -249,6 +266,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           isOpen={isIndicarManutencaoModalOpen}
           onClose={() => setIsIndicarManutencaoModalOpen(false)}
           vehicles={selectedVehicles}
+          onConfirm={handleIndicarManutencao}
         />
       </main>
     </div>
