@@ -6,9 +6,10 @@ interface IndicarManutencaoModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
+  onConfirm: () => void;
 }
 
-const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles }) => {
+const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm }) => {
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
 
@@ -85,7 +86,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
 
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
           <button onClick={onClose} className="px-6 py-2 border rounded-md">Voltar</button>
-          <button onClick={onClose} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
+          <button onClick={onConfirm} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
         </div>
       </div>
     </div>
