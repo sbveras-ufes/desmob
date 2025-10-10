@@ -35,6 +35,8 @@ const ConcluidosTab: React.FC<ConcluidosTabProps> = ({ vehicles }) => {
         vehicles={pagination.paginatedItems}
         showSituacaoAnaliseDocumental={true}
         showSituacaoAnaliseFiscal={true}
+        layout="assetManagement"
+        showVistoriaDetails={false}
         paginationComponent={
           <Pagination
             {...pagination}
