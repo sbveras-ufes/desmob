@@ -39,6 +39,8 @@ const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabP
         onSelectionChange={onSelectionChange}
         showSituacaoAnaliseDocumental={true}
         showSituacaoAnaliseFiscal={true}
+        layout="assetManagement"
+        showVistoriaDetails={false}
         paginationComponent={
           <Pagination 
             {...pagination}
