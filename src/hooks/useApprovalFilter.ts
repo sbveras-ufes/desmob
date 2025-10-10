@@ -96,6 +96,18 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
         }
       }
 
+      if (filters.origemPendencia === 'Documental') {
+        if (vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente') {
+          return false;
+        }
+      }
+
+      if (filters.origemPendencia === 'Fiscal') {
+        if (vehicle.situacaoAnaliseFiscal !== 'Pendente') {
+          return false;
+        }
+      }
+
       return true;
     });
   }, [vehicles, filters]);
