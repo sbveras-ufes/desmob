@@ -6,13 +6,15 @@ interface VehicleTableProps {
   selectedVehicles: string[];
   onSelectionChange: (selectedIds: string[]) => void;
   paginationComponent?: React.ReactNode;
+  showPatioDestino?: boolean;
 }
 
 const VehicleTable: React.FC<VehicleTableProps> = ({
   vehicles,
   selectedVehicles,
   onSelectionChange,
-  paginationComponent
+  paginationComponent,
+  showPatioDestino = true,
 }) => {
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -88,9 +90,11 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tipo Desmob.
               </th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pátio Destino
-              </th>
+              {showPatioDestino && (
+                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Pátio Destino
+                </th>
+              )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Local Desmob.
               </th>
@@ -152,9 +156,11 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoDesmobilizacao}
                 </td>
-                <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.patioDestino}
-                </td>
+                {showPatioDestino && (
+                  <td className="px-2 py-2 text-sm text-gray-500">
+                    {vehicle.patioDestino}
+                  </td>
+                )}
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.localDesmobilizacao}
                 </td>
