@@ -53,4 +53,5 @@ export interface ApprovalFilters {
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
   comPendencias?: boolean;
+  origemPendencia?: 'Documental' | 'Fiscal' | '';
 }
