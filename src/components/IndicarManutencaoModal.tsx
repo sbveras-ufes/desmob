@@ -13,9 +13,6 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
   const [dataInicio, setDataInicio] = useState('');
-  const [emails, setEmails] = useState<string[]>([]);
-  const [emailInput, setEmailInput] = useState('');
-  const [emailError, setEmailError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -28,45 +25,8 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
       setTipoManutencao('');
       setObservacao('');
       setDataInicio('');
-      setEmails([]);
-      setEmailInput('');
-      setEmailError('');
     }
   }, [isOpen]);
-
-  const isValidEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleAddEmail = () => {
-    const newEmail = emailInput.trim();
-
-    if (newEmail) {
-      if (!isValidEmail(newEmail)) {
-        setEmailError('Por favor, insira um e-mail válido.');
-        return;
-      }
-      if (emails.includes(newEmail)) {
-        setEmailError('Este e-mail já foi adicionado.');
-        return;
-      }
-      setEmails([...emails, newEmail]);
-      setEmailInput('');
-      setEmailError('');
-    }
-  };
-
-  const handleEmailKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (['Enter', 'Tab', ','].includes(e.key)) {
-      e.preventDefault();
-      handleAddEmail();
-    }
-  };
-  
-  const handleRemoveEmail = (emailToRemove: string) => {
-    setEmails(emails.filter(email => email !== emailToRemove));
-  };
-
 
   if (!isOpen) return null;
 
@@ -103,35 +63,6 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">
-              E-mails para retorno <span className="text-gray-500">(Opcional)</span>
-            </label>
-            <div className="mt-1 w-full px-2 py-1.5 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-1 focus-within:ring-blue-500 flex flex-wrap items-center gap-2">
-              {emails.map(email => (
-                <span key={email} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
-                  {email}
-                  <button type="button" onClick={() => handleRemoveEmail(email)} className="text-gray-600 hover:text-black">
-                    <X size={14} />
-                  </button>
-                </span>
-              ))}
-              <input
-                type="email"
-                value={emailInput}
-                onChange={(e) => {
-                  setEmailInput(e.target.value);
-                  if (emailError) setEmailError('');
-                }}
-                onKeyDown={handleEmailKeyDown}
-                onBlur={handleAddEmail}
-                className="flex-grow bg-transparent outline-none text-sm"
-                placeholder="Informar e-mails"
-              />
-            </div>
-            {emailError && <p className="mt-1 text-sm text-red-600">{emailError}</p>}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
