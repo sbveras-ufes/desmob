@@ -156,6 +156,7 @@ const DemobilizationPage: React.FC<DemobilizationPageProps> = ({ onVehiclesDemob
                   vehicles={radarPagination.paginatedItems}
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
+                  showPatioDestino={false}
                   paginationComponent={
                     <Pagination
                       {...radarPagination}
