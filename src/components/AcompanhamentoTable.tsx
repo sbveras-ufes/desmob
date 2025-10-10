@@ -7,7 +7,8 @@ interface AcompanhamentoTableProps {
   onSelectionChange?: (selectedIds: string[]) => void;
   paginationComponent?: React.ReactNode;
   showSituacaoAnaliseDocumental?: boolean;
-  showSituacaoAnaliseFiscal?: boolean;
+  layout?: 'default' | 'assetManagement';
+  showVistoriaDetails?: boolean;
 }
 
 const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ 
@@ -15,8 +16,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   selectedVehicles = [], 
   onSelectionChange, 
   paginationComponent, 
-  showSituacaoAnaliseDocumental = false,
-  showSituacaoAnaliseFiscal = false,
+  showSituacaoAnaliseDocumental: showSituacaoAnaliseFiscal = false,
+  layout = 'default',
+  showVistoriaDetails = true,
 }) => {
   const handleSelectAll = (checked: boolean) => {
     onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
@@ -63,6 +65,139 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
+  const renderDefaultHeaders = () => (
+    <>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Entrega</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+      {showVistoriaDetails && (
+        <>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio de Vistoria</th>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
+        </>
+      )}
+    </>
+  );
+
+  const renderAssetManagementHeaders = () => (
+    <>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
+      {showSituacaoAnaliseFiscal && <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Documental</th>}
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Entrega</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+      <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
+      {showVistoriaDetails && (
+        <>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio de Vistoria</th>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
+          <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
+        </>
+      )}
+    </>
+  );
+
+  const renderDefaultCells = (vehicle: ApprovalVehicle) => (
+    <>
+      <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+      <td className="px-2 py-2 text-sm">
+        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
+          {vehicle.situacao}
+        </span>
+      </td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{formatCurrency(vehicle.residual)}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+      {showVistoriaDetails && (
+        <>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
+        </>
+      )}
+    </>
+  );
+
+  const renderAssetManagementCells = (vehicle: ApprovalVehicle) => (
+    <>
+      <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+      <td className="px-2 py-2 text-sm">
+        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
+          {vehicle.situacao}
+        </span>
+      </td>
+      {showSituacaoAnaliseFiscal && (
+        <td className="px-2 py-2 text-sm">
+          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
+            {vehicle.situacaoAnaliseDocumental || '-'}
+          </span>
+        </td>
+      )}
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
+      <td className="px-2 py-2 text-sm text-gray-500">{formatCurrency(vehicle.residual)}</td>
+      {showVistoriaDetails && (
+        <>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
+          <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
+        </>
+      )}
+    </>
+  );
+
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
@@ -80,36 +215,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 </th>
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
-              {showSituacaoAnaliseDocumental && (
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Situação Análise Documental
-                </th>
-              )}
-              {showSituacaoAnaliseFiscal && (
-                <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Situação Análise Fiscal
-                </th>
-              )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Entrega</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio de Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Vistoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classificação da Vistoria</th>
+              {layout === 'default' ? renderDefaultHeaders() : renderAssetManagementHeaders()}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
             </tr>
@@ -128,44 +234,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   </td>
                 )}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
-                    {vehicle.situacao}
-                  </span>
-                </td>
-                {showSituacaoAnaliseDocumental && (
-                  <td className="px-2 py-2 text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
-                      {vehicle.situacaoAnaliseDocumental || '-'}
-                    </span>
-                  </td>
-                )}
-                {showSituacaoAnaliseFiscal && (
-                  <td className="px-2 py-2 text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
-                      {vehicle.situacaoAnaliseFiscal || '-'}
-                    </span>
-                  </td>
-                )}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataEntrega).toLocaleDateString('pt-BR')}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{formatCurrency(vehicle.residual)}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioVistoria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.dataVistoria ? new Date(vehicle.dataVistoria).toLocaleDateString('pt-BR') : '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.classificacaoVistoria || '-'}</td>
+                {layout === 'default' ? renderDefaultCells(vehicle) : renderAssetManagementCells(vehicle)}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
