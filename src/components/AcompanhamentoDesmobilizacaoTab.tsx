@@ -22,7 +22,7 @@ const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabP
         </p>
         {vehicles.length > 0 && (
           <div className="flex items-center space-x-2">
->
+            
             <button className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm font-medium">
               <Download size={16} />
               <span>Exportar</span>
