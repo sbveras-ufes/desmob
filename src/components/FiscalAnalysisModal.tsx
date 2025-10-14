@@ -165,7 +165,11 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
           >
             Sinalizar Pendência
           </button>
-          <button onClick={handleApprove} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+          <button 
+            onClick={handleApprove} 
+            disabled={selectedPendencies.length > 0}
+            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400"
+          >
             Aprovar
           </button>
         </div>
