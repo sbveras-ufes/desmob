@@ -1,4 +1,14 @@
 import { Vehicle } from '../types/Vehicle';
+import { mockCompanies } from './mockCompanies';
+
+const getRandomCompany = () => {
+  return mockCompanies[Math.floor(Math.random() * mockCompanies.length)];
+};
+
+const getRandomUF = () => {
+  const ufs = ['SP', 'RJ', 'MG', 'ES', 'BA', 'PR', 'SC', 'RS'];
+  return ufs[Math.floor(Math.random() * ufs.length)];
+};
 
 export const mockVehicles: Vehicle[] = [
   {
@@ -20,7 +30,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-05-01',
     gerente: 'João Silva',
     cliente: 'STONE NACIONAL',
-    residual: 8500.00
+    residual: 8500.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '2',
@@ -43,7 +56,10 @@ export const mockVehicles: Vehicle[] = [
     cliente: 'STONE NACIONAL',
     residual: 8200.00,
     isTransitionCR: true,
-    dataInicioCR: '2025-09-15T10:00:00Z'
+    dataInicioCR: '2025-09-15T10:00:00Z',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '3',
@@ -64,7 +80,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-05-20',
     gerente: 'Carlos Lima',
     cliente: 'STONE NACIONAL',
-    residual: 9200.00
+    residual: 9200.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '4',
@@ -85,7 +104,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2024-12-05',
     gerente: 'Ana Costa',
     cliente: 'TECH SOLUTIONS',
-    residual: 45000.00
+    residual: 45000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '5',
@@ -108,7 +130,10 @@ export const mockVehicles: Vehicle[] = [
     cliente: 'LOGÍSTICA BRASIL',
     residual: 52000.00,
     isTransitionCR: true,
-    dataInicioCR: '2025-09-20T10:00:00Z'
+    dataInicioCR: '2025-09-20T10:00:00Z',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '6',
@@ -129,7 +154,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-04-18',
     gerente: 'Luiz Mendes',
     cliente: 'CONSTRUÇÕES LTDA',
-    residual: 78000.00
+    residual: 78000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '7',
@@ -150,7 +178,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-06-15',
     gerente: 'Roberto Silva',
     cliente: 'AGRO TECH',
-    residual: 65000.00
+    residual: 65000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '8',
@@ -171,7 +202,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-04-20',
     gerente: 'Fernanda Costa',
     cliente: 'VENDAS EXPRESS',
-    residual: 32000.00
+    residual: 32000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '9',
@@ -192,7 +226,10 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-04-28',
     gerente: 'Gabriel Rocha',
     cliente: 'CONSULTORIA PLUS',
-    residual: 48000.00
+    residual: 48000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '10',
@@ -213,6 +250,9 @@ export const mockVehicles: Vehicle[] = [
     dataEntrega: '2025-05-01',
     gerente: 'Sandra Lima',
     cliente: 'SERVIÇOS GERAIS',
-    residual: 38000.00
+    residual: 38000.00,
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   }
 ];
