@@ -46,13 +46,27 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-  const handleSignalPendency = (pendencies: string[], observation: string) => {
+   const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = vehicles.map(v => 
-      selectedVehicleIds.includes(v.id)
-        ? { ...v, situacaoAnaliseFiscal: 'Pendente' as const, tipoPendencia: pendencies, observacaoAnaliseFiscal: observation, lastUpdated: new Date().toISOString(), responsavelAtualizacao: randomUserName }
-        : v
-    );
+    const blockingPendencies = pendencies
+      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
+      .map(p => p.descricao);
+
+    const updatedVehicles = vehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        const hasBlocking = blockingPendencies.length > 0;
+        return {
+          ...v,
+          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
+          situacaoAnaliseFiscal: 'Pendente' as const,
+          tipoPendencia: pendenciesSelection,
+          observacaoAnaliseFiscal: observation,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName,
+        };
+      }
+      return v;
+    });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
