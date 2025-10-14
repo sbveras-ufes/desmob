@@ -18,7 +18,9 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const pendencyOptions: PendencyType[] = ['RENAVAN', 'Multa', 'Recall'];
+  const pendencyOptions = useMemo(() => {
+    return pendencies.filter(p => p.origem === 'Documental').map(p => p.descricao);
+  }, [pendencies]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
