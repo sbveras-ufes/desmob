@@ -2,13 +2,15 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
 import { Pendency } from '../types/Pendency';
+import { mockCompanies } from '../data/mockCompanies';
+import { mockVehicles } from '../data/mockData';
 
 interface FiscalAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
-  onApprove: (observation: string) => void;
-  onSignalPendency: (pendencies: string[], observation: string) => void;
+  onApprove: (observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => void;
+  onSignalPendency: (pendencies: string[], observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => void;
   pendencies: Pendency[];
 }
 
@@ -17,6 +19,10 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   const [observation, setObservation] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [empresaProprietaria, setEmpresaProprietaria] = useState('');
+  const [ufEmplacamento, setUfEmplacamento] = useState('');
+
+  const uniqueUFs = useMemo(() => [...new Set(mockVehicles.map(v => v.ufEmplacamento))], []);
 
   const pendencyOptions = useMemo(() => {
     if (!pendencies) return [];
@@ -41,13 +47,13 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   };
 
   const handleApprove = () => {
-    onApprove(observation);
+    onApprove(observation, { empresaProprietaria, ufEmplacamento });
     onClose();
   };
 
   const handleSignalPendency = () => {
     if (selectedPendencies.length > 0) {
-      onSignalPendency(selectedPendencies, observation);
+      onSignalPendency(selectedPendencies, observation, { empresaProprietaria, ufEmplacamento });
       onClose();
     }
   };
@@ -58,6 +64,8 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
       setSelectedPendencies([]);
       setObservation('');
       setIsDropdownOpen(false);
+      setEmpresaProprietaria('');
+      setUfEmplacamento('');
     }
   }, [isOpen]);
 
@@ -95,6 +103,36 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+              <label htmlFor="empresaProprietaria" className="block text-sm font-medium text-gray-700 mb-2">Empresa Proprietária</label>
+              <select
+                id="empresaProprietaria"
+                value={empresaProprietaria}
+                onChange={(e) => setEmpresaProprietaria(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="">Selecione uma empresa</option>
+                {mockCompanies.map(company => (
+                  <option key={company.cnpj} value={company.nome}>{company.nome}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="ufEmplacamento" className="block text-sm font-medium text-gray-700 mb-2">UF Emplacamento</label>
+              <select
+                id="ufEmplacamento"
+                value={ufEmplacamento}
+                onChange={(e) => setUfEmplacamento(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="">Selecione uma UF</option>
+                {uniqueUFs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+              </select>
             </div>
           </div>
 
