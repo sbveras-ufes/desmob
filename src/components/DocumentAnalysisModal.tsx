@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
-
-type PendencyType = 'RENAVAN' | 'Multa' | 'Recall';
+import { Pendency } from '../types/Pendency';
 
 interface DocumentAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
   onApprove: (observation: string) => void;
-  onSignalPendency: (pendencies: PendencyType[], observation: string) => void;
+  onSignalPendency: (pendencies: string[], observation: string) => void;
+  pendencies: Pendency[];
 }
 
 const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency }) => {
