@@ -1,136 +1,173 @@
-import React from 'react';
-import { ApprovalVehicle } from '../types/Approval';
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import FiscalAnalysisBreadcrumb from '../components/FiscalAnalysisBreadcrumb';
+import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
+import { usePagination } from '../hooks/usePagination';
+import Pagination from '../components/Pagination';
+import FiscalAnalysisTable from '../components/FiscalAnalysisTable';
+import FiscalAnalysisModal from '../components/FiscalAnalysisModal';
+import { mockUsers } from '../data/mockUsers';
+import { useApprovalFilter } from '../hooks/useApprovalFilter';
+import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
+import { Pendency } from '../types/Pendency';
 
-interface FiscalAnalysisTableProps {
+interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
-  paginationComponent: React.ReactNode;
-  selectedVehicles?: string[];
-  onSelectionChange?: (ids: string[]) => void;
+  onUpdateVehicles: (vehicles: ApprovalVehicle[]) => void;
+  pendencies: Pendency[];
 }
 
-const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange }) => {
+const getRandomUser = () => {
+  const randomIndex = Math.floor(Math.random() * mockUsers.length);
+  return mockUsers[randomIndex].nome;
+};
 
-  const handleSelectAll = (checked: boolean) => {
-    onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
-  };
+const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpdateVehicles, pendencies }) => {
+  const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
+  const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filters, setFilters] = useState<ApprovalFilters>({});
 
-  const handleSelectVehicle = (vehicleId: string, checked: boolean) => {
-    onSelectionChange?.(
-      checked
-        ? [...selectedVehicles, vehicleId]
-        : selectedVehicles.filter(id => id !== vehicleId)
+  // Lógica de filtro atualizada
+  const acompanhamentoVehicles = vehicles.filter(v => 
+    v.situacao === 'Liberado para Desmobilização' && v.situacaoAnaliseFiscal !== 'Aprovada'
+  );
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
+  
+  const filteredAcompanhamento = useApprovalFilter(acompanhamentoVehicles, filters);
+  const filteredConcluidas = useApprovalFilter(concluidasVehicles, filters);
+
+  const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
+
+  const handleApprove = (observation: string) => {
+    const randomUserName = getRandomUser();
+    const updatedVehicles = vehicles.map(v => 
+      selectedVehicleIds.includes(v.id)
+        ? { ...v, situacaoAnaliseFiscal: 'Aprovada' as const, observacaoAnaliseFiscal: observation, lastUpdated: new Date().toISOString(), responsavelAtualizacao: randomUserName }
+        : v
     );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
   };
   
-  const isAllSelected = vehicles.length > 0 && selectedVehicles.length === vehicles.length;
+  const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
+    const randomUserName = getRandomUser();
+    const blockingPendencies = pendencies
+      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
+      .map(p => p.descricao);
 
-
-  const getSituacaoColor = (situacao?: string) => {
-    switch (situacao) {
-      case 'Aprovada':
-        return 'bg-green-100 text-green-800';
-      case 'Pendente':
-         return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+    const updatedVehicles = vehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        const hasBlocking = blockingPendencies.length > 0;
+        return {
+          ...v,
+          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
+          situacaoAnaliseFiscal: 'Pendente' as const,
+          tipoPendencia: pendenciesSelection,
+          observacaoAnaliseFiscal: observation,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName,
+        };
+      }
+      return v;
+    });
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
   };
 
-  const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
-    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-  });
-  
+  const acompanhamentoPagination = usePagination(filteredAcompanhamento);
+  const concluidasPagination = usePagination(filteredConcluidas);
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              {onSelectionChange && (
-                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                </th>
-              )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {vehicles.map((vehicle, index) => (
-              <tr 
-                key={vehicle.id}
-                className={`hover:bg-gray-50 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-              >
-                 {onSelectionChange && (
-                  <td className="px-2 py-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={selectedVehicles.includes(vehicle.id)}
-                      onChange={(e) => handleSelectVehicle(vehicle.id, e.target.checked)}
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
-                  </td>
-                )}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
-                <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
-                    {vehicle.situacaoAnaliseFiscal || '-'}
-                  </span>
-                </td>
-                <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendencia && vehicle.tipoPendencia.length > 0 ? vehicle.tipoPendencia.join(', ') : '-'}
-                </td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-       {vehicles.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">Nenhum veículo encontrado.</p>
+    <div className="min-h-screen bg-gray-100">
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <FiscalAnalysisBreadcrumb />
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Análise Fiscal</h1>
         </div>
-      )}
-      {paginationComponent}
+
+        <FiscalAnalysisFilterPanel filters={filters} onFiltersChange={setFilters} />
+
+        <div>
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+              <button
+                onClick={() => setActiveTab('acompanhamento')}
+                className={`${
+                  activeTab === 'acompanhamento'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Acompanhamento
+              </button>
+              <button
+                onClick={() => setActiveTab('concluidas')}
+                className={`${
+                  activeTab === 'concluidas'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Concluídas
+              </button>
+            </nav>
+          </div>
+
+          <div className="mt-8">
+            {activeTab === 'acompanhamento' && (
+              <div>
+                <div className="flex justify-end mb-4">
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    disabled={selectedVehicleIds.length === 0}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+                  >
+                    Checklist Análise Fiscal
+                  </button>
+                </div>
+                <FiscalAnalysisTable
+                  vehicles={acompanhamentoPagination.paginatedItems}
+                  selectedVehicles={selectedVehicleIds}
+                  onSelectionChange={setSelectedVehicleIds}
+                  paginationComponent={
+                    <Pagination
+                      {...acompanhamentoPagination}
+                      onItemsPerPageChange={acompanhamentoPagination.changeItemsPerPage}
+                      goToPage={acompanhamentoPagination.goToPage}
+                    />
+                  }
+                />
+              </div>
+            )}
+            {activeTab === 'concluidas' && (
+               <FiscalAnalysisTable
+                vehicles={concluidasPagination.paginatedItems}
+                selectedVehicles={selectedVehicleIds}
+                onSelectionChange={setSelectedVehicleIds}
+                paginationComponent={
+                  <Pagination
+                    {...concluidasPagination}
+                    onItemsPerPageChange={concluidasPagination.changeItemsPerPage}
+                    goToPage={concluidasPagination.goToPage}
+                  />
+                }
+              />
+            )}
+          </div>
+        </div>
+        <FiscalAnalysisModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          vehicles={selectedVehicles}
+          onApprove={handleApprove}
+          onSignalPendency={handleSignalPendency}
+          pendencies={pendencies}
+        />
+      </main>
     </div>
   );
 };
 
-export default FiscalAnalysisTable;
+export default FiscalAnalysisPage;
