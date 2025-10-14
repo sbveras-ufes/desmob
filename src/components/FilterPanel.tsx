@@ -2,10 +2,11 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { DemobilizationFilters } from '../types/Vehicle';
 import { mockVehicles } from '../data/mockData';
+import { ApprovalFilters } from '../types/Approval';
 
 interface FilterPanelProps {
-  filters: DemobilizationFilters;
-  onFiltersChange: (filters: DemobilizationFilters) => void;
+  filters: DemobilizationFilters | ApprovalFilters;
+  onFiltersChange: (filters: DemobilizationFilters | ApprovalFilters) => void;
   activeTab: 'radar' | 'acompanhamento';
 }
 
@@ -41,11 +42,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
   }, []);
 
   const availableCrs = useMemo(() => {
-    if (!filters.diretoria) {
+    const f = filters as DemobilizationFilters;
+    if (!f.diretoria) {
       return uniqueValues.crs;
     }
-    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
-  }, [filters.diretoria, uniqueValues.crs]);
+    return [...new Set(mockVehicles.filter(v => v.diretoria === f.diretoria).map(v => v.cr))].sort();
+  }, [filters, uniqueValues.crs]);
   
   const availableMunicipios = useMemo(() => {
     if (!filters.uf) {
@@ -55,28 +57,30 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
   }, [filters.uf, uniqueValues.municipios]);
 
   useEffect(() => {
-    if (filters.diretoria && filters.cr) {
-      const newCrs = filters.cr.filter(cr => availableCrs.includes(cr));
-      if (newCrs.length !== filters.cr.length) {
+    const f = filters as DemobilizationFilters;
+    if (f.diretoria && f.cr) {
+      const newCrs = f.cr.filter(cr => availableCrs.includes(cr));
+      if (newCrs.length !== f.cr.length) {
         onFiltersChange({ ...filters, cr: newCrs });
       }
     }
-    if (filters.uf && filters.municipio && !availableMunicipios.includes(filters.municipio)) {
+    if (filters.uf && f.municipio && !availableMunicipios.includes(f.municipio)) {
       onFiltersChange({ ...filters, municipio: '' });
     }
-  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange, filters.uf, filters.municipio, availableMunicipios]);
+  }, [filters, availableCrs, onFiltersChange, availableMunicipios]);
 
-  const handleFilterChange = (key: keyof DemobilizationFilters, value: any) => {
+  const handleFilterChange = (key: keyof (DemobilizationFilters | ApprovalFilters), value: any) => {
     const newFilters = { ...filters, [key]: value };
     if (key === 'uf') {
-      newFilters.municipio = '';
+      (newFilters as DemobilizationFilters).municipio = '';
     }
     onFiltersChange(newFilters);
   };
   
   const handleAddCr = (cr: string) => {
-    if (cr && !filters.cr?.includes(cr)) {
-      const newCrs = [...(filters.cr || []), cr];
+    const f = filters as DemobilizationFilters;
+    if (cr && !f.cr?.includes(cr)) {
+      const newCrs = [...(f.cr || []), cr];
       onFiltersChange({ ...filters, cr: newCrs });
     }
     setCrInput('');
@@ -84,13 +88,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
   };
   
   const handleRemoveCr = (crToRemove: string) => {
-    const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
+    const f = filters as DemobilizationFilters;
+    const newCrs = f.cr?.filter(cr => cr !== crToRemove);
     onFiltersChange({ ...filters, cr: newCrs });
   };
   
   const handleAddChassi = (chassi: string) => {
-    if (chassi && !filters.chassi?.includes(chassi)) {
-      const newChassis = [...(filters.chassi || []), chassi];
+    const f = filters as DemobilizationFilters;
+    if (chassi && !f.chassi?.includes(chassi)) {
+      const newChassis = [...(f.chassi || []), chassi];
       onFiltersChange({ ...filters, chassi: newChassis });
     }
     setChassiInput('');
@@ -98,13 +104,15 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
   };
   
   const handleRemoveChassi = (chassiToRemove: string) => {
-    const newChassis = filters.chassi?.filter(chassi => chassi !== chassiToRemove);
+    const f = filters as DemobilizationFilters;
+    const newChassis = f.chassi?.filter(chassi => chassi !== chassiToRemove);
     onFiltersChange({ ...filters, chassi: newChassis });
   };
 
   const handleAddPlaca = (placa: string) => {
-    if (placa && !filters.placa?.includes(placa)) {
-      const newPlacas = [...(filters.placa || []), placa];
+    const f = filters as DemobilizationFilters;
+    if (placa && !f.placa?.includes(placa)) {
+      const newPlacas = [...(f.placa || []), placa];
       onFiltersChange({ ...filters, placa: newPlacas });
     }
     setPlacaInput('');
@@ -112,30 +120,34 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
   };
 
   const handleRemovePlaca = (placaToRemove: string) => {
-    const newPlacas = filters.placa?.filter(placa => placa !== placaToRemove);
+    const f = filters as DemobilizationFilters;
+    const newPlacas = f.placa?.filter(placa => placa !== placaToRemove);
     onFiltersChange({ ...filters, placa: newPlacas });
   };
 
   const crSuggestions = useMemo(() => {
+    const f = filters as DemobilizationFilters;
     if (!crInput) return [];
     return availableCrs.filter(cr => 
-      cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
+      cr.toLowerCase().includes(crInput.toLowerCase()) && !f.cr?.includes(cr)
     );
-  }, [crInput, availableCrs, filters.cr]);
+  }, [crInput, availableCrs, filters]);
   
   const chassiSuggestions = useMemo(() => {
+    const f = filters as DemobilizationFilters;
     if (!chassiInput) return [];
     return uniqueValues.chassis.filter(c => 
-      c.toLowerCase().includes(chassiInput.toLowerCase()) && !filters.chassi?.includes(c)
+      c.toLowerCase().includes(chassiInput.toLowerCase()) && !f.chassi?.includes(c)
     );
-  }, [chassiInput, uniqueValues.chassis, filters.chassi]);
+  }, [chassiInput, uniqueValues.chassis, filters]);
 
   const placaSuggestions = useMemo(() => {
+    const f = filters as DemobilizationFilters;
     if (!placaInput) return [];
     return uniqueValues.placas.filter(p => 
-      p.toLowerCase().includes(placaInput.toLowerCase()) && !filters.placa?.includes(p)
+      p.toLowerCase().includes(placaInput.toLowerCase()) && !f.placa?.includes(p)
     );
-  }, [placaInput, uniqueValues.placas, filters.placa]);
+  }, [placaInput, uniqueValues.placas, filters]);
   
   const filteredModelos = useMemo(() => {
     return uniqueValues.modelos.filter(modelo => 
@@ -230,14 +242,24 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             </fieldset>
 
+            {activeTab === 'acompanhamento' && (
+              <input
+                type="text"
+                value={(filters as ApprovalFilters).demobilizationCode || ''}
+                onChange={(e) => handleFilterChange('demobilizationCode', e.target.value)}
+                placeholder="Código Desmobilização"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            )}
+            
             <div className="relative" onBlur={() => setTimeout(() => setShowChassiSuggestions(false), 200)}>
               <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => chassiInputRef.current?.focus()}>
-                {filters.chassi?.map(c => (
+                {(filters as DemobilizationFilters).chassi?.map(c => (
                   <span key={c} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
                     {c} <button type="button" onClick={() => handleRemoveChassi(c)} className="text-gray-600 hover:text-black"><X size={14} /></button>
                   </span>
                 ))}
-                <input ref={chassiInputRef} type="text" value={chassiInput} onChange={(e) => setChassiInput(e.target.value)} onFocus={() => setShowChassiSuggestions(true)} onKeyDown={handleChassiInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={filters.chassi?.length > 0 ? '' : 'Chassi...'}/>
+                <input ref={chassiInputRef} type="text" value={chassiInput} onChange={(e) => setChassiInput(e.target.value)} onFocus={() => setShowChassiSuggestions(true)} onKeyDown={handleChassiInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={(filters as DemobilizationFilters).chassi?.length > 0 ? '' : 'Chassi...'}/>
               </div>
               {showChassiSuggestions && chassiSuggestions.length > 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
@@ -250,12 +272,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
 
             <div className="relative" onBlur={() => setTimeout(() => setShowPlacaSuggestions(false), 200)}>
               <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => placaInputRef.current?.focus()}>
-                {filters.placa?.map(p => (
+                {(filters as DemobilizationFilters).placa?.map(p => (
                   <span key={p} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
                     {p} <button type="button" onClick={() => handleRemovePlaca(p)} className="text-gray-600 hover:text-black"><X size={14} /></button>
                   </span>
                 ))}
-                <input ref={placaInputRef} type="text" value={placaInput} onChange={(e) => setPlacaInput(e.target.value)} onFocus={() => setShowPlacaSuggestions(true)} onKeyDown={handlePlacaInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={filters.placa?.length > 0 ? '' : 'Placa...'}/>
+                <input ref={placaInputRef} type="text" value={placaInput} onChange={(e) => setPlacaInput(e.target.value)} onFocus={() => setShowPlacaSuggestions(true)} onKeyDown={handlePlacaInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={(filters as DemobilizationFilters).placa?.length > 0 ? '' : 'Placa...'}/>
               </div>
               {showPlacaSuggestions && placaSuggestions.length > 0 && (
                 <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
@@ -303,7 +325,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
               <option value="">Selecione o Cliente</option>
               {uniqueValues.clientes.map(cliente => <option key={cliente} value={cliente}>{cliente}</option>)}
             </select>
-            <select value={filters.diretoria || ''} onChange={(e) => handleFilterChange('diretoria', e.target.value)}
+            <select value={(filters as DemobilizationFilters).diretoria || ''} onChange={(e) => handleFilterChange('diretoria', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="">Todas as diretorias</option>
               <option value="LETS">LETS</option>
@@ -317,7 +339,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
                   onClick={() => crInputRef.current?.focus()}
                 >
-                  {filters.cr?.map(cr => (
+                  {(filters as DemobilizationFilters).cr?.map(cr => (
                     <span key={cr} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
                       {cr}
                       <button type="button" onClick={() => handleRemoveCr(cr)} className="text-gray-600 hover:text-black">
@@ -333,7 +355,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                     onFocus={() => setShowCrSuggestions(true)}
                     onKeyDown={handleCrInputKeyDown}
                     className="flex-grow bg-transparent outline-none text-sm"
-                    placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
+                    placeholder={(filters as DemobilizationFilters).cr?.length > 0 ? '' : 'Digite o CR...'}
                   />
                 </div>
                 {showCrSuggestions && crSuggestions.length > 0 && (
@@ -357,27 +379,24 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                 <option value="">Selecione o Tipo</option>
                 {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
             </select>
-            <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Selecione o Pátio</option>
-                {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+            {activeTab === 'acompanhamento' && (
+              <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Selecione o Pátio</option>
+                  {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+              </select>
+            )}
+            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Todas as UFs</option>
+              {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
             </select>
-
-            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <legend className="text-sm font-medium text-gray-700 px-1">Local Desmobilização</legend>
-              <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Todas as UFs</option>
-                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-              </select>
-              <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={!filters.uf}>
-                <option value="">Todos os Municípios</option>
-                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </fieldset>
-
+            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={!filters.uf}>
+              <option value="">Todos os Municípios</option>
+              {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
             {activeTab === 'acompanhamento' && (
               <div>
                 <select 
