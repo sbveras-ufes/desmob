@@ -16,6 +16,7 @@ interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
   onUpdateVehicles: (updatedVehicles: ApprovalVehicle[]) => void;
   allVehicles: ApprovalVehicle[];
+   pendencies: Pendency[];
 }
 
 const getRandomUser = () => {
@@ -90,40 +91,31 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsCreateLotModalOpen(false);
   };
 
-  const handleDocumentAnalysisApprove = (observation: string) => {
+const handleDocumentAnalysisPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = allVehicles.map(v =>
-      selectedVehicleIds.includes(v.id)
-        ? {
-            ...v,
-            situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
-            observacaoAnaliseDocumental: observation,
-            lastUpdated: new Date().toISOString(),
-            responsavelAtualizacao: randomUserName
-          }
-        : v
-    );
+    const blockingPendencies = pendencies
+      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
+      .map(p => p.descricao);
+
+    const updatedVehicles = allVehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        const hasBlocking = blockingPendencies.length > 0;
+        return {
+          ...v,
+          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
+          situacaoAnaliseDocumental: 'Documentação Pendente' as const,
+          tipoPendencia: pendenciesSelection,
+          observacaoAnaliseDocumental: observation,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName
+        };
+      }
+      return v;
+    });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
 
-  const handleDocumentAnalysisPendency = (pendencies: string[], observation: string) => {
-    const randomUserName = getRandomUser();
-    const updatedVehicles = allVehicles.map(v =>
-      selectedVehicleIds.includes(v.id)
-        ? {
-            ...v,
-            situacaoAnaliseDocumental: 'Documentação Pendente' as const,
-            tipoPendencia: pendencies,
-            observacaoAnaliseDocumental: observation,
-            lastUpdated: new Date().toISOString(),
-            responsavelAtualizacao: randomUserName
-          }
-        : v
-    );
-    onUpdateVehicles(updatedVehicles);
-    setSelectedVehicleIds([]);
-  };
   
   const handleIndicarManutencao = () => {
     const randomUserName = getRandomUser();
