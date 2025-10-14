@@ -59,12 +59,8 @@ export interface ApprovalFilters {
   municipio?: string;
   chassi?: string[];
   anoModelo?: string;
-  situacao?: 'Liberado para Desmobilização' | 'Desmobilização Bloqueada' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
   comPendencias?: boolean;
   origemPendencia?: 'Documental' | 'Fiscal' | '';
   demobilizationCode?: string;
-  ufEmplacamento?: string;
-  cnpjProprietario?: string[];
-  empresaProprietaria?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | '';
 }
