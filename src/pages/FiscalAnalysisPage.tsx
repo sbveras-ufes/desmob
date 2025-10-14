@@ -9,6 +9,7 @@ import FiscalAnalysisModal from '../components/FiscalAnalysisModal';
 import { mockUsers } from '../data/mockUsers';
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
+import { Pendency } from '../types/Pendency';
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -21,7 +22,7 @@ const getRandomUser = () => {
   return mockUsers[randomIndex].nome;
 };
 
-const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpdateVehicles }) => {
+const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpdateVehicles, pendencies }) => {
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,7 +47,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-   const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
+  const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
     const blockingPendencies = pendencies
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
@@ -159,6 +160,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           vehicles={selectedVehicles}
           onApprove={handleApprove}
           onSignalPendency={handleSignalPendency}
+          pendencies={pendencies}
         />
       </main>
     </div>
