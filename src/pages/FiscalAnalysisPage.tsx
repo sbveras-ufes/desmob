@@ -28,8 +28,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
-  const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização');
-  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada' || v.situacaoAnaliseFiscal === 'Pendente');
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
+  const acompanhamentoVehicles = vehicles.filter(v => v.situacao === 'Liberado para Desmobilização' && v.situacaoAnaliseFiscal !== 'Aprovada');
   
   const filteredAcompanhamento = useApprovalFilter(acompanhamentoVehicles, filters);
   const filteredConcluidas = useApprovalFilter(concluidasVehicles, filters);
