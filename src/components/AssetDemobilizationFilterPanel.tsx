@@ -43,7 +43,7 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
     if (!filters.diretoria) {
       return uniqueValues.crs;
     }
-    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
+    return [...new Set(mockVehicles.filter(v => filters.diretoria?.includes(v.diretoria)).map(v => v.cr))].sort();
   }, [filters.diretoria, uniqueValues.crs]);
   
   const availableMunicipios = useMemo(() => {
@@ -216,29 +216,31 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <legend className="text-sm font-medium text-gray-700 px-1">Data Prevista</legend>
-              <input
-                type="date"
-                value={filters.periodoInicio || ''}
-                onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="date"
-                value={filters.periodoFim || ''}
-                onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </fieldset>
-
-            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <legend className="text-sm font-medium text-gray-700 px-1">Data de Entrega</legend>
-              <input type="date" value={filters.entregaInicio || ''} onChange={(e) => handleFilterChange('entregaInicio', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-              <input type="date" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            </fieldset>
+            <input
+              type="text"
+              value={filters.demobilizationCode || ''}
+              onChange={(e) => handleFilterChange('demobilizationCode', e.target.value)}
+              placeholder="Código Desmobilização"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="date"
+              value={filters.periodoInicio || ''}
+              onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Data Inicial"
+            />
+            <input
+              type="date"
+              value={filters.periodoFim || ''}
+              onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Data Final"
+            />
+            <input type="date" placeholder="Data Entrega Inicial" value={filters.entregaInicio || ''} onChange={(e) => handleFilterChange('entregaInicio', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+            <input type="date" placeholder="Data Entrega Final" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             
             <div className="relative" onBlur={() => setTimeout(() => setShowChassiSuggestions(false), 200)}>
               <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => chassiInputRef.current?.focus()}>
@@ -382,28 +384,23 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 <option value="">Selecione o Tipo</option>
                 {uniqueValues.tiposDesmobilizacao.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
             </select>
-              <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Selecione o Pátio</option>
-                  {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
-              </select>
-            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <legend className="text-sm font-medium text-gray-700 px-1">Local Desmobilização</legend>
-
-              <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Todas as UFs</option>
-                  {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
-              </select>
-              <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={!filters.uf}>
-                  <option value="">Todos os Municípios</option>
-                  {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-            </fieldset>
-            
-            <div className="flex items-center pt-6">
+            <select value={filters.patioDestino || ''} onChange={(e) => handleFilterChange('patioDestino', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione o Pátio</option>
+                {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
+            </select>
+            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Todas as UFs</option>
+                {uniqueValues.ufs.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+            </select>
+            <select value={filters.municipio || ''} onChange={(e) => handleFilterChange('municipio', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={!filters.uf}>
+                <option value="">Todos os Municípios</option>
+                {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
+            </select>
+             <div className="flex items-center pt-6">
               <input
                 id="com-pendencias"
                 type="checkbox"
@@ -415,7 +412,7 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 Com Pendências
               </label>
             </div>
-             <div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Origem da Pendência</label>
               <select 
                 value={filters.origemPendencia || ''} 
