@@ -18,7 +18,8 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
- const pendencyOptions = useMemo(() => {
+  const pendencyOptions = useMemo(() => {
+    if (!pendencies) return [];
     return pendencies.filter(p => p.origem === 'Fiscal').map(p => p.descricao);
   }, [pendencies]);
 
@@ -33,7 +34,7 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   }, [dropdownRef]);
 
 
-  const handleTogglePendency = (pendency: PendencyType) => {
+  const handleTogglePendency = (pendency: string) => {
     setSelectedPendencies(prev =>
       prev.includes(pendency) ? prev.filter(p => p !== pendency) : [...prev, pendency]
     );
