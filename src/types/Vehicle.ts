@@ -20,6 +20,9 @@ export interface Vehicle {
   residual: number;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
+  ufEmplacamento?: string;
+  empresaProprietaria?: string;
+  cnpjProprietario?: string;
 }
 
 export interface DemobilizationFilters {
@@ -37,8 +40,8 @@ export interface DemobilizationFilters {
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string;
-  placa?: string;
+  chassi?: string[];
+  placa?: string[];
   anoModelo?: string;
   situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
 }
