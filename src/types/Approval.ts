@@ -52,14 +52,19 @@ export interface ApprovalFilters {
   cliente?: string;
   cr?: string[];
   descricaoCR?: string;
-  diretoria?: string;
+  diretoria?: string[];
   tipoDesmobilizacao?: string;
   patioDestino?: string;
   uf?: string;
   municipio?: string;
   chassi?: string[];
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
+  situacao?: 'Liberado para Desmobilização' | 'Desmobilização Bloqueada' | '';
   comPendencias?: boolean;
   origemPendencia?: 'Documental' | 'Fiscal' | '';
+  demobilizationCode?: string;
+  ufEmplacamento?: string;
+  cnpjProprietario?: string[];
+  empresaProprietaria?: string;
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | '';
 }
