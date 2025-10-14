@@ -18,7 +18,9 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const pendencyOptions: PendencyType[] = ['RENAVAN', 'Multa', 'Recall'];
+ const pendencyOptions = useMemo(() => {
+    return pendencies.filter(p => p.origem === 'Fiscal').map(p => p.descricao);
+  }, [pendencies]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
