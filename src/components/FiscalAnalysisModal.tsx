@@ -1,19 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
-
-type PendencyType = 'RENAVAN' | 'Multa' | 'Recall';
+import { Pendency } from '../types/Pendency';
 
 interface FiscalAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
   onApprove: (observation: string) => void;
-  onSignalPendency: (pendencies: PendencyType[], observation: string) => void;
+  onSignalPendency: (pendencies: string[], observation: string) => void;
+  pendencies: Pendency[];
 }
 
-const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency }) => {
-  const [selectedPendencies, setSelectedPendencies] = useState<PendencyType[]>([]);
+const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency, pendencies }) => {
+  const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [observation, setObservation] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
