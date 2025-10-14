@@ -58,12 +58,13 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF de Emplacamento</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa Proprietária</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNPJ Proprietário</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
@@ -72,7 +73,9 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
-
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
             </tr>
@@ -95,16 +98,13 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 )}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.empresaProprietaria || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cnpjProprietario || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
-                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
-                <td className="px-2 py-2 text-sm">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
-                    {vehicle.situacaoAnaliseFiscal || '-'}
-                  </span>
-                </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
@@ -113,7 +113,15 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
-               
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
+                <td className="px-2 py-2 text-sm">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
+                    {vehicle.situacaoAnaliseFiscal || '-'}
+                  </span>
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.tipoPendencia && vehicle.tipoPendencia.length > 0 ? vehicle.tipoPendencia.join(', ') : '-'}
+                </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
