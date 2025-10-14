@@ -13,7 +13,7 @@ interface DocumentAnalysisModalProps {
 }
 
 const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency }) => {
-  const [selectedPendencies, setSelectedPendencies] = useState<PendencyType[]>([]);
+  const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [observation, setObservation] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
