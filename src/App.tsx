@@ -4,11 +4,15 @@ import DemobilizationPage from './pages/DemobilizationPage';
 import ApprovalConsultation from './pages/ApprovalConsultation';
 import AssetDemobilizationManagementPage from './pages/AssetDemobilizationManagementPage';
 import { ApprovalVehicle } from './types/Approval';
-import FiscalAnalysisPage from './pages/FiscalAnalysisPage'; 
+import FiscalAnalysisPage from './pages/FiscalAnalysisPage';
+import PendencyManagementPage from './pages/PendencyManagementPage';
+import { Pendency } from './types/Pendency';
+import { mockPendencies } from './data/mockPendencies';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<string>('demobilization');
   const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>([]);
+  const [pendencies, setPendencies] = useState<Pendency[]>(mockPendencies);
 
   React.useEffect(() => {
     const handleHashChange = () => {
@@ -43,9 +47,16 @@ function App() {
                    v.situacao === 'Em Manutenção'
                  )} 
                  onUpdateVehicles={setApprovalVehicles} 
+                 pendencies={pendencies}
                />;
       case 'analise-fiscal':
-        return <FiscalAnalysisPage vehicles={approvalVehicles} onUpdateVehicles={setApprovalVehicles} />;
+        return <FiscalAnalysisPage 
+                 vehicles={approvalVehicles} 
+                 onUpdateVehicles={setApprovalVehicles} 
+                 pendencies={pendencies}
+               />;
+      case 'tipo-pendencia':
+        return <PendencyManagementPage pendencies={pendencies} onUpdatePendencies={setPendencies} />;
       case 'demobilization':
       default:
         return <DemobilizationPage onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])} demobilizedVehicles={approvalVehicles} />;
