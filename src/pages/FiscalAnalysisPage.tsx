@@ -13,6 +13,7 @@ import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
   onUpdateVehicles: (vehicles: ApprovalVehicle[]) => void;
+  pendencies: Pendency[];
 }
 
 const getRandomUser = () => {
