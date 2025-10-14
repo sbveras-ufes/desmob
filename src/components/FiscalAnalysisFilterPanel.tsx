@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { ChevronDown, ChevronUp, Filter, X } from 'lucide-react';
 import { ApprovalFilters } from '../types/Approval';
 import { mockVehicles } from '../data/mockData';
+import { mockCompanies } from '../data/mockCompanies';
 
 interface FiscalAnalysisFilterPanelProps {
   filters: ApprovalFilters;
@@ -10,103 +11,61 @@ interface FiscalAnalysisFilterPanelProps {
 
 const FiscalAnalysisFilterPanel: React.FC<FiscalAnalysisFilterPanelProps> = ({ filters, onFiltersChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [crInput, setCrInput] = useState('');
-  const [showCrSuggestions, setShowCrSuggestions] = useState(false);
-  const crInputRef = useRef<HTMLInputElement>(null);
-
-  const [modeloInput, setModeloInput] = useState(filters.modelo || '');
-  const [showModeloSuggestions, setShowModeloSuggestions] = useState(false);
+  const [cnpjInput, setCnpjInput] = useState('');
+  const [showCnpjSuggestions, setShowCnpjSuggestions] = useState(false);
+  const cnpjInputRef = useRef<HTMLInputElement>(null);
 
   const uniqueValues = useMemo(() => {
     const modelos = [...new Set(mockVehicles.map(v => v.modelo))].sort();
-    const clientes = [...new Set(mockVehicles.map(v => v.cliente))].sort();
-    const crs = [...new Set(mockVehicles.map(v => v.cr))].sort();
-    const descricoesCR = [...new Set(mockVehicles.map(v => v.descricaoCR))].sort();
-    const patiosDestino = [...new Set(mockVehicles.map(v => v.patioDestino))].sort();
-    const ufs = [...new Set(mockVehicles.map(v => v.uf))].sort();
-    const municipios = [...new Set(mockVehicles.map(v => v.municipio))].sort();
-    return { modelos, clientes, crs, descricoesCR, patiosDestino, ufs, municipios };
+    const diretorias = [...new Set(mockVehicles.map(v => v.diretoria))].sort();
+    const ufsEmplacamento = [...new Set(mockVehicles.map(v => v.ufEmplacamento))].sort();
+    const ufsOrigem = [...new Set(mockVehicles.map(v => v.uf))].sort();
+    const empresas = [...new Set(mockCompanies.map(c => c.nome))].sort();
+    const cnpjs = [...new Set(mockCompanies.map(c => c.cnpj))].sort();
+    return { modelos, diretorias, ufsEmplacamento, ufsOrigem, empresas, cnpjs };
   }, []);
 
-  const availableCrs = useMemo(() => {
-    if (!filters.diretoria) {
-      return uniqueValues.crs;
-    }
-    return [...new Set(mockVehicles.filter(v => v.diretoria === filters.diretoria).map(v => v.cr))].sort();
-  }, [filters.diretoria, uniqueValues.crs]);
-  
-  const availableMunicipios = useMemo(() => {
-    if (!filters.uf) {
-      return uniqueValues.municipios;
-    }
-    return [...new Set(mockVehicles.filter(v => v.uf === filters.uf).map(v => v.municipio))].sort();
-  }, [filters.uf, uniqueValues.municipios]);
-
-  useEffect(() => {
-    if (filters.diretoria && filters.cr) {
-      const newCrs = filters.cr.filter(cr => availableCrs.includes(cr));
-      if (newCrs.length !== filters.cr.length) {
-        onFiltersChange({ ...filters, cr: newCrs });
-      }
-    }
-    if (filters.uf && filters.municipio && !availableMunicipios.includes(filters.municipio)) {
-      onFiltersChange({ ...filters, municipio: '' });
-    }
-  }, [filters.diretoria, availableCrs, filters.cr, onFiltersChange, filters.uf, filters.municipio, availableMunicipios]);
-
   const handleFilterChange = (key: keyof ApprovalFilters, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    if (key === 'uf') {
-      newFilters.municipio = '';
-    }
-    onFiltersChange(newFilters);
-  };
-  
-  const handleAddCr = (cr: string) => {
-    if (cr && !filters.cr?.includes(cr)) {
-      const newCrs = [...(filters.cr || []), cr];
-      onFiltersChange({ ...filters, cr: newCrs });
-    }
-    setCrInput('');
-    setShowCrSuggestions(false);
-  };
-  
-  const handleRemoveCr = (crToRemove: string) => {
-    const newCrs = filters.cr?.filter(cr => cr !== crToRemove);
-    onFiltersChange({ ...filters, cr: newCrs });
+    onFiltersChange({ ...filters, [key]: value });
   };
 
-  const crSuggestions = useMemo(() => {
-    if (!crInput) return [];
-    return availableCrs.filter(cr => 
-      cr.toLowerCase().includes(crInput.toLowerCase()) && !filters.cr?.includes(cr)
+  const handleMultiSelectChange = (key: keyof ApprovalFilters, value: string) => {
+    const currentValues = (filters[key] as string[]) || [];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter(v => v !== value)
+      : [...currentValues, value];
+    onFiltersChange({ ...filters, [key]: newValues });
+  };
+  
+  const handleAddCnpj = (cnpj: string) => {
+    if (cnpj && !filters.cnpjProprietario?.includes(cnpj)) {
+      const newCnpjs = [...(filters.cnpjProprietario || []), cnpj];
+      onFiltersChange({ ...filters, cnpjProprietario: newCnpjs });
+    }
+    setCnpjInput('');
+    setShowCnpjSuggestions(false);
+  };
+
+  const handleRemoveCnpj = (cnpjToRemove: string) => {
+    const newCnpjs = filters.cnpjProprietario?.filter(cnpj => cnpj !== cnpjToRemove);
+    onFiltersChange({ ...filters, cnpjProprietario: newCnpjs });
+  };
+
+  const cnpjSuggestions = useMemo(() => {
+    if (!cnpjInput) return [];
+    return uniqueValues.cnpjs.filter(c => 
+      c.toLowerCase().includes(cnpjInput.toLowerCase()) && !filters.cnpjProprietario?.includes(c)
     );
-  }, [crInput, availableCrs, filters.cr]);
+  }, [cnpjInput, uniqueValues.cnpjs, filters.cnpjProprietario]);
 
-  const handleCrInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && crInput) {
+  const handleCnpjInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && cnpjInput) {
       e.preventDefault();
-      const exactMatch = availableCrs.find(cr => cr.toLowerCase() === crInput.toLowerCase());
-      if (exactMatch) {
-        handleAddCr(exactMatch);
-      }
+      handleAddCnpj(cnpjInput);
     }
-  };
-
-  const filteredModelos = useMemo(() => {
-    return uniqueValues.modelos.filter(modelo => 
-      modelo.toLowerCase().includes(modeloInput.toLowerCase())
-    );
-  }, [uniqueValues.modelos, modeloInput]);
-
-  const handleModeloSelect = (modelo: string) => {
-    setModeloInput(modelo);
-    handleFilterChange('modelo', modelo);
-    setShowModeloSuggestions(false);
   };
 
   const clearFilters = () => {
-    setModeloInput('');
     onFiltersChange({});
   };
 
@@ -144,63 +103,106 @@ const FiscalAnalysisFilterPanel: React.FC<FiscalAnalysisFilterPanelProps> = ({ f
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <legend className="text-sm font-medium text-gray-700 px-1">Data Prevista</legend>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">De</label>
+                <input type="date" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Até</label>
+                <input type="date" value={filters.periodoFim || ''} onChange={(e) => handleFilterChange('periodoFim', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+              </div>
+            </fieldset>
+            
             <input
               type="text"
-              value={filters.placa || ''}
-              onChange={(e) => handleFilterChange('placa', e.target.value)}
-              placeholder="Placa"
+              value={filters.demobilizationCode || ''}
+              onChange={(e) => handleFilterChange('demobilizationCode', e.target.value)}
+              placeholder="Código Desmobilização"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-             <select
-              value={filters.situacao || ''}
-              onChange={(e) => handleFilterChange('situacao', e.target.value)}
+            <input
+              type="text"
+              value={filters.chassi || ''}
+              onChange={(e) => handleFilterChange('chassi', e.target.value)}
+              placeholder="Chassi"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Todas as Situações</option>
+            />
+            <input
+              type="text"
+              value={filters.anoModelo || ''}
+              onChange={(e) => handleFilterChange('anoModelo', e.target.value)}
+              placeholder="Ano"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="text"
+              value={filters.modelo || ''}
+              onChange={(e) => handleFilterChange('modelo', e.target.value)}
+              placeholder="Modelo"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            {/* Diretoria multi-select */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Diretorias</label>
+              <select multiple value={filters.diretoria || []} onChange={(e) => handleFilterChange('diretoria', Array.from(e.target.selectedOptions, option => option.value))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                {uniqueValues.diretorias.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+            
+            <select value={filters.ufEmplacamento || ''} onChange={(e) => handleFilterChange('ufEmplacamento', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">UF de Emplacamento</option>
+              {uniqueValues.ufsEmplacamento.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+            </select>
+            <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">UF de Origem</option>
+              {uniqueValues.ufsOrigem.map(uf => <option key={uf} value={uf}>{uf}</option>)}
+            </select>
+            
+            <div className="relative lg:col-span-2" onBlur={() => setTimeout(() => setShowCnpjSuggestions(false), 200)}>
+              <div className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2" onClick={() => cnpjInputRef.current?.focus()}>
+                {filters.cnpjProprietario?.map(c => (
+                  <span key={c} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
+                    {c} <button type="button" onClick={() => handleRemoveCnpj(c)} className="text-gray-600 hover:text-black"><X size={14} /></button>
+                  </span>
+                ))}
+                <input ref={cnpjInputRef} type="text" value={cnpjInput} onChange={(e) => setCnpjInput(e.target.value)} onFocus={() => setShowCnpjSuggestions(true)} onKeyDown={handleCnpjInputKeyDown} className="flex-grow bg-transparent outline-none text-sm" placeholder={filters.cnpjProprietario?.length > 0 ? '' : 'CNPJ Proprietário...'}/>
+              </div>
+              {showCnpjSuggestions && cnpjSuggestions.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {cnpjSuggestions.map(c => (
+                    <button key={c} type="button" onMouseDown={() => handleAddCnpj(c)} className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm">{c}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <select value={filters.empresaProprietaria || ''} onChange={(e) => handleFilterChange('empresaProprietaria', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Empresa Proprietária</option>
+              {uniqueValues.empresas.map(e => <option key={e} value={e}>{e}</option>)}
+            </select>
+
+            <select value={filters.situacao || ''} onChange={(e) => handleFilterChange('situacao', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Situação Desmobilização</option>
+              <option value="Liberado para Desmobilização">Liberado para Desmobilização</option>
+              <option value="Desmobilização Bloqueada">Desmobilização Bloqueada</option>
+            </select>
+            
+            <select value={filters.situacaoAnaliseFiscal || ''} onChange={(e) => handleFilterChange('situacaoAnaliseFiscal', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Situação Análise Fiscal</option>
               <option value="Aprovada">Aprovada</option>
               <option value="Pendente">Pendente</option>
             </select>
-            <div className="lg:col-span-2">
-              <div className="relative" onBlur={() => setTimeout(() => setShowCrSuggestions(false), 200)}>
-                <div 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 flex flex-wrap items-center gap-2"
-                  onClick={() => crInputRef.current?.focus()}
-                >
-                  {filters.cr?.map(cr => (
-                    <span key={cr} className="flex items-center gap-1 bg-gray-200 text-sm rounded-md px-2 py-1">
-                      {cr}
-                      <button type="button" onClick={() => handleRemoveCr(cr)} className="text-gray-600 hover:text-black">
-                        <X size={14} />
-                      </button>
-                    </span>
-                  ))}
-                  <input
-                    ref={crInputRef}
-                    type="text"
-                    value={crInput}
-                    onChange={(e) => setCrInput(e.target.value)}
-                    onFocus={() => setShowCrSuggestions(true)}
-                    onKeyDown={handleCrInputKeyDown}
-                    className="flex-grow bg-transparent outline-none text-sm"
-                    placeholder={filters.cr?.length > 0 ? '' : 'Digite o CR...'}
-                  />
-                </div>
-                {showCrSuggestions && crSuggestions.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                    {crSuggestions.map(cr => (
-                      <button
-                        key={cr}
-                        type="button"
-                        onMouseDown={() => handleAddCr(cr)}
-                        className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm"
-                      >
-                        {cr}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       )}
