@@ -1,14 +1,4 @@
 import { Vehicle } from '../types/Vehicle';
-import { mockCompanies } from './mockCompanies';
-
-const getRandomCompany = () => {
-  return mockCompanies[Math.floor(Math.random() * mockCompanies.length)];
-};
-
-const getRandomUF = () => {
-  const ufs = ['SP', 'RJ', 'MG', 'ES', 'BA', 'PR', 'SC', 'RS'];
-  return ufs[Math.floor(Math.random() * ufs.length)];
-};
 
 export const mockVehicles: Vehicle[] = [
   {
@@ -31,9 +21,8 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'João Silva',
     cliente: 'STONE NACIONAL',
     residual: 8500.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: '2025-03-10',
   },
   {
     id: '2',
@@ -43,8 +32,8 @@ export const mockVehicles: Vehicle[] = [
     anoModelo: '2023',
     km: 18000,
     diretoria: 'LETS',
-    cr: '401000101',
-    descricaoCR: 'FROTA TRANSICAO LETS',
+    cr: '301045540',
+    descricaoCR: 'SUZANO MUCURI',
     tipoDesmobilizacao: 'Renovação de Frota',
     patioDestino: 'Pátio SP',
     uf: 'SP',
@@ -55,11 +44,7 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Maria Santos',
     cliente: 'STONE NACIONAL',
     residual: 8200.00,
-    isTransitionCR: true,
-    dataInicioCR: '2025-09-15T10:00:00Z',
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Pendente',
   },
   {
     id: '3',
@@ -81,9 +66,8 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Carlos Lima',
     cliente: 'STONE NACIONAL',
     residual: 9200.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: '2025-02-15',
   },
   {
     id: '4',
@@ -105,9 +89,7 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Ana Costa',
     cliente: 'TECH SOLUTIONS',
     residual: 45000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Reprovada',
   },
   {
     id: '5',
@@ -117,8 +99,8 @@ export const mockVehicles: Vehicle[] = [
     anoModelo: '2023',
     km: 32000,
     diretoria: 'OPERAÇÕES',
-    cr: '401000102',
-    descricaoCR: 'FROTA TRANSICAO OPERACOES',
+    cr: '301045542',
+    descricaoCR: 'TEL TELECOMUNICAÇÕES',
     tipoDesmobilizacao: 'Renovação de Frota',
     patioDestino: 'Pátio SP',
     uf: 'SP',
@@ -129,11 +111,8 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Pedro Oliveira',
     cliente: 'LOGÍSTICA BRASIL',
     residual: 52000.00,
-    isTransitionCR: true,
-    dataInicioCR: '2025-09-20T10:00:00Z',
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: '2025-01-20',
   },
   {
     id: '6',
@@ -155,9 +134,7 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Luiz Mendes',
     cliente: 'CONSTRUÇÕES LTDA',
     residual: 78000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Pendente',
   },
   {
     id: '7',
@@ -179,9 +156,8 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Roberto Silva',
     cliente: 'AGRO TECH',
     residual: 65000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: '2025-04-01',
   },
   {
     id: '8',
@@ -203,9 +179,7 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Fernanda Costa',
     cliente: 'VENDAS EXPRESS',
     residual: 32000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Pendente',
   },
   {
     id: '9',
@@ -227,9 +201,8 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Gabriel Rocha',
     cliente: 'CONSULTORIA PLUS',
     residual: 48000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: '2025-03-22',
   },
   {
     id: '10',
@@ -251,8 +224,6 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Sandra Lima',
     cliente: 'SERVIÇOS GERAIS',
     residual: 38000.00,
-    ufEmplacamento: getRandomUF(),
-    empresaProprietaria: getRandomCompany().nome,
-    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Reprovada',
   }
 ];
