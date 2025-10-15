@@ -27,9 +27,11 @@ export interface ApprovalVehicle {
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
-  tipoPendencia?: string[];
+  tipoPendenciaDocumental?: string[];
   observacaoAnaliseDocumental?: string;
   situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
+  tipoPendenciaFiscal?: string[];
+  observacaoAnaliseFiscal?: string;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
   dataPrecificacao?: string;
@@ -63,4 +65,8 @@ export interface ApprovalFilters {
   comPendencias?: boolean;
   origemPendencia?: 'Documental' | 'Fiscal' | '';
   demobilizationCode?: string;
+  ufEmplacamento?: string;
+  cnpjProprietario?: string[];
+  empresaProprietaria?: string;
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | '';
 }
