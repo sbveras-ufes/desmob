@@ -1,4 +1,21 @@
 import { Vehicle } from '../types/Vehicle';
+import { mockCompanies } from './mockCompanies';
+
+const getRandomCompany = () => {
+  return mockCompanies[Math.floor(Math.random() * mockCompanies.length)];
+};
+
+const getRandomUF = () => {
+  const ufs = ['SP', 'RJ', 'MG', 'ES', 'BA', 'PR', 'SC', 'RS'];
+  return ufs[Math.floor(Math.random() * ufs.length)];
+};
+
+const getRandomPastDate = () => {
+  const today = new Date();
+  const pastDate = new Date(today);
+  pastDate.setDate(today.getDate() - Math.floor(Math.random() * 30));
+  return pastDate.toISOString().split('T')[0];
+}
 
 export const mockVehicles: Vehicle[] = [
   {
@@ -21,8 +38,9 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'João Silva',
     cliente: 'STONE NACIONAL',
     residual: 8500.00,
-    situacaoVistoria: 'Aprovada',
-    dataPrecificacao: '2025-03-10',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '2',
@@ -32,8 +50,8 @@ export const mockVehicles: Vehicle[] = [
     anoModelo: '2023',
     km: 18000,
     diretoria: 'LETS',
-    cr: '301045540',
-    descricaoCR: 'SUZANO MUCURI',
+    cr: '401000101',
+    descricaoCR: 'FROTA TRANSICAO LETS',
     tipoDesmobilizacao: 'Renovação de Frota',
     patioDestino: 'Pátio SP',
     uf: 'SP',
@@ -44,7 +62,13 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Maria Santos',
     cliente: 'STONE NACIONAL',
     residual: 8200.00,
-    situacaoVistoria: 'Pendente',
+    isTransitionCR: true,
+    dataInicioCR: '2025-09-15T10:00:00Z',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: getRandomPastDate(),
   },
   {
     id: '3',
@@ -66,8 +90,9 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Carlos Lima',
     cliente: 'STONE NACIONAL',
     residual: 9200.00,
-    situacaoVistoria: 'Aprovada',
-    dataPrecificacao: '2025-02-15',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '4',
@@ -89,7 +114,37 @@ export const mockVehicles: Vehicle[] = [
     gerente: 'Ana Costa',
     cliente: 'TECH SOLUTIONS',
     residual: 45000.00,
-    situacaoVistoria: 'Reprovada',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
+    situacaoVistoria: 'Aprovada',
+    dataPrecificacao: getRandomPastDate(),
+  },
+  {
+    id: '5',
+    placa: 'FVV4A24',
+    chassi: '9BGEY69H0RG166477',
+    modelo: '002196-1 - COROLLA CROSS XRE',
+    anoModelo: '2023',
+    km: 32000,
+    diretoria: 'OPERAÇÕES',
+    cr: '401000102',
+    descricaoCR: 'FROTA TRANSICAO OPERACOES',
+    tipoDesmobilizacao: 'Renovação de Frota',
+    patioDestino: 'Pátio SP',
+    uf: 'SP',
+    municipio: 'Campinas',
+    localDesmobilizacao: 'Campinas - SP',
+    dataPrevista: '2025-04-13',
+    dataEntrega: '2025-04-20',
+    gerente: 'Pedro Oliveira',
+    cliente: 'LOGÍSTICA BRASIL',
+    residual: 52000.00,
+    isTransitionCR: true,
+    dataInicioCR: '2025-09-20T10:00:00Z',
+    ufEmplacamento: getRandomUF(),
+    empresaProprietaria: getRandomCompany().nome,
+    cnpjProprietario: getRandomCompany().cnpj,
   },
   {
     id: '5',
