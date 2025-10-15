@@ -400,17 +400,7 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 <option value="">Todos os Municípios</option>
                 {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
-             <div className="flex items-center pt-6">
-              <input
-                id="com-pendencias"
-                type="checkbox"
-                checked={filters.comPendencias || false}
-                onChange={(e) => handleFilterChange('comPendencias', e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="com-pendencias" className="ml-2 block text-sm font-medium text-gray-900">
-                Com Pendências
-              </label>
+
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Origem da Pendência</label>
