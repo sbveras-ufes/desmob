@@ -402,13 +402,12 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
             </select>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Origem da Pendência</label>
               <select 
                 value={filters.origemPendencia || ''} 
                 onChange={(e) => handleFilterChange('origemPendencia', e.target.value as any)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Todos</option>
+                <option value="">Origem da Pendência</option>
                 <option value="Documental">Documental</option>
                 <option value="Fiscal">Fiscal</option>
               </select>
