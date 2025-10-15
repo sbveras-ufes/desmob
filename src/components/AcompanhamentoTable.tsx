@@ -51,7 +51,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
       case 'Aprovada':
         return 'bg-green-100 text-green-800';
       case 'Pendente':
-        return 'bg-red-100 text-red-800';
+        return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
       case 'Desmobilização Bloqueada':
@@ -85,25 +85,27 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
               {showSituacaoAnaliseDocumental && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Situação Análise Documental
                 </th>
               )}
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pendência Documental</th>
               {showSituacaoAnaliseFiscal && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Situação Análise Fiscal
                 </th>
               )}
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pendência Fiscal</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Desmob.</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
@@ -137,33 +139,43 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 )}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
                     {vehicle.situacao}
                   </span>
                 </td>
                 {showSituacaoAnaliseDocumental && (
-                  <td className="px-2 py-2 text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
-                      {vehicle.situacaoAnaliseDocumental || '-'}
-                    </span>
-                  </td>
+                  <>
+                    <td className="px-2 py-2 text-sm">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
+                        {vehicle.situacaoAnaliseDocumental || '-'}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2 text-sm text-gray-500">
+                      {vehicle.tipoPendenciaDocumental?.join(', ') || '-'}
+                    </td>
+                  </>
                 )}
                 {showSituacaoAnaliseFiscal && (
-                  <td className="px-2 py-2 text-sm">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
-                      {vehicle.situacaoAnaliseFiscal || '-'}
-                    </span>
-                  </td>
+                  <>
+                    <td className="px-2 py-2 text-sm">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
+                        {vehicle.situacaoAnaliseFiscal || '-'}
+                      </span>
+                    </td>
+                    <td className="px-2 py-2 text-sm text-gray-500">
+                      {vehicle.tipoPendenciaFiscal?.join(', ') || '-'}
+                    </td>
+                  </>
                 )}
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.tipoDesmobilizacao}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
