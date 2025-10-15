@@ -216,13 +216,7 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
       {isExpanded && (
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
-              type="text"
-              value={filters.demobilizationCode || ''}
-              onChange={(e) => handleFilterChange('demobilizationCode', e.target.value)}
-              placeholder="Código Desmobilização"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+
             <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <legend className="text-sm font-medium text-gray-700 px-1">Data Prevista</legend>
               <input type="date" value={filters.periodoInicio || ''} onChange={(e) => handleFilterChange('periodoInicio', e.target.value)}
@@ -238,6 +232,13 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
               <input type="date" value={filters.entregaFim || ''} onChange={(e) => handleFilterChange('entregaFim', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"/>
             </fieldset>
+                        <input
+              type="text"
+              value={filters.demobilizationCode || ''}
+              onChange={(e) => handleFilterChange('demobilizationCode', e.target.value)}
+              placeholder="Código Desmobilização"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
 
             
             <div className="relative" onBlur={() => setTimeout(() => setShowChassiSuggestions(false), 200)}>
