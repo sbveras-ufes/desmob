@@ -389,7 +389,7 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 <option value="">Selecione o Pátio</option>
                 {uniqueValues.patiosDestino.map(patio => <option key={patio} value={patio}>{patio}</option>)}
             </select>
-            )}
+          
             <fieldset className="md:col-span-2 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
               <legend className="text-sm font-medium text-gray-700 px-1">Local Desmobilização</legend>
               <select value={filters.uf || ''} onChange={(e) => handleFilterChange('uf', e.target.value)}
