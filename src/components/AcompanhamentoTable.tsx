@@ -66,7 +66,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
-  return (
+ return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200">
