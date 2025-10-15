@@ -401,7 +401,6 @@ const AssetDemobilizationFilterPanel: React.FC<AssetDemobilizationFilterPanelPro
                 {availableMunicipios.map(m => <option key={m} value={m}>{m}</option>)}
             </select>
 
-            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Origem da Pendência</label>
               <select 
