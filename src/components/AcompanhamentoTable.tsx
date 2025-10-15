@@ -168,7 +168,12 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </td>
                   </>
                 )}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+              <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.situacaoVistoria === 'Aprovada' && vehicle.dataPrecificacao 
+                    ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') 
+                    : '-'}
+                </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
