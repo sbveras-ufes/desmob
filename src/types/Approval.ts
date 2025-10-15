@@ -1,6 +1,5 @@
 export interface ApprovalVehicle {
   id: string;
-  demobilizationCode?: string;
   placa: string;
   chassi: string;
   modelo: string;
@@ -12,9 +11,9 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção' | 'Desmobilização Bloqueada';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado';
   dataSolicitacao: string;
-  lastUpdated?: string;
+  lastUpdated: string;
   localDesmobilizacao: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
@@ -23,50 +22,26 @@ export interface ApprovalVehicle {
   patioVistoria?: string;
   patioDestino?: string;
   residual: number;
-  situacaoVistoria?: string;
-  dataVistoria?: string;
-  classificacaoVistoria?: string;
-  situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
-  tipoPendenciaDocumental?: string[];
-  observacaoAnaliseDocumental?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
-  tipoPendenciaFiscal?: string[];
-  observacaoAnaliseFiscal?: string;
-  isTransitionCR?: boolean;
-  dataInicioCR?: string;
+  situacaoVistoria?: 'Aprovada' | 'Reprovada' | 'Pendente';
   dataPrecificacao?: string;
-  valorPrecificacao?: number;
-  responsavelAtualizacao?: string;
-  ufEmplacamento?: string;
-  empresaProprietaria?: string;
-  cnpjProprietario?: string;
 }
 
 export interface ApprovalFilters {
   periodoInicio?: string;
   periodoFim?: string;
-  entregaInicio?: string;
-  entregaFim?: string;
   mes?: string;
-  placa?: string[];
+  placa?: string;
   tipo?: 'leve' | 'pesado' | '';
   modelo?: string;
   cliente?: string;
   cr?: string[];
   descricaoCR?: string;
-  diretoria?: string[];
+  diretoria?: string;
   tipoDesmobilizacao?: string;
   patioDestino?: string;
   uf?: string;
   municipio?: string;
-  chassi?: string[];
+  chassi?: string;
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
-  comPendencias?: boolean;
-  origemPendencia?: 'Documental' | 'Fiscal' | '';
-  demobilizationCode?: string;
-  ufEmplacamento?: string;
-  cnpjProprietario?: string[];
-  empresaProprietaria?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
 }
