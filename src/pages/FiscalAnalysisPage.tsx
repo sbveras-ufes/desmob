@@ -76,7 +76,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           ...v,
           situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
           situacaoAnaliseFiscal: 'Pendente' as const,
-          tipoPendencia: pendenciesSelection,
+          tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
