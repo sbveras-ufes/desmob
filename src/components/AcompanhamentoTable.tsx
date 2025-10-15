@@ -66,7 +66,8 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
- return (
+
+  return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200">
@@ -168,7 +169,15 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </td>
                   </>
                 )}
-              <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacaoVistoria || '-'}</td>
+                <td className="px-2 py-2 text-sm">
+                  {vehicle.situacaoVistoria === 'Aprovada' ? (
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoVistoria)}`}>
+                      {vehicle.situacaoVistoria}
+                    </span>
+                  ) : (
+                    '-'
+                  )}
+                </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.situacaoVistoria === 'Aprovada' && vehicle.dataPrecificacao 
                     ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') 
