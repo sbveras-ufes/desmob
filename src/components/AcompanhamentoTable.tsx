@@ -61,12 +61,11 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
     }
   };
 
-  const formatKilometer = (value: number) => new Intl.NumberFormat('pt-BR').format(value);
+ const formatKilometer = (value: number) => new Intl.NumberFormat('pt-BR').format(value);
   const formatCurrency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
   const formatDateTime = (dateString: string) => new Date(dateString).toLocaleString('pt-BR', {
     day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
-
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
