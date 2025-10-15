@@ -122,7 +122,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           ...v,
           situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
           situacaoAnaliseDocumental: 'Documentação Pendente' as const,
-          tipoPendencia: pendenciesSelection,
+          tipoPendenciaDocumental: pendenciesSelection,
           observacaoAnaliseDocumental: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName
@@ -133,7 +133,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
-
+  
   const handleIndicarManutencao = () => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
