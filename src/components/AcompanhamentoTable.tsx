@@ -56,6 +56,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles, sel
                 </th>
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Código
+              </th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Placa
               </th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -137,6 +140,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({ vehicles, sel
                     />
                   </td>
                 )}
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
