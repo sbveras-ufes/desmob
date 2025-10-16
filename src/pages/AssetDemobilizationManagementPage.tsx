@@ -57,6 +57,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
+  const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacao === 'Desmobilização Bloqueada'), [selectedVehicles]);
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const randomUserName = getRandomUser();
@@ -216,21 +217,21 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 </button>
                 <button
                   onClick={() => setIsUpdateTransportModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0}
+                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Atualizar Transporte
                 </button>
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0}
+                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Checklist Análise Documental
                 </button>
                 <button
                   onClick={() => setIsCreateLotModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0}
+                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
                   className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400"
                 >
                   Liberar para criar lote
