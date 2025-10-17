@@ -103,17 +103,20 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const handleDocumentAnalysisApprove = (observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = allVehicles.map(v =>
-      selectedVehicleIds.includes(v.id)
-        ? {
-            ...v,
-            situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
-            observacaoAnaliseDocumental: observation,
-            lastUpdated: new Date().toISOString(),
-            responsavelAtualizacao: randomUserName
-          }
-        : v
-    );
+    const updatedVehicles = allVehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        const isFiscalApproved = v.situacaoAnaliseFiscal === 'Aprovada';
+        return {
+          ...v,
+          situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
+          situacao: isFiscalApproved ? 'Liberado para Desmobilização' as const : v.situacao,
+          observacaoAnaliseDocumental: observation,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName
+        };
+      }
+      return v;
+    });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
