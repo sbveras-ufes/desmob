@@ -105,14 +105,25 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        const isFiscalApproved = v.situacaoAnaliseFiscal === 'Aprovada';
+        const fiscalPendenciesAreBlocking = pendencies.some(p => 
+          p.origem === 'Fiscal' && v.tipoPendenciaFiscal?.includes(p.descricao) && p.geraBloqueio
+        );
+        
+        let newSituacao = v.situacao;
+        if (v.situacao === 'Desmobilização Bloqueada' && !fiscalPendenciesAreBlocking) {
+          newSituacao = 'Liberado para Desmobilização';
+        } else if (v.situacaoAnaliseFiscal === 'Aprovada') {
+          newSituacao = 'Liberado para Desmobilização';
+        }
+
         return {
           ...v,
+          situacao: newSituacao,
           situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
-          situacao: isFiscalApproved ? 'Liberado para Desmobilização' as const : v.situacao,
+          tipoPendenciaDocumental: [],
           observacaoAnaliseDocumental: observation,
           lastUpdated: new Date().toISOString(),
-          responsavelAtualizacao: randomUserName
+          responsavelAtualizacao: randomUserName,
         };
       }
       return v;
