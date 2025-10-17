@@ -46,17 +46,28 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        const isDocumentalApproved = v.situacaoAnaliseDocumental === 'Documentação Aprovada';
+        const documentalPendenciesAreBlocking = pendencies.some(p => 
+          p.origem === 'Documental' && v.tipoPendenciaDocumental?.includes(p.descricao) && p.geraBloqueio
+        );
+
+        let newSituacao = v.situacao;
+        if (v.situacao === 'Desmobilização Bloqueada' && !documentalPendenciesAreBlocking) {
+          newSituacao = 'Liberado para Desmobilização';
+        } else if (v.situacaoAnaliseDocumental === 'Documentação Aprovada') {
+          newSituacao = 'Liberado para Desmobilização';
+        }
+        
         return { 
-            ...v, 
-            situacaoAnaliseFiscal: 'Aprovada' as const,
-            situacao: isDocumentalApproved ? 'Liberado para Desmobilização' as const : v.situacao,
-            observacaoAnaliseFiscal: observation, 
-            lastUpdated: new Date().toISOString(), 
-            responsavelAtualizacao: randomUserName,
-            empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-            cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-            ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
+          ...v, 
+          situacaoAnaliseFiscal: 'Aprovada' as const,
+          tipoPendenciaFiscal: [],
+          situacao: newSituacao,
+          observacaoAnaliseFiscal: observation, 
+          lastUpdated: new Date().toISOString(), 
+          responsavelAtualizacao: randomUserName,
+          empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
+          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
+          ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
         };
       }
       return v;
