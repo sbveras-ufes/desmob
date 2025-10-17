@@ -44,20 +44,23 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     const randomUserName = getRandomUser();
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
-    const updatedVehicles = vehicles.map(v => 
-      selectedVehicleIds.includes(v.id)
-        ? { 
+    const updatedVehicles = vehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        const isDocumentalApproved = v.situacaoAnaliseDocumental === 'Documentação Aprovada';
+        return { 
             ...v, 
-            situacaoAnaliseFiscal: 'Aprovada' as const, 
+            situacaoAnaliseFiscal: 'Aprovada' as const,
+            situacao: isDocumentalApproved ? 'Liberado para Desmobilização' as const : v.situacao,
             observacaoAnaliseFiscal: observation, 
             lastUpdated: new Date().toISOString(), 
             responsavelAtualizacao: randomUserName,
             empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
             cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
             ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
-          }
-        : v
-    );
+        };
+      }
+      return v;
+    });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
