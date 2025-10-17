@@ -60,7 +60,6 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase 
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF de Emplacamento</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa Proprietária</th>
@@ -69,7 +68,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
-              tracking-wider">Diretoria</th>
+              
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
