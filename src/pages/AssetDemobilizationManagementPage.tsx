@@ -12,6 +12,7 @@ import AssetDemobilizationFilterPanel from '../components/AssetDemobilizationFil
 import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import IndicarManutencaoModal from '../components/IndicarManutencaoModal';
 import { Pendency } from '../types/Pendency';
+import VehicleDetailModal from '../components/VehicleDetailModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -32,6 +33,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
   const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
   const [isIndicarManutencaoModalOpen, setIsIndicarManutencaoModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
   const [crTypeFilter, setCrTypeFilter] = useState<'Todos' | 'Desmobilização' | 'Desativação'>('Todos');
 
@@ -53,11 +56,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => (v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente') && v.situacao !== 'Desmobilização Bloqueada'
+    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
   const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacao === 'Desmobilização Bloqueada'), [selectedVehicles]);
+
+  const handleViewVehicle = (vehicle: ApprovalVehicle) => {
+    setViewingVehicle(vehicle);
+    setIsDetailModalOpen(true);
+  };
 
   const handleUpdateTransport = (updatedData: { dataEntrega: string; patioDestino: string; }) => {
     const randomUserName = getRandomUser();
@@ -245,9 +253,10 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               vehicles={finalLiberatedVehicles}
               selectedVehicleIds={selectedVehicleIds}
               onSelectionChange={setSelectedVehicleIds}
+              onViewVehicle={handleViewVehicle}
             />
           }
-          {activeTab === 'concluidos' && <ConcluidosTab vehicles={filteredConcluidosVehicles} />}
+          {activeTab === 'concluidos' && <ConcluidosTab vehicles={filteredConcluidosVehicles} onViewVehicle={handleViewVehicle} />}
         </div>
 
         <UpdateTransportModal
@@ -278,6 +287,12 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           onClose={() => setIsIndicarManutencaoModalOpen(false)}
           vehicles={selectedVehicles}
           onConfirm={handleIndicarManutencao}
+        />
+
+        <VehicleDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          vehicle={viewingVehicle}
         />
       </main>
     </div>
