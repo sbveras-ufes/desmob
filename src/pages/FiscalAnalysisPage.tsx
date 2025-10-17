@@ -44,38 +44,36 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     const randomUserName = getRandomUser();
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
-    const updatedVehicles = vehicles.map(v => 
-      selectedVehicleIds.includes(v.id)
-        ? { 
-            ...v, 
-            situacaoAnaliseFiscal: 'Aprovada' as const, 
-            observacaoAnaliseFiscal: observation, 
-            lastUpdated: new Date().toISOString(), 
-            responsavelAtualizacao: randomUserName,
-            empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-            cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-            ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
-          }
-        : v
-    );
+    const updatedVehicles = vehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        return { 
+          ...v, 
+          situacaoAnaliseFiscal: 'Aprovada' as const,
+          tipoPendenciaFiscal: [],
+          observacaoAnaliseFiscal: observation, 
+          lastUpdated: new Date().toISOString(), 
+          responsavelAtualizacao: randomUserName,
+          empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
+          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
+          ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
+        };
+      }
+      return v;
+    });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
   
   const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
     const randomUserName = getRandomUser();
-    const blockingPendencies = pendencies
-      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
-      .map(p => p.descricao);
+    const hasBlocking = pendencies.some(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio);
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
-          situacaoAnaliseFiscal: 'Pendente' as const,
+          situacaoAnaliseFiscal: hasBlocking ? 'Pendente: Com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
