@@ -130,11 +130,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map((vehicle) => (
               <tr key={vehicle.id} className="hover:bg-gray-50">
-                <td className="px-2 py-2 text-sm">
-                  <button onClick={() => onViewVehicle?.(vehicle)} className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100">
-                    <Eye size={16} />
-                  </button>
-                </td>
+
                 {onSelectionChange && (
                   <td className="px-2 py-2 text-sm">
                     <input
@@ -144,6 +140,11 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
                   </td>
+                                <td className="px-2 py-2 text-sm">
+                  <button onClick={() => onViewVehicle?.(vehicle)} className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100">
+                    <Eye size={16} />
+                  </button>
+                </td>
                 )}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
