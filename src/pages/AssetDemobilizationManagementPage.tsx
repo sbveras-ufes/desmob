@@ -56,7 +56,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente'
+    v => (v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente') && v.situacao !== 'Desmobilização Bloqueada'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
@@ -232,7 +232,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 </button>
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
+                  disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Checklist Análise Documental
