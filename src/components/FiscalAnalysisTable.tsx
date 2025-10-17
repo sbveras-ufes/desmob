@@ -97,15 +97,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                   </td>
                 )}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.empresaProprietaria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cnpjProprietario || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
+                                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
                     {vehicle.situacaoAnaliseFiscal || '-'}
@@ -114,6 +106,15 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? vehicle.tipoPendenciaFiscal.join(', ') : '-'}
                 </td>
+                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.empresaProprietaria || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cnpjProprietario || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
+
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
