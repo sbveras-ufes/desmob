@@ -56,7 +56,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => (v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente') && v.situacao !== 'Desmobilização Bloqueada'
+    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
@@ -103,31 +103,17 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const handleDocumentAnalysisApprove = (observation: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = allVehicles.map(v => {
-      if (selectedVehicleIds.includes(v.id)) {
-        const fiscalPendenciesAreBlocking = pendencies.some(p => 
-          p.origem === 'Fiscal' && v.tipoPendenciaFiscal?.includes(p.descricao) && p.geraBloqueio
-        );
-        
-        let newSituacao = v.situacao;
-        if (v.situacao === 'Desmobilização Bloqueada' && !fiscalPendenciesAreBlocking) {
-          newSituacao = 'Liberado para Desmobilização';
-        } else if (v.situacaoAnaliseFiscal === 'Aprovada') {
-          newSituacao = 'Liberado para Desmobilização';
-        }
-
-        return {
-          ...v,
-          situacao: newSituacao,
-          situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
-          tipoPendenciaDocumental: [],
-          observacaoAnaliseDocumental: observation,
-          lastUpdated: new Date().toISOString(),
-          responsavelAtualizacao: randomUserName,
-        };
-      }
-      return v;
-    });
+    const updatedVehicles = allVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
+            observacaoAnaliseDocumental: observation,
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
+          }
+        : v
+    );
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
@@ -246,7 +232,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 </button>
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0}
+                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Checklist Análise Documental

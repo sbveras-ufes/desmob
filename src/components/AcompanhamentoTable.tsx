@@ -89,10 +89,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               )}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
               {showSituacaoAnaliseDocumental && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -104,10 +100,15 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   Situação Análise Fiscal
                 </th>
               )}
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Precificação</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Desmob.</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
@@ -129,11 +130,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map((vehicle) => (
               <tr key={vehicle.id} className="hover:bg-gray-50">
-                <td className="px-2 py-2 text-sm">
-                  <button onClick={() => onViewVehicle?.(vehicle)} className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100">
-                    <Eye size={16} />
-                  </button>
-                </td>
+
                 {onSelectionChange && (
                   <td className="px-2 py-2 text-sm">
                     <input
@@ -144,12 +141,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     />
                   </td>
                 )}
+                                
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
                     {vehicle.situacao}
@@ -169,10 +163,27 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </span>
                   </td>
                 )}
+                <td className="px-2 py-2 text-sm">
+                  {vehicle.situacaoVistoria === 'Aprovada' ? (
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoVistoria)}`}>
+                      {vehicle.situacaoVistoria}
+                    </span>
+                  ) : (
+                    '-'
+                  )}
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.situacaoVistoria === 'Aprovada' && vehicle.dataPrecificacao 
+                    ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') 
+                    : '-'}
+                </td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.tipoDesmobilizacao}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{new Date(vehicle.dataPrevista).toLocaleDateString('pt-BR')}</td>
