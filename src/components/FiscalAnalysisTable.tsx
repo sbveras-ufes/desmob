@@ -112,7 +112,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendencia && vehicle.tipoPendencia.length > 0 ? vehicle.tipoPendencia.join(', ') : '-'}
+                  {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? vehicle.tipoPendenciaFiscal.join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
