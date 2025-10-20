@@ -46,11 +46,24 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
+        const documentalPendenciesAreBlocking = pendencies.some(p => 
+          p.origem === 'Documental' && v.tipoPendenciaDocumental?.includes(p.descricao) && p.geraBloqueio
+        );
+
+        let newSituacao = v.situacao;
+        if (v.situacao === 'Desmobilização Bloqueada' && !documentalPendenciesAreBlocking) {
+          newSituacao = 'Liberado para Desmobilização';
+        } else if (v.situacaoAnaliseDocumental === 'Documentação Aprovada') {
+          newSituacao = 'Liberado para Desmobilização';
+        }
+        
         return { 
           ...v, 
           situacaoAnaliseFiscal: 'Aprovada' as const,
           tipoPendenciaFiscal: [],
+          situacao: newSituacao,
           observacaoAnaliseFiscal: observation, 
+          dataObservacaoFiscal: observation ? new Date().toISOString() : v.dataObservacaoFiscal,
           lastUpdated: new Date().toISOString(), 
           responsavelAtualizacao: randomUserName,
           empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
@@ -75,7 +88,9 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           ...v,
           situacaoAnaliseFiscal: hasBlocking ? 'Pendente: Com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
+          dataPendenciaFiscal: new Date().toISOString(),
           observacaoAnaliseFiscal: observation,
+          dataObservacaoFiscal: observation ? new Date().toISOString() : v.dataObservacaoFiscal,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
           empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
