@@ -56,7 +56,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => (v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente')
+    v => (v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente') && v.situacao !== 'Desmobilização Bloqueada'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
@@ -108,11 +108,24 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
+        const fiscalPendenciesAreBlocking = pendencies.some(p => 
+          p.origem === 'Fiscal' && v.tipoPendenciaFiscal?.includes(p.descricao) && p.geraBloqueio
+        );
+        
+        let newSituacao = v.situacao;
+        if (v.situacao === 'Desmobilização Bloqueada' && !fiscalPendenciesAreBlocking) {
+          newSituacao = 'Liberado para Desmobilização';
+        } else if (v.situacaoAnaliseFiscal === 'Aprovada') {
+          newSituacao = 'Liberado para Desmobilização';
+        }
+
         return {
           ...v,
+          situacao: newSituacao,
           situacaoAnaliseDocumental: 'Documentação Aprovada' as const,
           tipoPendenciaDocumental: [],
           observacaoAnaliseDocumental: observation,
+          dataObservacaoDocumental: observation ? new Date().toISOString() : v.dataObservacaoDocumental,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
         };
@@ -133,7 +146,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           ...v,
           situacaoAnaliseDocumental: hasBlocking ? 'Documentação Pendente com Bloqueio' as const : 'Documentação Pendente' as const,
           tipoPendenciaDocumental: pendenciesSelection,
+          dataPendenciaDocumental: new Date().toISOString(),
           observacaoAnaliseDocumental: observation,
+          dataObservacaoDocumental: observation ? new Date().toISOString() : v.dataObservacaoDocumental,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName
         };
