@@ -46,9 +46,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  const handleApprove = (observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
+  const handleApprove = (observation: string) => {
     const randomUserName = getRandomUser();
-    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
     const updatedVehicles = vehicles.map(v => 
       selectedVehicleIds.includes(v.id)
@@ -58,9 +57,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
             observacaoAnaliseFiscal: observation, 
             lastUpdated: new Date().toISOString(), 
             responsavelAtualizacao: randomUserName,
-            empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-            cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-            ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
           }
         : v
     );
@@ -68,12 +64,11 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-  const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
+  const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
     const blockingPendencies = pendencies
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
       .map(p => p.descricao);
-    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
   
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
@@ -85,9 +80,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
-          empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-          ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
         };
       }
       return v;
