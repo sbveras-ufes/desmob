@@ -11,7 +11,7 @@ interface PendencyModalProps {
 
 const PendencyModal: React.FC<PendencyModalProps> = ({ isOpen, onClose, onSubmit, editingPendency }) => {
   const [formData, setFormData] = useState({
-    origem: 'Documental' as 'Fiscal' | 'Documental',
+    origem: 'Documental' as 'Fiscal' | 'Documental' | 'Manutenção',
     descricao: '',
     geraBloqueio: false,
   });
@@ -31,6 +31,12 @@ const PendencyModal: React.FC<PendencyModalProps> = ({ isOpen, onClose, onSubmit
       });
     }
   }, [editingPendency, isOpen]);
+
+  useEffect(() => {
+    if (formData.origem === 'Manutenção') {
+      setFormData(prev => ({ ...prev, geraBloqueio: false }));
+    }
+  }, [formData.origem]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,11 +60,12 @@ const PendencyModal: React.FC<PendencyModalProps> = ({ isOpen, onClose, onSubmit
             <select
               id="origem"
               value={formData.origem}
-              onChange={(e) => setFormData({ ...formData, origem: e.target.value as 'Fiscal' | 'Documental' })}
+              onChange={(e) => setFormData({ ...formData, origem: e.target.value as 'Fiscal' | 'Documental' | 'Manutenção' })}
               className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
               <option>Documental</option>
               <option>Fiscal</option>
+              <option>Manutenção</option>
             </select>
           </div>
           <div>
@@ -77,9 +84,10 @@ const PendencyModal: React.FC<PendencyModalProps> = ({ isOpen, onClose, onSubmit
             <button
               type="button"
               onClick={() => setFormData({ ...formData, geraBloqueio: !formData.geraBloqueio })}
+              disabled={formData.origem === 'Manutenção'}
               className={`${
                 formData.geraBloqueio ? 'bg-blue-600' : 'bg-gray-200'
-              } relative inline-flex items-center h-6 rounded-full w-11 ml-4`}
+              } relative inline-flex items-center h-6 rounded-full w-11 ml-4 disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <span className={`${
                   formData.geraBloqueio ? 'translate-x-6' : 'translate-x-1'
