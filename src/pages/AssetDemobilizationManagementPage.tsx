@@ -109,7 +109,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const fiscalPendenciesAreBlocking = pendencies.some(p => 
-          p.origem === 'Fiscal' && v.tipoPendenciaFiscal?.includes(p.descricao) && p.geraBloqueio
+          p.origem === 'Fiscal' && v.tipoPendenciaFiscal?.some(pf => pf.descricao === p.descricao) && p.geraBloqueio
         );
         
         let newSituacao = v.situacao;
@@ -144,9 +144,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       if (selectedVehicleIds.includes(v.id)) {
         return {
           ...v,
+          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
           situacaoAnaliseDocumental: hasBlocking ? 'Documentação Pendente com Bloqueio' as const : 'Documentação Pendente' as const,
-          tipoPendenciaDocumental: pendenciesSelection,
-          dataPendenciaDocumental: new Date().toISOString(),
+          tipoPendenciaDocumental: pendenciesSelection.map(p => ({ descricao: p, data: new Date().toISOString() })),
           observacaoAnaliseDocumental: observation,
           dataObservacaoDocumental: observation ? new Date().toISOString() : v.dataObservacaoDocumental,
           lastUpdated: new Date().toISOString(),
