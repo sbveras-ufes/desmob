@@ -9,7 +9,7 @@ interface AcompanhamentoDesmobilizacaoTabProps {
   vehicles: ApprovalVehicle[];
   selectedVehicleIds: string[];
   onSelectionChange: (selectedIds: string[]) => void;
-  onViewVehicle: (vehicle: ApprovalVehicle) => void;
+  onViewVehicle: (vehicle: ApprovalVehicle) => void; // Certifique-se que está sendo recebido
 }
 
 const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabProps> = ({ vehicles, selectedVehicleIds, onSelectionChange, onViewVehicle }) => {
@@ -38,11 +38,10 @@ const AcompanhamentoDesmobilizacaoTab: React.FC<AcompanhamentoDesmobilizacaoTabP
         vehicles={pagination.paginatedItems} 
         selectedVehicles={selectedVehicleIds}
         onSelectionChange={onSelectionChange}
-        onViewVehicle={onViewVehicle}
+        onViewVehicle={onViewVehicle} // Passando a prop corretamente
         showSituacaoAnaliseDocumental={true}
         showSituacaoAnaliseFiscal={true}
-        layout="assetManagement"
-        showVistoriaDetails={false}
+        showVistoriaDetails={false} // Mantido como false para esta aba específica
         paginationComponent={
           <Pagination 
             {...pagination}
