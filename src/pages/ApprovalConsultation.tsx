@@ -147,7 +147,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-gray-700">
-              Mostrando <span className="font-medium">{pagination.endIndex - pagination.startIndex}</span> de <span className="font-medium">{pagination.totalItems}</span> solicitação(ões) de aprovação
+              Mostrando <span className="font-medium">{pagination.endIndex > 0 ? pagination.endIndex - pagination.startIndex : 0}</span> de <span className="font-medium">{pagination.totalItems}</span> solicitação(ões) de aprovação
               {selectedVehicleIds.length > 0 && (
                 <span className="ml-2">
                   • <span className="font-medium text-blue-600">{selectedVehicleIds.length} selecionado(s)</span>
@@ -165,7 +165,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
               <Pagination 
                 {...pagination}
                 onItemsPerPageChange={pagination.changeItemsPerPage}
-                onPageChange={pagination.goToPage}
+                goToPage={pagination.goToPage}
               />
             }
           />
