@@ -35,7 +35,7 @@ const ActionsMenu: React.FC<{
         <MoreVertical size={18} />
       </button>
       {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
           <div className="py-1" role="menu" aria-orientation="vertical">
             <a href="#" onClick={(e) => { e.preventDefault(); onView(vehicle); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
               <Eye size={16} /> Visualizar
@@ -102,7 +102,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
   });
   
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
