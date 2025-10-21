@@ -63,17 +63,17 @@ export const useApprovalFilter = (vehicles: ApprovalVehicle[], filters: Approval
         return false;
       }
       if (filters.comPendencias) {
-        if (vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente' && vehicle.situacaoAnaliseFiscal !== 'Pendente') {
+        if (vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente' && vehicle.situacaoAnaliseFiscal !== 'Pendente' && vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente com Bloqueio' && vehicle.situacaoAnaliseFiscal !== 'Análise Pendente com Bloqueio') {
           return false;
         }
       }
       if (filters.origemPendencia === 'Documental') {
-        if (vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente') {
+        if (vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente' && vehicle.situacaoAnaliseDocumental !== 'Documentação Pendente com Bloqueio') {
           return false;
         }
       }
       if (filters.origemPendencia === 'Fiscal') {
-        if (vehicle.situacaoAnaliseFiscal !== 'Pendente') {
+        if (vehicle.situacaoAnaliseFiscal !== 'Pendente' && vehicle.situacaoAnaliseFiscal !== 'Análise Pendente com Bloqueio') {
           return false;
         }
       }
