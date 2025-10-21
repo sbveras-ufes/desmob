@@ -1,3 +1,8 @@
+export interface PendenciaInfo {
+  descricao: string;
+  data: string;
+}
+
 export interface ApprovalVehicle {
   id: string;
   demobilizationCode?: string;
@@ -27,14 +32,12 @@ export interface ApprovalVehicle {
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
-  tipoPendenciaDocumental?: string[];
+  tipoPendenciaDocumental?: PendenciaInfo[];
   observacaoAnaliseDocumental?: string;
-  dataPendenciaDocumental?: string;
   dataObservacaoDocumental?: string;
   situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | 'Pendente: Com Bloqueio';
-  tipoPendenciaFiscal?: string[];
+  tipoPendenciaFiscal?: PendenciaInfo[];
   observacaoAnaliseFiscal?: string;
-  dataPendenciaFiscal?: string;
   dataObservacaoFiscal?: string;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
