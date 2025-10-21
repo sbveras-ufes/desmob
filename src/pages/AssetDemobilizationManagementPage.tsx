@@ -62,6 +62,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
   const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio' || v.situacaoAnaliseFiscal === 'Análise Pendente com Bloqueio' || v.situacao === 'Em Manutenção'), [selectedVehicles]);
 
+  const canIndicarManutencao = useMemo(() => {
+    if (selectedVehicleIds.length === 0) return false;
+    return selectedVehicles.every(v => v.situacao !== 'Em Manutenção');
+  }, [selectedVehicles, selectedVehicleIds.length]);
+
+  const canConcluirManutencao = useMemo(() => {
+    if (selectedVehicleIds.length === 0) return false;
+    return selectedVehicles.every(v => v.situacao === 'Em Manutenção');
+  }, [selectedVehicles, selectedVehicleIds.length]);
+
   const handleViewVehicle = (vehicle: ApprovalVehicle) => {
     setViewingVehicle(vehicle);
     setIsDetailModalOpen(true);
@@ -159,6 +169,23 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
+  const handleConcluirManutencao = () => {
+    const randomUserName = getRandomUser();
+    const updatedVehicles = allVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacao: 'Liberado para Desmobilização' as const,
+            lastUpdated: new Date().toISOString(),
+            responsavelAtualizacao: randomUserName
+          }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+    setIsIndicarManutencaoModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -220,7 +247,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                   disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:bg-gray-400"
                 >
-                  Indicar Manutenção
+                  Manutenção
                 </button>
                 <button
                   onClick={() => setIsUpdateTransportModalOpen(true)}
@@ -286,6 +313,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           onClose={() => setIsIndicarManutencaoModalOpen(false)}
           vehicles={selectedVehicles}
           onConfirm={handleIndicarManutencao}
+          onConcluirManutencao={handleConcluirManutencao}
           pendencies={pendencies}
         />
 
