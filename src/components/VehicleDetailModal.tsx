@@ -18,7 +18,8 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
       case 'Liberado para Desmobilização':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
-      case 'Desmobilização Bloqueada':
+      case 'Documentação Pendente com Bloqueio':
+      case 'Análise Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
         return 'bg-blue-100 text-blue-800';
