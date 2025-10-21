@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
+import { Pendency } from '../types/Pendency';
 
 interface IndicarManutencaoModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
   onConfirm: () => void;
+  pendencies: Pendency[];
 }
 
-const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm }) => {
+const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm, pendencies }) => {
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
   const [dataInicio, setDataInicio] = useState('');
+
+  const maintenancePendencies = useMemo(() => {
+    return pendencies.filter(p => p.origem === 'Manutenção');
+  }, [pendencies]);
 
   useEffect(() => {
     if (isOpen) {
@@ -85,9 +91,9 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
                 className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
                 <option value="">Selecione um tipo</option>
-                <option value="Fiscal">Fiscal</option>
-                <option value="Documental">Documental</option>
-                <option value="Vistoria">Vistoria</option>
+                {maintenancePendencies.map(p => (
+                  <option key={p.id} value={p.descricao}>{p.descricao}</option>
+                ))}
               </select>
             </div>
           </div>
