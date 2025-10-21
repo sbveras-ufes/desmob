@@ -56,11 +56,11 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente'
+    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente' || v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio'
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
-  const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacao === 'Desmobilização Bloqueada'), [selectedVehicles]);
+  const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio' || v.situacaoAnaliseFiscal === 'Análise Pendente com Bloqueio'), [selectedVehicles]);
 
   const handleViewVehicle = (vehicle: ApprovalVehicle) => {
     setViewingVehicle(vehicle);
@@ -123,14 +123,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     const blockingPendencies = pendencies
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
       .map(p => p.descricao);
-
+  
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
-          situacaoAnaliseDocumental: 'Documentação Pendente' as const,
+          situacaoAnaliseDocumental: hasBlocking ? 'Documentação Pendente com Bloqueio' as const : 'Documentação Pendente' as const,
           tipoPendenciaDocumental: pendenciesSelection,
           observacaoAnaliseDocumental: observation,
           lastUpdated: new Date().toISOString(),
@@ -232,7 +231,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 </button>
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
-                  disabled={selectedVehicleIds.length === 0 || hasBlockedVehicle}
+                  disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
                   Checklist Análise Documental
