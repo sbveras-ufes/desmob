@@ -8,10 +8,11 @@ interface IndicarManutencaoModalProps {
   onClose: () => void;
   vehicles: ApprovalVehicle[];
   onConfirm: () => void;
+  onConcluirManutencao: () => void;
   pendencies: Pendency[];
 }
 
-const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm, pendencies }) => {
+const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm, onConcluirManutencao, pendencies }) => {
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
   const [dataInicio, setDataInicio] = useState('');
@@ -19,6 +20,10 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
   const maintenancePendencies = useMemo(() => {
     return pendencies.filter(p => p.origem === 'Manutenção');
   }, [pendencies]);
+
+  const canConcluir = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao === 'Em Manutenção'), [vehicles]);
+  const canIndicar = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao !== 'Em Manutenção'), [vehicles]);
+
 
   useEffect(() => {
     if (isOpen) {
@@ -112,7 +117,12 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
 
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
           <button onClick={onClose} className="px-6 py-2 border rounded-md">Cancelar</button>
-          <button onClick={onConfirm} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
+          {canIndicar && (
+            <button onClick={onConfirm} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
+          )}
+          {canConcluir && (
+            <button onClick={onConcluirManutencao} className="px-6 py-2 bg-green-600 text-white rounded-md">Concluir Manutenção</button>
+          )}
         </div>
       </div>
     </div>
