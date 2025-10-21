@@ -57,7 +57,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
-      case 'Desmobilização Bloqueada':
+      case 'Documentação Pendente com Bloqueio':
+        return 'bg-red-100 text-red-800';
+      case 'Análise Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
