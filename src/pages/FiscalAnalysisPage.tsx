@@ -29,9 +29,9 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
-  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada' && v.situacao !== 'Desmobilização Bloqueada');
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
   const acompanhamentoVehicles = vehicles.filter(v => 
-    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção' || v.situacao === 'Desmobilização Bloqueada') 
+    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção') 
     && v.situacaoAnaliseFiscal !== 'Aprovada'
   );
   
@@ -68,14 +68,13 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
       .map(p => p.descricao);
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
-
+  
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
-          situacaoAnaliseFiscal: 'Pendente' as const,
+          situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
