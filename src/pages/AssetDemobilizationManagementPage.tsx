@@ -152,13 +152,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  const handleIndicarManutencao = () => {
+  const handleIndicarManutencao = (tipoManutencao: string) => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             situacao: 'Em Manutenção' as const,
+            tipoManutencao,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -176,6 +177,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? {
             ...v,
             situacao: 'Liberado para Desmobilização' as const,
+            tipoManutencao: undefined,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -312,7 +314,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           isOpen={isIndicarManutencaoModalOpen}
           onClose={() => setIsIndicarManutencaoModalOpen(false)}
           vehicles={selectedVehicles}
-          onConfirm={handleIndicarManutencao}
+          onConfirm={() => handleIndicarManutencao('')}
           onConcluirManutencao={handleConcluirManutencao}
           pendencies={pendencies}
         />
