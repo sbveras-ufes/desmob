@@ -96,6 +96,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Desmobilização</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Manutenção</th>
               {showSituacaoAnaliseDocumental && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Situação Análise Documental
@@ -157,6 +158,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     {vehicle.situacao}
                   </span>
                 </td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.tipoManutencao || '-'}</td>
                 {showSituacaoAnaliseDocumental && (
                   <td className="px-2 py-2 text-sm">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
