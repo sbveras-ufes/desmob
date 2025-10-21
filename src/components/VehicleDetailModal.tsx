@@ -92,13 +92,14 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
                 </span>
               </div>
               <div className="col-span-2">
-                <p className="font-medium text-gray-500">
-                  Pendências {vehicle.dataPendenciaDocumental && `(${formatDate(vehicle.dataPendenciaDocumental)})`}
-                </p>
+                <p className="font-medium text-gray-500">Pendências</p>
                 <div className="flex flex-col space-y-1 mt-1">
                   {vehicle.tipoPendenciaDocumental && vehicle.tipoPendenciaDocumental.length > 0 ? (
                     vehicle.tipoPendenciaDocumental.map(p => (
-                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md self-start">{p}</span>
+                      <div key={p.descricao} className="flex justify-between items-center bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">
+                        <span>{p.descricao}</span>
+                        <span className="text-gray-500 text-xs">{formatDate(p.data)}</span>
+                      </div>
                     ))
                   ) : <p className="text-gray-900">-</p>}
                 </div>
@@ -141,7 +142,10 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
                 <div className="flex flex-col space-y-1 mt-1">
                   {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? (
                     vehicle.tipoPendenciaFiscal.map(p => (
-                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md self-start">{p}</span>
+                      <div key={p.descricao} className="flex justify-between items-center bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">
+                        <span>{p.descricao}</span>
+                        <span className="text-gray-500 text-xs">{formatDate(p.data)}</span>
+                      </div>
                     ))
                   ) : <p className="text-gray-900">-</p>}
                 </div>
