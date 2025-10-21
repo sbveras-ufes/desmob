@@ -60,7 +60,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
-  const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio' || v.situacaoAnaliseFiscal === 'Análise Pendente com Bloqueio'), [selectedVehicles]);
+  const hasBlockedVehicle = useMemo(() => selectedVehicles.some(v => v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio' || v.situacaoAnaliseFiscal === 'Análise Pendente com Bloqueio' || v.situacao === 'Em Manutenção'), [selectedVehicles]);
 
   const handleViewVehicle = (vehicle: ApprovalVehicle) => {
     setViewingVehicle(vehicle);
