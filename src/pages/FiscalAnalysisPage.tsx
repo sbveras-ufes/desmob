@@ -11,6 +11,8 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
 import { Pendency } from '../types/Pendency';
 import { mockCompanies } from '../data/mockCompanies';
+import VehicleDetailModal from '../components/VehicleDetailModal';
+import EditFiscalDataModal from '../components/EditFiscalDataModal';
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -27,6 +29,10 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
+  const [editingVehicle, setEditingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
@@ -89,6 +95,33 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
+  
+  const handleViewVehicle = (vehicle: ApprovalVehicle) => {
+    setViewingVehicle(vehicle);
+    setIsDetailModalOpen(true);
+  };
+  
+  const handleEditVehicle = (vehicle: ApprovalVehicle) => {
+    setEditingVehicle(vehicle);
+    setIsEditModalOpen(true);
+  };
+  
+  const handleSaveVehicle = (vehicleId: string, updates: { empresaProprietaria: string; ufEmplacamento: string; }) => {
+    const randomUserName = getRandomUser();
+    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
+    const updatedVehicles = vehicles.map(v =>
+      v.id === vehicleId
+        ? {
+          ...v,
+          ...updates,
+          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName
+        }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+  };
 
   const acompanhamentoPagination = usePagination(filteredAcompanhamento);
   const concluidasPagination = usePagination(filteredConcluidas);
@@ -146,6 +179,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                   vehicles={acompanhamentoPagination.paginatedItems}
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
+                  onViewVehicle={handleViewVehicle}
+                  onEditVehicle={handleEditVehicle}
                   paginationComponent={
                     <Pagination
                       {...acompanhamentoPagination}
@@ -161,6 +196,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                 vehicles={concluidasPagination.paginatedItems}
                 selectedVehicles={selectedVehicleIds}
                 onSelectionChange={setSelectedVehicleIds}
+                onViewVehicle={handleViewVehicle}
+                onEditVehicle={handleEditVehicle}
                 paginationComponent={
                   <Pagination
                     {...concluidasPagination}
@@ -179,6 +216,17 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           onApprove={handleApprove}
           onSignalPendency={handleSignalPendency}
           pendencies={pendencies}
+        />
+        <VehicleDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          vehicle={viewingVehicle}
+        />
+        <EditFiscalDataModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          vehicle={editingVehicle}
+          onSave={handleSaveVehicle}
         />
       </main>
     </div>
