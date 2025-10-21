@@ -134,7 +134,7 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
           <span>Novo Fluxo</span>
         </button>
       </div>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-md">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
@@ -164,7 +164,7 @@ const FlowListPage: React.FC<FlowListPageProps> = ({ flows, onCreateNew, onEdit,
           <Pagination 
             {...pagination}
             onItemsPerPageChange={pagination.changeItemsPerPage}
-            onPageChange={pagination.goToPage}
+            goToPage={pagination.goToPage}
           />
       </div>
     </div>
