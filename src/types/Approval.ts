@@ -40,6 +40,7 @@ export interface ApprovalVehicle {
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
+  tipoManutencao?: string;
 }
 
 export interface ApprovalFilters {
