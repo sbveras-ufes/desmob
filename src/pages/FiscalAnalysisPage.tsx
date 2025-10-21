@@ -44,53 +44,40 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     const randomUserName = getRandomUser();
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
-    const updatedVehicles = vehicles.map(v => {
-      if (selectedVehicleIds.includes(v.id)) {
-        const documentalPendenciesAreBlocking = pendencies.some(p => 
-          p.origem === 'Documental' && v.tipoPendenciaDocumental?.includes(p.descricao) && p.geraBloqueio
-        );
-
-        let newSituacao = v.situacao;
-        if (v.situacao === 'Desmobilização Bloqueada' && !documentalPendenciesAreBlocking) {
-          newSituacao = 'Liberado para Desmobilização';
-        } else if (v.situacaoAnaliseDocumental === 'Documentação Aprovada') {
-          newSituacao = 'Liberado para Desmobilização';
-        }
-        
-        return { 
-          ...v, 
-          situacaoAnaliseFiscal: 'Aprovada' as const,
-          tipoPendenciaFiscal: [],
-          situacao: newSituacao,
-          observacaoAnaliseFiscal: observation, 
-          dataObservacaoFiscal: observation ? new Date().toISOString() : v.dataObservacaoFiscal,
-          lastUpdated: new Date().toISOString(), 
-          responsavelAtualizacao: randomUserName,
-          empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-          ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
-        };
-      }
-      return v;
-    });
+    const updatedVehicles = vehicles.map(v => 
+      selectedVehicleIds.includes(v.id)
+        ? { 
+            ...v, 
+            situacaoAnaliseFiscal: 'Aprovada' as const, 
+            observacaoAnaliseFiscal: observation, 
+            lastUpdated: new Date().toISOString(), 
+            responsavelAtualizacao: randomUserName,
+            empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
+            cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
+            ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
+          }
+        : v
+    );
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
   };
   
   const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
     const randomUserName = getRandomUser();
-    const hasBlocking = pendencies.some(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio);
+    const blockingPendencies = pendencies
+      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
+      .map(p => p.descricao);
     const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
+        const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          situacaoAnaliseFiscal: hasBlocking ? 'Pendente: Com Bloqueio' as const : 'Pendente' as const,
+          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
+          situacaoAnaliseFiscal: 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
-          dataPendenciaFiscal: new Date().toISOString(),
           observacaoAnaliseFiscal: observation,
-          dataObservacaoFiscal: observation ? new Date().toISOString() : v.dataObservacaoFiscal,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
           empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,

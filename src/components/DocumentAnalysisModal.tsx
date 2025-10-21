@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
+import { Pendency } from '../types/Pendency';
 
 interface DocumentAnalysisModalProps {
   isOpen: boolean;
@@ -8,15 +9,18 @@ interface DocumentAnalysisModalProps {
   vehicles: ApprovalVehicle[];
   onApprove: (observation: string) => void;
   onSignalPendency: (pendencies: string[], observation: string) => void;
+  pendencies: Pendency[];
 }
 
-const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency }) => {
+const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency, pendencies }) => {
   const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [observation, setObservation] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const pendencyOptions: string[] = ['RENAVAN', 'Multa', 'Recall'];
+  const pendencyOptions = useMemo(() => {
+    return pendencies.filter(p => p.origem === 'Documental').map(p => p.descricao);
+  }, [pendencies]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

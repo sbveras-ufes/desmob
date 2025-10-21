@@ -19,8 +19,6 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
       case 'Desmobilização Bloqueada':
-      case 'Documentação Pendente com Bloqueio':
-      case 'Pendente: Com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
         return 'bg-blue-100 text-blue-800';
@@ -36,13 +34,6 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
         return 'bg-gray-100 text-gray-800';
     }
   };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleString('pt-BR', {
-      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    });
-  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -93,21 +84,16 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
               </div>
               <div className="col-span-2">
                 <p className="font-medium text-gray-500">Pendências</p>
-                <div className="flex flex-col space-y-1 mt-1">
+                <div className="flex flex-wrap gap-2 mt-1">
                   {vehicle.tipoPendenciaDocumental && vehicle.tipoPendenciaDocumental.length > 0 ? (
                     vehicle.tipoPendenciaDocumental.map(p => (
-                      <div key={p.descricao} className="flex justify-between items-center bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">
-                        <span>{p.descricao}</span>
-                        <span className="text-gray-500 text-xs">{formatDate(p.data)}</span>
-                      </div>
+                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
                     ))
                   ) : <p className="text-gray-900">-</p>}
                 </div>
               </div>
               <div className="col-span-2">
-                <p className="font-medium text-gray-500">
-                  Observação {vehicle.dataObservacaoDocumental && `(${formatDate(vehicle.dataObservacaoDocumental)})`}
-                </p>
+                <p className="font-medium text-gray-500">Observação</p>
                 <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseDocumental || '-'}</p>
               </div>
             </div>
@@ -136,24 +122,17 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
                 <p className="text-gray-900">{vehicle.cnpjProprietario || '-'}</p>
               </div>
               <div className="col-span-2">
-                <p className="font-medium text-gray-500">
-                  Pendências {vehicle.dataPendenciaFiscal && `(${formatDate(vehicle.dataPendenciaFiscal)})`}
-                </p>
-                <div className="flex flex-col space-y-1 mt-1">
+                <p className="font-medium text-gray-500">Pendências</p>
+                <div className="flex flex-wrap gap-2 mt-1">
                   {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? (
                     vehicle.tipoPendenciaFiscal.map(p => (
-                      <div key={p.descricao} className="flex justify-between items-center bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">
-                        <span>{p.descricao}</span>
-                        <span className="text-gray-500 text-xs">{formatDate(p.data)}</span>
-                      </div>
+                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
                     ))
                   ) : <p className="text-gray-900">-</p>}
                 </div>
               </div>
               <div className="col-span-2">
-                <p className="font-medium text-gray-500">
-                  Observação {vehicle.dataObservacaoFiscal && `(${formatDate(vehicle.dataObservacaoFiscal)})`}
-                </p>
+                <p className="font-medium text-gray-500">Observação</p>
                 <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseFiscal || '-'}</p>
               </div>
             </div>

@@ -51,16 +51,14 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-green-100 text-green-800';
       case 'Documentação Pendente':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Documentação Pendente com Bloqueio':
-        return 'bg-red-100 text-red-800';
       case 'Aprovada':
         return 'bg-green-100 text-green-800';
       case 'Pendente':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Pendente: Com Bloqueio':
-        return 'bg-red-100 text-red-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
+      case 'Desmobilização Bloqueada':
+        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -78,7 +76,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-2 py-3"></th> 
+              <th className="px-2 py-3"></th>
               {onSelectionChange && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   <input
@@ -97,13 +95,11 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   Situação Análise Documental
                 </th>
               )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pendência Documental</th>
               {showSituacaoAnaliseFiscal && (
                 <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Situação Análise Fiscal
                 </th>
               )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pendência Fiscal</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação da Vistoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da Precificação</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
@@ -134,11 +130,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {vehicles.map((vehicle) => (
               <tr key={vehicle.id} className="hover:bg-gray-50">
-                <td className="px-2 py-2 text-sm">
-                  <button onClick={() => onViewVehicle?.(vehicle)} className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100">
-                    <Eye size={16} />
-                  </button>
-                </td>
+
                 {onSelectionChange && (
                   <td className="px-2 py-2 text-sm">
                     <input
@@ -149,6 +141,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     />
                   </td>
                 )}
+                                
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 <td className="px-2 py-2 text-sm">
@@ -163,9 +156,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </span>
                   </td>
                 )}
-                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaDocumental?.map(p => p.descricao).join(', ') || '-'}
-                </td>
                 {showSituacaoAnaliseFiscal && (
                   <td className="px-2 py-2 text-sm">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
@@ -173,9 +163,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                     </span>
                   </td>
                 )}
-                <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaFiscal?.map(p => p.descricao).join(', ') || '-'}
-                </td>
                 <td className="px-2 py-2 text-sm">
                   {vehicle.situacaoVistoria === 'Aprovada' ? (
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoVistoria)}`}>

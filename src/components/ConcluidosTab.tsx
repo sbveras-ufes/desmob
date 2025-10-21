@@ -7,7 +7,7 @@ import Pagination from './Pagination';
 
 interface ConcluidosTabProps {
   vehicles: ApprovalVehicle[];
-  onViewVehicle: (vehicle: ApprovalVehicle) => void; // Certifique-se que está sendo recebido
+  onViewVehicle: (vehicle: ApprovalVehicle) => void;
 }
 
 const ConcluidosTab: React.FC<ConcluidosTabProps> = ({ vehicles, onViewVehicle }) => {
@@ -34,10 +34,11 @@ const ConcluidosTab: React.FC<ConcluidosTabProps> = ({ vehicles, onViewVehicle }
       </div>
       <AcompanhamentoTable
         vehicles={pagination.paginatedItems}
-        onViewVehicle={onViewVehicle} // Passando a prop corretamente
+        onViewVehicle={onViewVehicle}
         showSituacaoAnaliseDocumental={true}
         showSituacaoAnaliseFiscal={true}
-        showVistoriaDetails={false} // Mantido como false para esta aba específica
+        layout="assetManagement"
+        showVistoriaDetails={false}
         paginationComponent={
           <Pagination
             {...pagination}
