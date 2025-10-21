@@ -314,7 +314,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           isOpen={isIndicarManutencaoModalOpen}
           onClose={() => setIsIndicarManutencaoModalOpen(false)}
           vehicles={selectedVehicles}
-          onConfirm={() => handleIndicarManutencao('')}
+          onConfirm={handleIndicarManutencao}
           onConcluirManutencao={handleConcluirManutencao}
           pendencies={pendencies}
         />
