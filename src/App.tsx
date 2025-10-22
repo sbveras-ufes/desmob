@@ -44,7 +44,8 @@ function App() {
                  liberatedVehicles={approvalVehicles.filter(v => 
                    v.situacao === 'Liberado para Desmobilização' || 
                    v.situacao === 'Liberado para Transferência' ||
-                   v.situacao === 'Em Manutenção'
+                   v.situacao === 'Em Manutenção' ||
+                   v.situacao === 'Desmobilização Bloqueada'
                  )} 
                  onUpdateVehicles={setApprovalVehicles} 
                  pendencies={pendencies}

@@ -1,6 +1,6 @@
 export interface Pendency {
   id: string;
-  origem: 'Fiscal' | 'Documental' | 'Manutenção';
+  origem: 'Fiscal' | 'Documental';
   descricao: string;
   geraBloqueio: boolean;
 }

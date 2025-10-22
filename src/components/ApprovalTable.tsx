@@ -65,7 +65,7 @@ const ApprovalTable: React.FC<ApprovalTableProps> = ({
     selectableVehicles.some(v => selectedVehicles.includes(v.id));
 
   return (
-    <div className="bg-white rounded-lg shadow-md">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">

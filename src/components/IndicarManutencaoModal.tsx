@@ -1,30 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
-import { Pendency } from '../types/Pendency';
 
 interface IndicarManutencaoModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
-  onConfirm: (tipoManutencao: string) => void;
-  onConcluirManutencao: () => void;
-  pendencies: Pendency[];
+  onConfirm: () => void;
 }
 
-const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm, onConcluirManutencao, pendencies }) => {
+const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm }) => {
   const [tipoManutencao, setTipoManutencao] = useState('');
   const [observacao, setObservacao] = useState('');
   const [dataInicio, setDataInicio] = useState('');
-
-  const maintenancePendencies = useMemo(() => {
-    if (!pendencies) return [];
-    return pendencies.filter(p => p.origem === 'Manutenção');
-  }, [pendencies]);
-
-  const canConcluir = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao === 'Em Manutenção'), [vehicles]);
-  const canIndicar = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao !== 'Em Manutenção'), [vehicles]);
-
 
   useEffect(() => {
     if (isOpen) {
@@ -46,7 +34,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Manutenção de Veículo</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Indicar Manutenção</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-6 w-6" />
           </button>
@@ -77,65 +65,48 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen,
             </div>
           </div>
 
-          {canIndicar && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data Início Manutenção</label>
-                    <input
-                      id="dataInicioManutencao"
-                      type="date"
-                      value={dataInicio}
-                      onChange={(e) => setDataInicio(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                </div>
-                <div>
-                  <label htmlFor="tipoManutencao" className="block text-sm font-medium text-gray-700 mb-2">Tipo de Manutenção</label>
-                  <select
-                    id="tipoManutencao"
-                    value={tipoManutencao}
-                    onChange={(e) => setTipoManutencao(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  >
-                    <option value="">Selecione um tipo</option>
-                    {maintenancePendencies.map(p => (
-                      <option key={p.id} value={p.descricao}>{p.descricao}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <label htmlFor="observacao" className="block text-sm font-medium text-gray-700">Observação</label>
-                <textarea
-                  id="observacao"
-                  rows={3}
-                  value={observacao}
-                  onChange={(e) => setObservacao(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <div>
+                <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data Início Manutenção</label>
+                <input
+                  id="dataInicioManutencao"
+                  type="date"
+                  value={dataInicio}
+                  onChange={(e) => setDataInicio(e.target.value)}
+                  className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
-              </div>
-            </>
-          )}
-
-          {canConcluir && (
-             <div className="text-center text-gray-700">
-                <p>Você selecionou veículos que já estão em manutenção.</p>
-                <p>Deseja marcar a manutenção como concluída?</p>
             </div>
-          )}
+            <div>
+              <label htmlFor="tipoManutencao" className="block text-sm font-medium text-gray-700 mb-2">Tipo de Manutenção</label>
+              <select
+                id="tipoManutencao"
+                value={tipoManutencao}
+                onChange={(e) => setTipoManutencao(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="">Selecione um tipo</option>
+                <option value="Fiscal">Fiscal</option>
+                <option value="Documental">Documental</option>
+                <option value="Vistoria">Vistoria</option>
+              </select>
+            </div>
+          </div>
 
+          <div className="mt-6">
+            <label htmlFor="observacao" className="block text-sm font-medium text-gray-700">Observação</label>
+            <textarea
+              id="observacao"
+              rows={3}
+              value={observacao}
+              onChange={(e) => setObservacao(e.target.value)}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+          </div>
         </div>
 
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
           <button onClick={onClose} className="px-6 py-2 border rounded-md">Cancelar</button>
-          {canIndicar && (
-            <button onClick={() => onConfirm(tipoManutencao)} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
-          )}
-          {canConcluir && (
-            <button onClick={onConcluirManutencao} className="px-6 py-2 bg-green-600 text-white rounded-md">Concluir Manutenção</button>
-          )}
+          <button onClick={onConfirm} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
         </div>
       </div>
     </div>

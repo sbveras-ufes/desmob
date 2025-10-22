@@ -10,7 +10,7 @@ interface PendencyTableProps {
 
 const PendencyTable: React.FC<PendencyTableProps> = ({ pendencies, onEdit, onDelete }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">

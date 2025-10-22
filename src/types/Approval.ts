@@ -12,11 +12,10 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção' | 'Desmobilização Bloqueada';
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
-  uf: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
   justificativaReprovacao?: string;
@@ -27,10 +26,10 @@ export interface ApprovalVehicle {
   situacaoVistoria?: string;
   dataVistoria?: string;
   classificacaoVistoria?: string;
-  situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
+  situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente';
   tipoPendenciaDocumental?: string[];
   observacaoAnaliseDocumental?: string;
-  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | 'Análise Pendente com Bloqueio';
+  situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente';
   tipoPendenciaFiscal?: string[];
   observacaoAnaliseFiscal?: string;
   isTransitionCR?: boolean;
@@ -41,7 +40,6 @@ export interface ApprovalVehicle {
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
-  tipoManutencao?: string;
 }
 
 export interface ApprovalFilters {
