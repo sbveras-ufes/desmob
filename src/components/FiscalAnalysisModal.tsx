@@ -81,16 +81,26 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">UF de Emplacamento</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pátio Atual</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">UF de Origem</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Empresa Proprietária</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {vehicles.map(v => (
                     <tr key={v.id}>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.placa}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.chassi}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.modelo}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.diretoria}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.cr}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.ufEmplacamento || '-'}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.patioDestino || '-'}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.uf || '-'}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.empresaProprietaria || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
