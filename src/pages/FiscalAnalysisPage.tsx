@@ -213,6 +213,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
           vehicle={viewingVehicle}
+          hideDocumentalAnalysis={true}
         />
         <EditFiscalDataModal
           isOpen={isEditModalOpen}
