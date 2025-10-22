@@ -6,9 +6,10 @@ interface VehicleDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicle: ApprovalVehicle | null;
+  hideDocumentalAnalysis?: boolean;
 }
 
-const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose, vehicle }) => {
+const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose, vehicle, hideDocumentalAnalysis = false }) => {
   if (!isOpen || !vehicle) return null;
 
   const getStatusColor = (status?: string) => {
@@ -18,7 +19,8 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
       case 'Liberado para Desmobilização':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
-      case 'Desmobilização Bloqueada':
+      case 'Documentação Pendente com Bloqueio':
+      case 'Análise Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
         return 'bg-blue-100 text-blue-800';
@@ -73,31 +75,33 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
           </div>
 
           {/* Análise Documental */}
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Documental</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="font-medium text-gray-500">Situação</p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoAnaliseDocumental)}`}>
-                  {vehicle.situacaoAnaliseDocumental || '-'}
-                </span>
-              </div>
-              <div className="col-span-2">
-                <p className="font-medium text-gray-500">Pendências</p>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {vehicle.tipoPendenciaDocumental && vehicle.tipoPendenciaDocumental.length > 0 ? (
-                    vehicle.tipoPendenciaDocumental.map(p => (
-                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
-                    ))
-                  ) : <p className="text-gray-900">-</p>}
+          {!hideDocumentalAnalysis && (
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Documental</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-medium text-gray-500">Situação</p>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoAnaliseDocumental)}`}>
+                    {vehicle.situacaoAnaliseDocumental || '-'}
+                  </span>
+                </div>
+                <div className="col-span-2">
+                  <p className="font-medium text-gray-500">Pendências</p>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {vehicle.tipoPendenciaDocumental && vehicle.tipoPendenciaDocumental.length > 0 ? (
+                      vehicle.tipoPendenciaDocumental.map(p => (
+                        <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
+                      ))
+                    ) : <p className="text-gray-900">-</p>}
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <p className="font-medium text-gray-500">Observação</p>
+                  <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseDocumental || '-'}</p>
                 </div>
               </div>
-              <div className="col-span-2">
-                <p className="font-medium text-gray-500">Observação</p>
-                <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseDocumental || '-'}</p>
-              </div>
             </div>
-          </div>
+          )}
 
           {/* Análise Fiscal */}
           <div className="border-t pt-4">

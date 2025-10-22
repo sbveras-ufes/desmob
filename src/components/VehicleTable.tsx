@@ -47,7 +47,7 @@ const VehicleTable: React.FC<VehicleTableProps> = ({
   const isPartiallySelected = selectedVehicles.length > 0 && selectedVehicles.length < vehicles.length;
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">

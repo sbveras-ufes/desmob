@@ -11,6 +11,8 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import FiscalAnalysisFilterPanel from '../components/FiscalAnalysisFilterPanel';
 import { Pendency } from '../types/Pendency';
 import { mockCompanies } from '../data/mockCompanies';
+import VehicleDetailModal from '../components/VehicleDetailModal';
+import EditFiscalDataModal from '../components/EditFiscalDataModal';
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -27,11 +29,15 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [activeTab, setActiveTab] = useState<'acompanhamento' | 'concluidas'>('acompanhamento');
   const [selectedVehicleIds, setSelectedVehicleIds] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
+  const [editingVehicle, setEditingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
-  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada' && v.situacao !== 'Desmobilização Bloqueada');
+  const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
   const acompanhamentoVehicles = vehicles.filter(v => 
-    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção' || v.situacao === 'Desmobilização Bloqueada') 
+    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção') 
     && v.situacaoAnaliseFiscal !== 'Aprovada'
   );
   
@@ -40,9 +46,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  const handleApprove = (observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
+  const handleApprove = (observation: string) => {
     const randomUserName = getRandomUser();
-    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
 
     const updatedVehicles = vehicles.map(v => 
       selectedVehicleIds.includes(v.id)
@@ -52,9 +57,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
             observacaoAnaliseFiscal: observation, 
             lastUpdated: new Date().toISOString(), 
             responsavelAtualizacao: randomUserName,
-            empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-            cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-            ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
           }
         : v
     );
@@ -62,33 +64,55 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-  const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: { empresaProprietaria?: string, ufEmplacamento?: string }) => {
+  const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
     const blockingPendencies = pendencies
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
       .map(p => p.descricao);
-    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
-
+  
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          situacao: hasBlocking ? 'Desmobilização Bloqueada' as const : v.situacao,
-          situacaoAnaliseFiscal: 'Pendente' as const,
+          situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
-          empresaProprietaria: updates.empresaProprietaria || v.empresaProprietaria,
-          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
-          ufEmplacamento: updates.ufEmplacamento || v.ufEmplacamento,
         };
       }
       return v;
     });
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
+  };
+  
+  const handleViewVehicle = (vehicle: ApprovalVehicle) => {
+    setViewingVehicle(vehicle);
+    setIsDetailModalOpen(true);
+  };
+  
+  const handleEditVehicle = (vehicle: ApprovalVehicle) => {
+    setEditingVehicle(vehicle);
+    setIsEditModalOpen(true);
+  };
+  
+  const handleSaveVehicle = (vehicleId: string, updates: { empresaProprietaria: string; ufEmplacamento: string; }) => {
+    const randomUserName = getRandomUser();
+    const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
+    const updatedVehicles = vehicles.map(v =>
+      v.id === vehicleId
+        ? {
+          ...v,
+          ...updates,
+          cnpjProprietario: company ? company.cnpj : v.cnpjProprietario,
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName
+        }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
   };
 
   const acompanhamentoPagination = usePagination(filteredAcompanhamento);
@@ -147,6 +171,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                   vehicles={acompanhamentoPagination.paginatedItems}
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
+                  onViewVehicle={handleViewVehicle}
+                  onEditVehicle={handleEditVehicle}
                   paginationComponent={
                     <Pagination
                       {...acompanhamentoPagination}
@@ -162,6 +188,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                 vehicles={concluidasPagination.paginatedItems}
                 selectedVehicles={selectedVehicleIds}
                 onSelectionChange={setSelectedVehicleIds}
+                onViewVehicle={handleViewVehicle}
+                onEditVehicle={handleEditVehicle}
                 paginationComponent={
                   <Pagination
                     {...concluidasPagination}
@@ -180,6 +208,18 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           onApprove={handleApprove}
           onSignalPendency={handleSignalPendency}
           pendencies={pendencies}
+        />
+        <VehicleDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          vehicle={viewingVehicle}
+          hideDocumentalAnalysis={true}
+        />
+        <EditFiscalDataModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          vehicle={editingVehicle}
+          onSave={handleSaveVehicle}
         />
       </main>
     </div>

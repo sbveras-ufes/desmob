@@ -1,14 +1,57 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ApprovalVehicle } from '../types/Approval';
+import { MoreVertical, Eye, Edit } from 'lucide-react';
 
 interface FiscalAnalysisTableProps {
   vehicles: ApprovalVehicle[];
   paginationComponent: React.ReactNode;
   selectedVehicles?: string[];
   onSelectionChange?: (ids: string[]) => void;
+  onViewVehicle: (vehicle: ApprovalVehicle) => void;
+  onEditVehicle: (vehicle: ApprovalVehicle) => void;
 }
 
-const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange }) => {
+const ActionsMenu: React.FC<{
+  vehicle: ApprovalVehicle;
+  onView: (vehicle: ApprovalVehicle) => void;
+  onEdit: (vehicle: ApprovalVehicle) => void;
+}> = ({ vehicle, onView, onEdit }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
+
+  return (
+    <div className="relative inline-block text-left" ref={menuRef}>
+      <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full hover:bg-gray-200">
+        <MoreVertical size={18} />
+      </button>
+      {isOpen && (
+        <div className="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+          <div className="py-1" role="menu" aria-orientation="vertical">
+            <a href="#" onClick={(e) => { e.preventDefault(); onView(vehicle); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+              <Eye size={16} /> Visualizar
+            </a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onEdit(vehicle); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+              <Edit size={16} /> Editar
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange, onViewVehicle, onEditVehicle }) => {
 
   const handleSelectAll = (checked: boolean) => {
     onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
@@ -27,10 +70,28 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
 
   const getSituacaoColor = (situacao?: string) => {
     switch (situacao) {
+      case 'Aguardando aprovação':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Liberado para Desmobilização':
+        return 'bg-green-100 text-green-800';
+      case 'Reprovado':
+        return 'bg-red-100 text-red-800';
+      case 'Liberado para Transferência':
+        return 'bg-blue-100 text-blue-800';
+      case 'Documentação Aprovada':
+        return 'bg-green-100 text-green-800';
+      case 'Documentação Pendente':
+        return 'bg-yellow-100 text-yellow-800';
       case 'Aprovada':
         return 'bg-green-100 text-green-800';
       case 'Pendente':
-         return 'bg-red-100 text-red-800';
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Em Manutenção':
+        return 'bg-purple-100 text-purple-800';
+      case 'Documentação Pendente com Bloqueio':
+        return 'bg-red-100 text-red-800';
+      case 'Análise Pendente com Bloqueio':
+        return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -41,7 +102,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
   });
   
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -56,29 +117,20 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                   />
                 </th>
               )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF de Emplacamento</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa Proprietária</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNPJ Proprietário</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chassi</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ano/Modelo</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">KM</th>
-              
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Destino</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Local Desmob.</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gerente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Residual</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Última Atualização</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela atualização</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF de Emplacamento</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pátio Atual</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF de Origem</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNPJ Proprietário</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Empresa Proprietária</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora Última Atualização</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -97,8 +149,11 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                     />
                   </td>
                 )}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
-                                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.situacao}</td>
+                <td className="px-2 py-4 whitespace-nowrap text-sm font-medium">
+                  <ActionsMenu vehicle={vehicle} onView={onViewVehicle} onEdit={onEditVehicle} />
+                </td>
+                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
                     {vehicle.situacaoAnaliseFiscal || '-'}
@@ -107,25 +162,15 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? vehicle.tipoPendenciaFiscal.join(', ') : '-'}
                 </td>
-                <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.empresaProprietaria || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cnpjProprietario || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.km.toLocaleString('pt-BR')}</td>
-
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.localDesmobilizacao}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.gerente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cliente}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.residual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.uf || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cnpjProprietario || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.empresaProprietaria || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.demobilizationCode || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.lastUpdated ? formatDateTime(vehicle.lastUpdated) : '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
               </tr>
             ))}
           </tbody>
