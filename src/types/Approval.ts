@@ -16,6 +16,7 @@ export interface ApprovalVehicle {
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
+  uf: string;
   dataEntrega: string;
   tipoDesmobilizacao: string;
   justificativaReprovacao?: string;
