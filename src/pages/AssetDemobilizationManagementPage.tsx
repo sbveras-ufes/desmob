@@ -13,6 +13,7 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import IndicarManutencaoModal from '../components/IndicarManutencaoModal';
 import { Pendency } from '../types/Pendency';
 import VehicleDetailModal from '../components/VehicleDetailModal';
+import AssumirDesmobilizacaoModal from '../components/AssumirDesmobilizacaoModal'; // Importar o novo modal
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -34,6 +35,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
   const [isIndicarManutencaoModalOpen, setIsIndicarManutencaoModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isAssumirModalOpen, setIsAssumirModalOpen] = useState(false); // Estado para o novo modal
   const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
   const [crTypeFilter, setCrTypeFilter] = useState<'Todos' | 'Desmobilização' | 'Desativação'>('Todos');
@@ -176,7 +178,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacao: 'Liberado' as const,
+            situacao: 'Liberado para Desmobilização' as const,
             tipoManutencao: undefined,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
@@ -186,6 +188,28 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
     setIsIndicarManutencaoModalOpen(false);
+  };
+
+  // Handler para o novo modal
+  const handleAssumirDesmobilizacao = (responsavelNome: string) => {
+    const randomUserName = getRandomUser();
+    const now = new Date().toISOString();
+    
+    const updatedVehicles = allVehicles.map(v =>
+      selectedVehicleIds.includes(v.id)
+        ? {
+            ...v,
+            situacao: 'Em Andamento' as const,
+            responsavelDesmobilizacao: responsavelNome,
+            dataHoraUltimaAtualizacaoResponsavel: now,
+            lastUpdated: now,
+            responsavelAtualizacao: randomUserName
+          }
+        : v
+    );
+    onUpdateVehicles(updatedVehicles);
+    setSelectedVehicleIds([]);
+    setIsAssumirModalOpen(false);
   };
 
   return (
@@ -244,6 +268,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               </div>
 
               <div className="flex justify-end space-x-3 mt-4">
+                <button
+                  onClick={() => setIsAssumirModalOpen(true)}
+                  disabled={selectedVehicleIds.length === 0}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400"
+                >
+                  Assumir Desmobilização
+                </button>
                 <button
                   onClick={() => setIsIndicarManutencaoModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
@@ -323,6 +354,14 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
           vehicle={viewingVehicle}
+        />
+
+        <AssumirDesmobilizacaoModal
+          isOpen={isAssumirModalOpen}
+          onClose={() => setIsAssumirModalOpen(false)}
+          vehicles={selectedVehicles}
+          users={mockUsers}
+          onConfirm={handleAssumirDesmobilizacao}
         />
       </main>
     </div>
