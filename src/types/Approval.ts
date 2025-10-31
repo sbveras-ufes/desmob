@@ -12,7 +12,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
@@ -24,7 +24,7 @@ export interface ApprovalVehicle {
   patioVistoria?: string;
   patioDestino?: string;
   residual: number;
-  situacaoVistoria?: string;
+  situacaoVistoria?: 'Pendente' | 'Aprovada';
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
@@ -42,6 +42,9 @@ export interface ApprovalVehicle {
   empresaProprietaria?: string;
   cnpjProprietario?: string;
   tipoManutencao?: string;
+  implemento?: string;
+  responsavelDesmobilizacao?: string;
+  dataHoraUltimaAtualizacaoResponsavel?: string;
 }
 
 export interface ApprovalFilters {
@@ -63,7 +66,7 @@ export interface ApprovalFilters {
   municipio?: string;
   chassi?: string[];
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Liberado' | 'Reprovado' | 'Liberado para Transferência' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | '';
   comPendencias?: boolean;
   origemPendencia?: 'Documental' | 'Fiscal' | '';
   demobilizationCode?: string;
