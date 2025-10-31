@@ -72,11 +72,12 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
     switch (situacao) {
       case 'Aguardando aprovação':
         return 'bg-yellow-100 text-yellow-800';
-      case 'Liberado':
+      case 'Liberado para Desmobilização':
         return 'bg-green-100 text-green-800';
       case 'Reprovado':
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
+      case 'Em Andamento':
         return 'bg-blue-100 text-blue-800';
       case 'Documentação Aprovada':
         return 'bg-green-100 text-green-800';
