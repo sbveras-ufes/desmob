@@ -58,7 +58,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
 
   const filteredConcluidosVehicles = useApprovalFilter(allVehicles.filter(
-    v => v.situacao === 'Reprovado' || v.situacaoAnaliseDocumental === 'Documentação Aprovada' || v.situacaoAnaliseDocumental === 'Documentação Pendente' || v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio'
+    v => v.situacao === 'Reprovado' // <-- FILTRO CORRIGIDO AQUI
   ), filters);
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
