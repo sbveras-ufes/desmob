@@ -42,10 +42,11 @@ function App() {
         return <AssetDemobilizationManagementPage 
                  allVehicles={approvalVehicles} 
                  liberatedVehicles={approvalVehicles.filter(v => 
+                   v.situacao === 'Aguardando aprovação' || // <-- ADICIONADO AQUI
                    v.situacao === 'Liberado para Desmobilização' || 
                    v.situacao === 'Liberado para Transferência' ||
                    v.situacao === 'Em Manutenção' ||
-                   v.situacao === 'Em Andamento' // <-- CORREÇÃO APLICADA AQUI
+                   v.situacao === 'Em Andamento'
                  )} 
                  onUpdateVehicles={setApprovalVehicles} 
                  pendencies={pendencies}
