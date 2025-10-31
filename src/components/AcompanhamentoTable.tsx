@@ -44,6 +44,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
       case 'Análise Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Liberado para Transferência':
+      case 'Em Andamento':
         return 'bg-blue-100 text-blue-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
@@ -81,7 +82,9 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('pt-BR');
+    // Adiciona T00:00:00 para garantir que a data seja interpretada em fuso local
+    const date = new Date(dateString + 'T00:00:00');
+    return date.toLocaleDateString('pt-BR');
   };
 
   const formatKilometer = (value: number) => new Intl.NumberFormat('pt-BR').format(value);
