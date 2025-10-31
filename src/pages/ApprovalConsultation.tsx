@@ -51,7 +51,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
         selectedVehicleIds.includes(vehicle.id)
           ? { 
               ...vehicle, 
-              situacao: 'Liberado' as const, 
+              situacao: 'Liberado para Desmobilização' as const, 
               lastUpdated: new Date().toISOString(),
               responsavelAtualizacao: randomUserName
             }

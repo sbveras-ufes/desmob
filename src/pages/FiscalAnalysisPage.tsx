@@ -13,7 +13,6 @@ import { Pendency } from '../types/Pendency';
 import { mockCompanies } from '../data/mockCompanies';
 import VehicleDetailModal from '../components/VehicleDetailModal';
 import EditFiscalDataModal from '../components/EditFiscalDataModal';
-import AssumirDesmobilizacaoModal from '../components/AssumirDesmobilizacaoModal'; // Importar o novo modal
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -32,14 +31,13 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isAssumirModalOpen, setIsAssumirModalOpen] = useState(false); // Estado para o novo modal
   const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
   const acompanhamentoVehicles = vehicles.filter(v => 
-    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção' || v.situacao === 'Em Andamento') 
+    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção') 
     && v.situacaoAnaliseFiscal !== 'Aprovada'
   );
   
@@ -117,28 +115,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     onUpdateVehicles(updatedVehicles);
   };
 
-  // Handler para o novo modal
-  const handleAssumirDesmobilizacao = (responsavelNome: string) => {
-    const randomUserName = getRandomUser();
-    const now = new Date().toISOString();
-    
-    const updatedVehicles = vehicles.map(v =>
-      selectedVehicleIds.includes(v.id)
-        ? {
-            ...v,
-            situacao: 'Em Andamento' as const,
-            responsavelDesmobilizacao: responsavelNome,
-            dataHoraUltimaAtualizacaoResponsavel: now,
-            lastUpdated: now,
-            responsavelAtualizacao: randomUserName
-          }
-        : v
-    );
-    onUpdateVehicles(updatedVehicles);
-    setSelectedVehicleIds([]);
-    setIsAssumirModalOpen(false);
-  };
-
   const acompanhamentoPagination = usePagination(filteredAcompanhamento);
   const concluidasPagination = usePagination(filteredConcluidas);
 
@@ -182,14 +158,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           <div className="mt-8">
             {activeTab === 'acompanhamento' && (
               <div>
-                <div className="flex justify-end mb-4 space-x-3">
-                  <button
-                    onClick={() => setIsAssumirModalOpen(true)}
-                    disabled={selectedVehicleIds.length === 0}
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400"
-                  >
-                    Assumir Desmobilização
-                  </button>
+                <div className="flex justify-end mb-4">
                   <button
                     onClick={() => setIsModalOpen(true)}
                     disabled={selectedVehicleIds.length === 0}
@@ -251,13 +220,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           onClose={() => setIsEditModalOpen(false)}
           vehicle={editingVehicle}
           onSave={handleSaveVehicle}
-        />
-        <AssumirDesmobilizacaoModal
-          isOpen={isAssumirModalOpen}
-          onClose={() => setIsAssumirModalOpen(false)}
-          vehicles={selectedVehicles}
-          users={mockUsers}
-          onConfirm={handleAssumirDesmobilizacao}
         />
       </main>
     </div>

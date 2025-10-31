@@ -12,7 +12,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção' | 'Em Andamento';
+  situacao: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
@@ -24,7 +24,7 @@ export interface ApprovalVehicle {
   patioVistoria?: string;
   patioDestino?: string;
   residual: number;
-  situacaoVistoria?: 'Pendente' | 'Aprovada';
+  situacaoVistoria?: string;
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
@@ -42,9 +42,6 @@ export interface ApprovalVehicle {
   empresaProprietaria?: string;
   cnpjProprietario?: string;
   tipoManutencao?: string;
-  implemento?: string;
-  responsavelDesmobilizacao?: string;
-  dataHoraUltimaAtualizacaoResponsavel?: string;
 }
 
 export interface ApprovalFilters {

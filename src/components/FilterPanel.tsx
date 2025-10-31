@@ -410,7 +410,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ filters, onFiltersChange, act
                   >
                     <option value="">Todas as Situações</option>
                     <option value="Aguardando aprovação">Aguardando aprovação</option>
-                    <option value="Liberado">Liberado</option>
+                    <option value="Liberado para Desmobilização">Liberado para Desmobilização</option>
                     <option value="Reprovado">Reprovado</option>
                   </select>
                 </div>
