@@ -42,7 +42,7 @@ function App() {
         return <AssetDemobilizationManagementPage 
                  allVehicles={approvalVehicles} 
                  liberatedVehicles={approvalVehicles.filter(v => 
-                   v.situacao === 'Liberado para Desmobilização' || 
+                   v.situacao === 'Liberado' || 
                    v.situacao === 'Liberado para Transferência' ||
                    v.situacao === 'Em Manutenção'
                  )} 
