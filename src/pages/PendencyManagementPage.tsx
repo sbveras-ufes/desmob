@@ -50,7 +50,7 @@ const PendencyManagementPage: React.FC<PendencyManagementPageProps> = ({ pendenc
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="px-4 sm:px-6 lg:px-8 py-8">
         <PendencyBreadcrumb />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Tipo de Pendência</h1>
