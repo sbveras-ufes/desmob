@@ -43,7 +43,7 @@ export interface DemobilizationFilters {
   chassi?: string[];
   placa?: string[];
   anoModelo?: string;
-  situacao?: 'Aguardando aprovação' | 'Liberado para Desmobilização' | 'Reprovado' | '';
+  situacao?: 'Aguardando aprovação' | 'Liberado' | 'Reprovado' | '';
 }
 
 export interface DemobilizationRequest {

@@ -176,7 +176,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacao: 'Liberado para Desmobilização' as const,
+            situacao: 'Liberado' as const,
             tipoManutencao: undefined,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
