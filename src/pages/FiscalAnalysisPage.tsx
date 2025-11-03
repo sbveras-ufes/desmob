@@ -37,7 +37,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
   const acompanhamentoVehicles = vehicles.filter(v => 
-    (v.situacao === 'Liberado' || v.situacao === 'Em Manutenção') 
+    (v.situacao === 'Liberado para Desmobilização' || v.situacao === 'Em Manutenção') 
     && v.situacaoAnaliseFiscal !== 'Aprovada'
   );
   
