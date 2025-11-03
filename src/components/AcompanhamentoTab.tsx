@@ -30,9 +30,6 @@ const AcompanhamentoTab: React.FC<AcompanhamentoTabProps> = ({ vehicles }) => {
       </div>
       <AcompanhamentoTable 
         vehicles={pagination.paginatedItems}
-        showSituacaoAnaliseDocumental={true}
-        showSituacaoAnaliseFiscal={true}
-        showVistoriaDetails={false}
         paginationComponent={
           <Pagination
             {...pagination}
