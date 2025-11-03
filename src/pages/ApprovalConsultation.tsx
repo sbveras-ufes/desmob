@@ -102,7 +102,7 @@ const ApprovalConsultation: React.FC<ApprovalConsultationProps> = ({
     <div className="min-h-screen bg-gray-100">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="px-4 sm:px-6 lg:px-8 py-8">
         <ApprovalBreadcrumb />
         
         <div className="flex items-center justify-between mb-8">
