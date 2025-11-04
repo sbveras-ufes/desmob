@@ -12,7 +12,7 @@ export interface ApprovalVehicle {
   dataPrevista: string;
   cliente: string;
   gerente: string;
-  situacao: 'Aguardando aprovação' | 'Liberado' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção';
+  situacao: 'Aguardando aprovação' | 'Liberado' | 'Reprovado' | 'Liberado para Transferência' | 'Em Manutenção' | 'Em Andamento';
   dataSolicitacao: string;
   lastUpdated?: string;
   localDesmobilizacao: string;
@@ -38,6 +38,7 @@ export interface ApprovalVehicle {
   dataPrecificacao?: string;
   valorPrecificacao?: number;
   responsavelAtualizacao?: string;
+  dataResponsavelDesmobilizacao?: string; // Novo campo
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
