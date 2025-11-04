@@ -51,7 +51,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
-      case 'Em Andamento': // Novo status
+      case 'Em Andamento': 
         return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
@@ -85,7 +85,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
     try {
-      // Adiciona 'T00:00:00' para garantir que a data seja interpretada como local
       const date = new Date(dateString + 'T00:00:00');
       return date.toLocaleDateString('pt-BR');
     } catch (e) {
@@ -194,7 +193,10 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.tipoManutencao || '-'}</td>
+                {/* Atualizado para exibir o array */}
+                <td className="px-2 py-2 text-sm text-gray-500">
+                  {vehicle.tipoPendenciaOutras ? vehicle.tipoPendenciaOutras.join(', ') : '-'}
+                </td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
                     {vehicle.situacaoAnaliseDocumental || '-'}
@@ -215,10 +217,10 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataEntrega)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataPrevista)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td> {/* Responsável pela Desmobilização */}
-                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td> {/* Última Atualização Responsável pela Desmob */}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td> {/* Responsável Última Alteração */}
-                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td> {/* Data/Hora Última Alteração */}
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td>
               </tr>
             ))}
           </tbody>
