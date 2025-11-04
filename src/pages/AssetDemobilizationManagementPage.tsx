@@ -166,14 +166,12 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  // Atualizado para NÃO alterar a situação
   const handleIndicarManutencao = (tiposPendencia: string[], observacao: string) => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            // Linha da situação removida - não altera mais o status
             tipoPendenciaOutras: tiposPendencia, 
             observacaoPendenciaOutras: observacao,
             lastUpdated: new Date().toISOString(),
@@ -287,7 +285,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                   disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:bg-gray-400"
                 >
-                  Tratativa Pendências
+                  Outras Pendências
                 </button>
                 <button
                   onClick={() => setIsAssumeModalOpen(true)}
