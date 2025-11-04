@@ -51,6 +51,8 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
         return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
+      case 'Em Andamento': // Novo status
+        return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Análise Pendente com Bloqueio':
@@ -213,10 +215,10 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataEntrega)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataPrevista)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">-</td> {/* Responsável pela Desmobilização */}
-                <td className="px-2 py-2 text-sm text-gray-500">-</td> {/* Última Atualização Responsável pela Desmob */}
-                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td>
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td> {/* Responsável pela Desmobilização */}
+                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td> {/* Última Atualização Responsável pela Desmob */}
+                <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td> {/* Responsável Última Alteração */}
+                <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td> {/* Data/Hora Última Alteração */}
               </tr>
             ))}
           </tbody>
