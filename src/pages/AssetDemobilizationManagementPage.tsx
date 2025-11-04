@@ -166,16 +166,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  // Atualizado para receber observacao
+  // Atualizado para NÃO alterar a situação
   const handleIndicarManutencao = (tiposPendencia: string[], observacao: string) => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
-            situacao: 'Em Manutenção' as const,
+            // Linha da situação removida - não altera mais o status
             tipoPendenciaOutras: tiposPendencia, 
-            observacaoPendenciaOutras: observacao, // Salva observação
+            observacaoPendenciaOutras: observacao,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -186,7 +186,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
-  // Atualizado para limpar observacao
   const handleConcluirManutencao = () => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
@@ -195,7 +194,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
             ...v,
             situacao: 'Liberado' as const,
             tipoPendenciaOutras: undefined, 
-            observacaoPendenciaOutras: undefined, // Limpa observação
+            observacaoPendenciaOutras: undefined,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -282,17 +281,18 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               </div>
 
               <div className="flex justify-end space-x-3 mt-4">
+                {/* Texto do botão alterado */}
                 <button
                   onClick={() => setIsIndicarManutencaoModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:bg-gray-400"
                 >
-                  Manutenção
+                  Tratativa Pendências
                 </button>
                 <button
                   onClick={() => setIsAssumeModalOpen(true)}
                   disabled={!canAssume}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-40D"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400"
                 >
                   Assumir Desmobilização
                 </button>
