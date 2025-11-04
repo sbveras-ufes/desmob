@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, ChevronDown, Check } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
 import { Pendency } from '../types/Pendency';
 
@@ -7,134 +7,177 @@ interface IndicarManutencaoModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
-  onConfirm: (tipoManutencao: string) => void;
-  onConcluirManutencao: () => void;
   pendencies: Pendency[];
+  onConfirm: (tiposPendencia: string[]) => void;
+  onConcluirManutencao: () => void;
 }
 
-const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ isOpen, onClose, vehicles, onConfirm, onConcluirManutencao, pendencies }) => {
-  const [tipoManutencao, setTipoManutencao] = useState('');
-  const [observacao, setObservacao] = useState('');
-  const [dataInicio, setDataInicio] = useState('');
-
-  const maintenancePendencies = useMemo(() => {
-    if (!pendencies) return [];
-    return pendencies.filter(p => p.origem === 'Manutenção');
-  }, [pendencies]);
+const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  vehicles, 
+  pendencies, 
+  onConfirm, 
+  onConcluirManutencao 
+}) => {
+  const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
+  const [dataPendencia, setDataPendencia] = useState('');
+  const [showPendencyList, setShowPendencyList] = useState(false);
 
   const canConcluir = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao === 'Em Manutenção'), [vehicles]);
   const canIndicar = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao !== 'Em Manutenção'), [vehicles]);
 
+  const maintenancePendencies = useMemo(() => 
+    pendencies.filter(p => p.tipo === 'Manutenção'), 
+  [pendencies]);
 
-  useEffect(() => {
-    if (isOpen) {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      setDataInicio(`${year}-${month}-${day}`);
-    } else {
-      setTipoManutencao('');
-      setObservacao('');
-      setDataInicio('');
-    }
-  }, [isOpen]);
+  const availablePendencies = useMemo(() => 
+    maintenancePendencies.filter(p => !selectedPendencies.includes(p.descricao)),
+  [maintenancePendencies, selectedPendencies]);
+
+  const handleAddPendency = (descricao: string) => {
+    setSelectedPendencies(prev => [...prev, descricao]);
+    setShowPendencyList(false);
+  };
+
+  const handleRemovePendency = (descricao: string) => {
+    setSelectedPendencies(prev => prev.filter(p => p !== descricao));
+  };
+  
+  const handleConfirm = () => {
+    onConfirm(selectedPendencies);
+    resetAndClose();
+  };
+
+  const handleConcluir = () => {
+    onConcluirManutencao();
+    resetAndClose();
+  };
+
+  const resetAndClose = () => {
+    setSelectedPendencies([]);
+    setDataPendencia('');
+    setShowPendencyList(false);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Manutenção de Veículo</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          {/* Título alterado */}
+          <h2 className="text-xl font-semibold text-gray-900">Tratativa de Pendências</h2>
+          <button onClick={resetAndClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-6 w-6" />
           </button>
         </div>
 
-        <div className="p-6 overflow-y-auto">
-          <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-2">Veículos Selecionados</h3>
-            <div className="overflow-x-auto border rounded-lg max-h-48">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
-                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {vehicles.map(v => (
-                    <tr key={v.id}>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.placa}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.chassi}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.modelo}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
+        <div className="p-6 overflow-y-auto space-y-6">
           {canIndicar && (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label htmlFor="dataInicioManutencao" className="block text-sm font-medium text-gray-700 mb-2">Data Início Manutenção</label>
-                    <input
-                      id="dataInicioManutencao"
-                      type="date"
-                      value={dataInicio}
-                      onChange={(e) => setDataInicio(e.target.value)}
-                      className="w-full bg-white border border-gray-300 rounded-md shadow-sm px-3 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                </div>
-                <div>
-                  <label htmlFor="tipoManutencao" className="block text-sm font-medium text-gray-700 mb-2">Tipo de Manutenção</label>
-                  <select
-                    id="tipoManutencao"
-                    value={tipoManutencao}
-                    onChange={(e) => setTipoManutencao(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  >
-                    <option value="">Selecione um tipo</option>
-                    {maintenancePendencies.map(p => (
-                      <option key={p.id} value={p.descricao}>{p.descricao}</option>
-                    ))}
-                  </select>
-                </div>
+              <div>
+                {/* Rótulo alterado */}
+                <label htmlFor="data-pendencia" className="block text-sm font-medium text-gray-700 mb-2">
+                  Data Outras Pendências
+                </label>
+                <input
+                  type="date"
+                  id="data-pendencia"
+                  value={dataPendencia}
+                  onChange={(e) => setDataPendencia(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
               </div>
 
-              <div className="mt-6">
-                <label htmlFor="observacao" className="block text-sm font-medium text-gray-700">Observação</label>
-                <textarea
-                  id="observacao"
-                  rows={3}
-                  value={observacao}
-                  onChange={(e) => setObservacao(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                />
+              <div>
+                {/* Rótulo alterado */}
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo da Pendência
+                </label>
+                
+                {/* Componente de Tags Multi-Select */}
+                <div className="relative">
+                  <div 
+                    className="w-full border border-gray-300 rounded-md p-2 min-h-[42px] flex flex-wrap items-center gap-2 cursor-pointer"
+                    onClick={() => setShowPendencyList(prev => !prev)}
+                  >
+                    {selectedPendencies.length === 0 && (
+                      <span className="text-gray-400">Selecione uma ou mais pendências...</span>
+                    )}
+                    {selectedPendencies.map(pendencia => (
+                      <span key={pendencia} className="flex items-center gap-1 bg-blue-100 text-blue-800 text-sm font-medium px-2 py-0.5 rounded-full">
+                        {pendencia}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Evita que o dropdown abra/feche
+                            handleRemovePendency(pendencia);
+                          }}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <X size={14} />
+                        </button>
+                      </span>
+                    ))}
+                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+
+                  {showPendencyList && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                      {availablePendencies.length > 0 ? (
+                        availablePendencies.map(p => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => handleAddPendency(p.descricao)}
+                            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm flex items-center justify-between"
+                          >
+                            {p.descricao}
+                            {selectedPendencies.includes(p.descricao) && <Check size={16} className="text-blue-600" />}
+                          </button>
+                        ))
+                      ) : (
+                        <span className="block px-3 py-2 text-sm text-gray-500">Nenhuma outra pendência disponível.</span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </>
           )}
 
           {canConcluir && (
-             <div className="text-center text-gray-700">
-                <p>Você selecionou veículos que já estão em manutenção.</p>
-                <p>Deseja marcar a manutenção como concluída?</p>
-            </div>
+            <p className="text-sm text-gray-700">
+              Veículos selecionados estão "Em Manutenção". Deseja concluir a manutenção e liberar os veículos?
+            </p>
           )}
 
+          {!canIndicar && !canConcluir && (
+            <p className="text-sm text-red-600">
+              A seleção de veículos é inválida. Selecione apenas veículos com status "Liberado" (ou similar) para indicar pendência, ou apenas veículos com status "Em Manutenção" para concluir.
+            </p>
+          )}
         </div>
 
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
-          <button onClick={onClose} className="px-6 py-2 border rounded-md">Cancelar</button>
+          <button onClick={resetAndClose} className="px-6 py-2 border rounded-md">Cancelar</button>
+          
           {canIndicar && (
-            <button onClick={() => onConfirm(tipoManutencao)} className="px-6 py-2 bg-blue-600 text-white rounded-md">Indicar Manutenção</button>
+            <button 
+              onClick={handleConfirm} 
+              disabled={selectedPendencies.length === 0}
+              className="px-6 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 disabled:bg-gray-400"
+            >
+              Confirmar
+            </button>
           )}
+          
           {canConcluir && (
-            <button onClick={onConcluirManutencao} className="px-6 py-2 bg-green-600 text-white rounded-md">Concluir Manutenção</button>
+            <button onClick={handleConcluir} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+              Concluir Manutenção
+            </button>
           )}
         </div>
       </div>
