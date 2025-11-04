@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Importado
 import { Menu, Bell, Users, X, Briefcase, FileCheck, AlertTriangle } from 'lucide-react';
 
 const Header: React.FC = () => {
@@ -50,64 +51,70 @@ const Header: React.FC = () => {
             <nav className="p-4">
               <ul className="space-y-2">
                 <li>
-                  <a 
-                    href="#/" 
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/demobilization" 
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Menu className="h-5 w-5" />
                     <span>Desmobilização de Ativos</span>
-                  </a>
+                  </Link>
                 </li>
                  <li>
-                  <a 
-                    href="#/gestao-desmobilizacao" 
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/asset-demobilization" 
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Briefcase className="h-5 w-5" />
                     <span>Gestão de Desmobilização</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a 
-                    href="#/analise-fiscal" 
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/fiscal-analysis" 
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <FileCheck className="h-5 w-5" />
                     <span>Análise Fiscal</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a 
-                    href="#/tipo-pendencia"
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/pendency-management"
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <AlertTriangle className="h-5 w-5" />
                     <span>Tipo de Pendência</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a 
-                    href="#/usuarios" 
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/flow-management" 
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Users className="h-5 w-5" />
                     <span>Parametrização E-mail</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a 
-                    href="#/aprovacao" 
+                  {/* Convertido de <a> para <Link> e atualizado o 'to' */}
+                  <Link 
+                    to="/approval" 
                     onClick={closeMenu}
                     className="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition-colors"
                   >
                     <Bell className="h-5 w-5" />
                     <span>Aprovação</span>
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
