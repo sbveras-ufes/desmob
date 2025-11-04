@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApprovalVehicle } from '../types/Approval';
-import AcompanhamentoTable from './AcompanhamentoTable';
+import ConcluidosTable from './ConcluidosTable'; // Alterado
 import { Download, Upload } from 'lucide-react';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from './Pagination';
@@ -32,7 +32,8 @@ const ConcluidosTab: React.FC<ConcluidosTabProps> = ({ vehicles, onViewVehicle }
           </div>
         )}
       </div>
-      <AcompanhamentoTable
+      {/* Alterado para usar o novo ConcluidosTable */}
+      <ConcluidosTable
         vehicles={pagination.paginatedItems}
         onViewVehicle={onViewVehicle}
         paginationComponent={
