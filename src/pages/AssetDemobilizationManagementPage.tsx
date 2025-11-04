@@ -13,7 +13,7 @@ import { useApprovalFilter } from '../hooks/useApprovalFilter';
 import IndicarManutencaoModal from '../components/IndicarManutencaoModal';
 import { Pendency } from '../types/Pendency';
 import VehicleDetailModal from '../components/VehicleDetailModal';
-import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal'; // Importado
+import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal';
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -34,7 +34,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
   const [isCreateLotModalOpen, setIsCreateLotModalOpen] = useState(false);
   const [isDocumentAnalysisModalOpen, setIsDocumentAnalysisModalOpen] = useState(false);
   const [isIndicarManutencaoModalOpen, setIsIndicarManutencaoModalOpen] = useState(false);
-  const [isAssumeModalOpen, setIsAssumeModalOpen] = useState(false); // Novo estado
+  const [isAssumeModalOpen, setIsAssumeModalOpen] = useState(false); 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
@@ -63,7 +63,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
 
   const selectedVehicles = allVehicles.filter(v => selectedVehicleIds.includes(v.id));
   
-  // Lógica de bloqueio atualizada para incluir 'Em Andamento'
   const hasBlockedVehicle = useMemo(() => selectedVehicles.some(
     v => v.situacaoAnaliseDocumental === 'Documentação Pendente com Bloqueio' 
     || v.situacaoAnaliseFiscal === 'Análise Pendente com Bloqueio' 
@@ -81,10 +80,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     return selectedVehicles.every(v => v.situacao === 'Em Manutenção');
   }, [selectedVehicles, selectedVehicleIds.length]);
 
-  // Nova lógica para habilitar o botão "Assumir Desmobilização"
   const canAssume = useMemo(() => {
     if (selectedVehicleIds.length === 0) return false;
-    // Só pode assumir se TODOS os selecionados estiverem como "Liberado"
     return selectedVehicles.every(v => v.situacao === 'Liberado');
   }, [selectedVehicles, selectedVehicleIds.length]);
 
@@ -169,14 +166,15 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  const handleIndicarManutencao = (tipoManutencao: string) => {
+  // Atualizado para receber string[]
+  const handleIndicarManutencao = (tiposPendencia: string[]) => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             situacao: 'Em Manutenção' as const,
-            tipoManutencao,
+            tipoPendenciaOutras: tiposPendencia, // Atualizado
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -187,6 +185,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
+  // Atualizado para limpar o novo campo
   const handleConcluirManutencao = () => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
@@ -194,7 +193,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? {
             ...v,
             situacao: 'Liberado' as const,
-            tipoManutencao: undefined,
+            tipoPendenciaOutras: undefined, // Atualizado
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -205,7 +204,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
-  // Nova função para "Assumir Desmobilização"
   const handleAssumeDemobilization = () => {
     const randomUserName = getRandomUser();
     const now = new Date().toISOString();
@@ -215,9 +213,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? {
             ...v,
             situacao: 'Em Andamento' as const,
-            responsavelAtualizacao: randomUserName, // Define "Responsável" e "Última Alteração"
-            dataResponsavelDesmobilizacao: now, // Define "Data Responsável Desmob"
-            lastUpdated: now, // Define "Data/Hora Última Alteração"
+            responsavelAtualizacao: randomUserName, 
+            dataResponsavelDesmobilizacao: now, 
+            lastUpdated: now, 
           }
         : v
     );
@@ -289,7 +287,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 >
                   Manutenção
                 </button>
-                {/* Novo Botão */}
                 <button
                   onClick={() => setIsAssumeModalOpen(true)}
                   disabled={!canAssume}
@@ -365,7 +362,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
           pendencies={pendencies}
         />
 
-        {/* Novo Modal Renderizado */}
         <AssumeDemobilizationModal
           isOpen={isAssumeModalOpen}
           onClose={() => setIsAssumeModalOpen(false)}
