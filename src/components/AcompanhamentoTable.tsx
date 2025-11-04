@@ -139,7 +139,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diretoria</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número CR</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição CR</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência Manutenção</th>
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência (Outras)</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Documental</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Pendência Documental</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
@@ -149,7 +149,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF Emplacamento</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela Desmobilização</th>
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Última Atualização Responsável pela Desmob</th>
+              <th className="px-2 py-3 text-left text-xs font-m"medium text-gray-500 uppercase tracking-wider">Última Atualização Responsável pela Desmob</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável Última Alteração</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora Última Alteração</th>
             </tr>
@@ -193,7 +193,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.diretoria}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
-                {/* Atualizado para exibir o array */}
                 <td className="px-2 py-2 text-sm text-gray-500">
                   {vehicle.tipoPendenciaOutras ? vehicle.tipoPendenciaOutras.join(', ') : '-'}
                 </td>
@@ -218,6 +217,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataPrevista)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
+Posto Atualização Responsável pela Desmob
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td>
