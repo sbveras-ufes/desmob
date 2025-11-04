@@ -42,7 +42,8 @@ export interface ApprovalVehicle {
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
-  tipoPendenciaOutras?: string[]; // Renomeado de tipoManutencao e agora é string[]
+  tipoPendenciaOutras?: string[];
+  observacaoPendenciaOutras?: string; // Novo campo
 }
 
 export interface ApprovalFilters {
