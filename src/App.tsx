@@ -1,69 +1,102 @@
 import React, { useState } from 'react';
-import UserManagement from './pages/UserManagement';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import DemobilizationPage from './pages/DemobilizationPage';
 import ApprovalConsultation from './pages/ApprovalConsultation';
 import AssetDemobilizationManagementPage from './pages/AssetDemobilizationManagementPage';
-import { ApprovalVehicle } from './types/Approval';
 import FiscalAnalysisPage from './pages/FiscalAnalysisPage';
 import PendencyManagementPage from './pages/PendencyManagementPage';
+import FlowManagementPage from './pages/FlowManagementPage'; // Renomeado
+import { mockApprovals } from './data/mockApprovals';
+import { ApprovalVehicle } from './types/Approval';
 import { Pendency } from './types/Pendency';
 import { mockPendencies } from './data/mockPendencies';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<string>('demobilization');
-  const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>([]);
+  const [approvalVehicles, setApprovalVehicles] = useState<ApprovalVehicle[]>(mockApprovals);
   const [pendencies, setPendencies] = useState<Pendency[]>(mockPendencies);
 
-  React.useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#/', '');
-      setCurrentPage(hash || 'demobilization');
-    };
-
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
+  const handleDemobilization = (vehicles: ApprovalVehicle[]) => {
+    setApprovalVehicles(prev => [...prev, ...vehicles]);
+  };
 
   const handleUpdateApprovals = (updatedVehicles: ApprovalVehicle[]) => {
     setApprovalVehicles(updatedVehicles);
   };
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'usuarios':
-        return <UserManagement />;
-      case 'aprovacao':
-        return <ApprovalConsultation approvalVehicles={approvalVehicles} onUpdateVehicles={handleUpdateApprovals} />;
-      case 'gestao-desmobilizacao':
-        return <AssetDemobilizationManagementPage 
-                 allVehicles={approvalVehicles} 
-                 liberatedVehicles={approvalVehicles.filter(v => 
-                   v.situacao === 'Liberado' || 
-                   v.situacao === 'Liberado para Transferência' ||
-                   v.situacao === 'Em Manutenção'
-                 )} 
-                 onUpdateVehicles={setApprovalVehicles} 
-                 pendencies={pendencies}
-               />;
-      case 'analise-fiscal':
-        return <FiscalAnalysisPage 
-                 vehicles={approvalVehicles} 
-                 onUpdateVehicles={setApprovalVehicles} 
-                 pendencies={pendencies}
-               />;
-      case 'tipo-pendencia':
-        return <PendencyManagementPage pendencies={pendencies} onUpdatePendencies={setPendencies} />;
-      case 'demobilization':
-      default:
-        return <DemobilizationPage onVehiclesDemobilized={(newVehicles) => setApprovalVehicles(prev => [...prev, ...newVehicles])} demobilizedVehicles={approvalVehicles} />;
-    }
+  
+  const handleUpdatePendencies = (updatedPendencies: Pendency[]) => {
+    setPendencies(updatedPendencies);
   };
 
-  return renderPage();
+  // Filtro atualizado para incluir 'Em Andamento'
+  const liberatedVehicles = approvalVehicles.filter(
+    v => (
+      v.situacao === 'Liberado' || 
+      v.situacao === 'Liberado para Transferência' || 
+      v.situacao === 'Em Manutenção' ||
+      v.situacao === 'Em Andamento' // Adicionado
+    ) 
+    && v.situacaoAnaliseDocumental !== 'Documentação Aprovada'
+  );
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/demobilization" />} />
+        <Route 
+          path="/demobilization" 
+          element={
+            <DemobilizationPage 
+              onVehiclesDemobilized={handleDemobilization} 
+              demobilizedVehicles={approvalVehicles.filter(v => v.situacao === 'Aguardando aprovação')} 
+            />
+          } 
+        />
+        <Route 
+          path="/approval" 
+          element={
+            <ApprovalConsultation 
+              approvalVehicles={approvalVehicles} 
+              onUpdateVehicles={handleUpdateApprovals} 
+            />
+          } 
+        />
+        <Route 
+          path="/asset-demobilization" 
+          element={
+            <AssetDemobilizationManagementPage 
+              liberatedVehicles={liberatedVehicles} 
+              onUpdateVehicles={handleUpdateApprovals}
+              allVehicles={approvalVehicles}
+              pendencies={pendencies}
+            />
+          } 
+        />
+        <Route 
+          path="/fiscal-analysis"
+          element={
+            <FiscalAnalysisPage 
+              vehicles={approvalVehicles} 
+              onUpdateVehicles={handleUpdateApprovals}
+              pendencies={pendencies}
+            />
+          }
+        />
+        <Route
+          path="/pendency-management"
+          element={
+            <PendencyManagementPage
+              pendencies={pendencies}
+              onUpdatePendencies={handleUpdatePendencies}
+            />
+          }
+        />
+        <Route
+          path="/flow-management"
+          element={<FlowManagementPage />}
+        />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;
