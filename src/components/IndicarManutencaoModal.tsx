@@ -22,14 +22,14 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
 }) => {
   const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [dataPendencia, setDataPendencia] = useState('');
-  const [observacao, setObservacao] = useState(''); // Novo estado
+  const [observacao, setObservacao] = useState('');
   const [showPendencyList, setShowPendencyList] = useState(false);
 
   const canConcluir = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao === 'Em Manutenção'), [vehicles]);
   const canIndicar = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao !== 'Em Manutenção'), [vehicles]);
 
-  const otherPendencies = useMemo(() => // Renomeado
-    pendencies.filter(p => p.tipo === 'Outras Pendências'), // Filtro atualizado
+  const otherPendencies = useMemo(() => 
+    pendencies.filter(p => p.tipo === 'Outras Pendências'), 
   [pendencies]);
 
   const availablePendencies = useMemo(() => 
@@ -46,7 +46,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
   };
   
   const handleConfirm = () => {
-    onConfirm(selectedPendencies, observacao); // Passando observação
+    onConfirm(selectedPendencies, observacao);
     resetAndClose();
   };
 
@@ -58,7 +58,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
   const resetAndClose = () => {
     setSelectedPendencies([]);
     setDataPendencia('');
-    setObservacao(''); // Limpar observação
+    setObservacao('');
     setShowPendencyList(false);
     onClose();
   };
@@ -67,7 +67,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">Tratativa de Pendências</h2>
           <button onClick={resetAndClose} className="text-gray-400 hover:text-gray-600">
@@ -76,6 +76,32 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
         </div>
 
         <div className="p-6 overflow-y-auto space-y-6">
+          
+          {/* Nova Grid de Veículos Selecionados */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium text-gray-800 mb-2">Veículos Selecionados</h3>
+            <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {vehicles.map(v => (
+                    <tr key={v.id}>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{v.placa}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.chassi}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.modelo}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           {canIndicar && (
             <>
               <div>
@@ -144,7 +170,6 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
                 </div>
               </div>
 
-              {/* Novo campo Observações */}
               <div>
                 <label htmlFor="observacoes-pendencia" className="block text-sm font-medium text-gray-700 mb-2">
                   Observações
