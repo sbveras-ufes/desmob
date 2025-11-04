@@ -8,7 +8,7 @@ interface IndicarManutencaoModalProps {
   onClose: () => void;
   vehicles: ApprovalVehicle[];
   pendencies: Pendency[];
-  onConfirm: (tiposPendencia: string[]) => void;
+  onConfirm: (tiposPendencia: string[], observacao: string) => void;
   onConcluirManutencao: () => void;
 }
 
@@ -22,18 +22,19 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
 }) => {
   const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [dataPendencia, setDataPendencia] = useState('');
+  const [observacao, setObservacao] = useState(''); // Novo estado
   const [showPendencyList, setShowPendencyList] = useState(false);
 
   const canConcluir = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao === 'Em Manutenção'), [vehicles]);
   const canIndicar = useMemo(() => vehicles.length > 0 && vehicles.every(v => v.situacao !== 'Em Manutenção'), [vehicles]);
 
-  const maintenancePendencies = useMemo(() => 
-    pendencies.filter(p => p.tipo === 'Manutenção'), 
+  const otherPendencies = useMemo(() => // Renomeado
+    pendencies.filter(p => p.tipo === 'Outras Pendências'), // Filtro atualizado
   [pendencies]);
 
   const availablePendencies = useMemo(() => 
-    maintenancePendencies.filter(p => !selectedPendencies.includes(p.descricao)),
-  [maintenancePendencies, selectedPendencies]);
+    otherPendencies.filter(p => !selectedPendencies.includes(p.descricao)),
+  [otherPendencies, selectedPendencies]);
 
   const handleAddPendency = (descricao: string) => {
     setSelectedPendencies(prev => [...prev, descricao]);
@@ -45,7 +46,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
   };
   
   const handleConfirm = () => {
-    onConfirm(selectedPendencies);
+    onConfirm(selectedPendencies, observacao); // Passando observação
     resetAndClose();
   };
 
@@ -57,6 +58,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
   const resetAndClose = () => {
     setSelectedPendencies([]);
     setDataPendencia('');
+    setObservacao(''); // Limpar observação
     setShowPendencyList(false);
     onClose();
   };
@@ -67,7 +69,6 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          {/* Título alterado */}
           <h2 className="text-xl font-semibold text-gray-900">Tratativa de Pendências</h2>
           <button onClick={resetAndClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-6 w-6" />
@@ -78,7 +79,6 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
           {canIndicar && (
             <>
               <div>
-                {/* Rótulo alterado */}
                 <label htmlFor="data-pendencia" className="block text-sm font-medium text-gray-700 mb-2">
                   Data Outras Pendências
                 </label>
@@ -92,12 +92,10 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
               </div>
 
               <div>
-                {/* Rótulo alterado */}
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tipo da Pendência
                 </label>
                 
-                {/* Componente de Tags Multi-Select */}
                 <div className="relative">
                   <div 
                     className="w-full border border-gray-300 rounded-md p-2 min-h-[42px] flex flex-wrap items-center gap-2 cursor-pointer"
@@ -112,7 +110,7 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
                         <button
                           type="button"
                           onClick={(e) => {
-                            e.stopPropagation(); // Evita que o dropdown abra/feche
+                            e.stopPropagation(); 
                             handleRemovePendency(pendencia);
                           }}
                           className="text-blue-600 hover:text-blue-800"
@@ -144,6 +142,21 @@ const IndicarManutencaoModal: React.FC<IndicarManutencaoModalProps> = ({
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Novo campo Observações */}
+              <div>
+                <label htmlFor="observacoes-pendencia" className="block text-sm font-medium text-gray-700 mb-2">
+                  Observações
+                </label>
+                <textarea
+                  id="observacoes-pendencia"
+                  value={observacao}
+                  onChange={(e) => setObservacao(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Adicione observações (opcional)..."
+                />
               </div>
             </>
           )}
