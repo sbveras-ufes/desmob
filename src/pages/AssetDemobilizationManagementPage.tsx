@@ -166,15 +166,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  // Atualizado para receber string[]
-  const handleIndicarManutencao = (tiposPendencia: string[]) => {
+  // Atualizado para receber observacao
+  const handleIndicarManutencao = (tiposPendencia: string[], observacao: string) => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
       selectedVehicleIds.includes(v.id)
         ? {
             ...v,
             situacao: 'Em Manutenção' as const,
-            tipoPendenciaOutras: tiposPendencia, // Atualizado
+            tipoPendenciaOutras: tiposPendencia, 
+            observacaoPendenciaOutras: observacao, // Salva observação
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -185,7 +186,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
-  // Atualizado para limpar o novo campo
+  // Atualizado para limpar observacao
   const handleConcluirManutencao = () => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
@@ -193,7 +194,8 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? {
             ...v,
             situacao: 'Liberado' as const,
-            tipoPendenciaOutras: undefined, // Atualizado
+            tipoPendenciaOutras: undefined, 
+            observacaoPendenciaOutras: undefined, // Limpa observação
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
           }
@@ -290,7 +292,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 <button
                   onClick={() => setIsAssumeModalOpen(true)}
                   disabled={!canAssume}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-400"
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:bg-gray-40D"
                 >
                   Assumir Desmobilização
                 </button>
