@@ -38,11 +38,11 @@ export interface ApprovalVehicle {
   dataPrecificacao?: string;
   valorPrecificacao?: number;
   responsavelAtualizacao?: string;
-  dataResponsavelDesmobilizacao?: string; // Novo campo
+  dataResponsavelDesmobilizacao?: string;
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
-  tipoManutencao?: string;
+  tipoPendenciaOutras?: string[]; // Renomeado de tipoManutencao e agora é string[]
 }
 
 export interface ApprovalFilters {
