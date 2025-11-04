@@ -149,7 +149,8 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF Emplacamento</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela Desmobilização</th>
-              <th className="px-2 py-3 text-left text-xs font-m"medium text-gray-500 uppercase tracking-wider">Última Atualização Responsável pela Desmob</th>
+              {/* Linha 152 Corrigida */}
+              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Última Atualização Responsável pela Desmob</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável Última Alteração</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora Última Alteração</th>
             </tr>
@@ -216,8 +217,8 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataEntrega)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataPrevista)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
+                {/* Texto aleatório removido daqui */}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
-Posto Atualização Responsável pela Desmob
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.lastUpdated)}</td>
