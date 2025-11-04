@@ -26,6 +26,8 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
         return 'bg-blue-100 text-blue-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
+      case 'Em Andamento': // Novo status
+        return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Aprovada':
       case 'Aprovada':
         return 'bg-green-100 text-green-800';
