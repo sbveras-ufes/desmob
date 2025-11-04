@@ -13,6 +13,7 @@ import { Pendency } from '../types/Pendency';
 import { mockCompanies } from '../data/mockCompanies';
 import VehicleDetailModal from '../components/VehicleDetailModal';
 import EditFiscalDataModal from '../components/EditFiscalDataModal';
+import FiscalAnalysisConcluidasTable from '../components/FiscalAnalysisConcluidasTable'; // Importado
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -184,10 +185,8 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
               </div>
             )}
             {activeTab === 'concluidas' && (
-               <FiscalAnalysisTable
+               <FiscalAnalysisConcluidasTable
                 vehicles={concluidasPagination.paginatedItems}
-                selectedVehicles={selectedVehicleIds}
-                onSelectionChange={setSelectedVehicleIds}
                 onViewVehicle={handleViewVehicle}
                 onEditVehicle={handleEditVehicle}
                 paginationComponent={
