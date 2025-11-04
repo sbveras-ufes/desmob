@@ -88,6 +88,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
         return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
+      case 'Em Andamento': // Novo status
+        return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
       case 'Análise Pendente com Bloqueio':
