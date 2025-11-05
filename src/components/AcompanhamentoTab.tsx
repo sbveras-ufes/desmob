@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApprovalVehicle } from '../types/Approval';
-import AcompanhamentoTable from './AcompanhamentoTable';
+import DemobilizacaoAcompanhamentoTable from './DemobilizacaoAcompanhamentoTable'; // Alterado
 import { Download, Upload } from 'lucide-react';
 import { usePagination } from '../hooks/usePagination';
 import Pagination from './Pagination';
@@ -28,7 +28,8 @@ const AcompanhamentoTab: React.FC<AcompanhamentoTabProps> = ({ vehicles }) => {
           </div>
         )}
       </div>
-      <AcompanhamentoTable 
+      {/* Alterado para usar o novo componente de tabela */}
+      <DemobilizacaoAcompanhamentoTable 
         vehicles={pagination.paginatedItems}
         paginationComponent={
           <Pagination
