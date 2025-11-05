@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { X, ChevronDown } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, ChevronDown, Check } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
 import { Pendency } from '../types/Pendency';
 
@@ -7,81 +7,98 @@ interface DocumentAnalysisModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: ApprovalVehicle[];
-  onApprove: (observation: string) => void;
-  onSignalPendency: (pendencies: string[], observation: string) => void;
   pendencies: Pendency[];
+  onApprove: (observation: string) => void;
+  onSignalPendency: (pendenciesSelection: string[], observation: string) => void;
 }
 
-const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, onApprove, onSignalPendency, pendencies }) => {
-  const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
+const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, pendencies, onApprove, onSignalPendency }) => {
+  const [activeTab, setActiveTab] = useState<'approve' | 'pendency'>('approve');
   const [observation, setObservation] = useState('');
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
+  const [showPendencyList, setShowPendencyList] = useState(false);
 
-  const pendencyOptions = useMemo(() => {
-    return pendencies.filter(p => p.origem === 'Documental').map(p => p.descricao);
-  }, [pendencies]);
+  const documentalPendencies = useMemo(() => 
+    pendencies.filter(p => p.tipo === 'Documental'), 
+  [pendencies]);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [dropdownRef]);
+  const availablePendencies = useMemo(() => 
+    documentalPendencies.filter(p => !selectedPendencies.includes(p.descricao)),
+  [documentalPendencies, selectedPendencies]);
 
+  const handleAddPendency = (descricao: string) => {
+    setSelectedPendencies(prev => [...prev, descricao]);
+    setShowPendencyList(false);
+  };
 
-  const handleTogglePendency = (pendency: string) => {
-    setSelectedPendencies(prev =>
-      prev.includes(pendency) ? prev.filter(p => p !== pendency) : [...prev, pendency]
-    );
+  const handleRemovePendency = (descricao: string) => {
+    setSelectedPendencies(prev => prev.filter(p => p !== descricao));
+  };
+
+  const handleClose = () => {
+    setActiveTab('approve');
+    setObservation('');
+    setSelectedPendencies([]);
+    setShowPendencyList(false);
+    onClose();
   };
 
   const handleApprove = () => {
     onApprove(observation);
-    onClose();
+    handleClose();
   };
 
   const handleSignalPendency = () => {
-    if (selectedPendencies.length > 0) {
-      onSignalPendency(selectedPendencies, observation);
-      onClose();
-    }
+    onSignalPendency(selectedPendencies, observation);
+    handleClose();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+      <div className="bg-white rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Análise Documental</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-xl font-semibold text-gray-900">Checklist Análise Documental</h2>
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-6 w-6" />
           </button>
         </div>
 
         <div className="p-6 overflow-y-auto">
-          {/* Tabela de Veículos */}
           <div className="mb-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-2">Veículos Selecionados</h3>
-            <div className="overflow-x-auto border rounded-lg max-h-48">
+            <h3 className="text-lg font-medium text-gray-800 mb-2">Veículos Selecionados ({vehicles.length})</h3>
+            <div className="border rounded-lg overflow-hidden max-h-60 overflow-y-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Ano/Modelo</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Diretoria</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">CR</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Descrição do CR</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tipo de Desmobilização</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">UF Emplacamento</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pátio Atual</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {vehicles.map(v => (
                     <tr key={v.id}>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.placa}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.chassi}</td>
-                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.modelo}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{v.placa}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.chassi}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.modelo}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.anoModelo}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.diretoria}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.cr}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.descricaoCR}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.tipoDesmobilizacao}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.cliente}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.ufEmplacamento || '-'}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{v.patioVistoria || '-'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -89,78 +106,121 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
             </div>
           </div>
 
-          {/* Tipo de Pendência */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Pendência</label>
-            <div className="relative" ref={dropdownRef}>
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8" aria-label="Tabs">
               <button
-                type="button"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onClick={() => setActiveTab('approve')}
+                className={`${
+                  activeTab === 'approve'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
               >
-                <span className="block truncate">{selectedPendencies.length > 0 ? `${selectedPendencies.length} selecionada(s)` : 'Selecione...'}</span>
-                <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
-                </span>
+                Aprovar
               </button>
-              {isDropdownOpen && (
-                <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10">
-                  <ul className="max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                    {pendencyOptions.map(option => (
-                      <li key={option} className="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100" onClick={() => handleTogglePendency(option)}>
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedPendencies.includes(option)}
-                            readOnly
-                            className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                          />
-                          <span className="ml-3 block font-normal truncate">{option}</span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-            {selectedPendencies.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {selectedPendencies.map(pendency => (
-                  <span key={pendency} className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-md">
-                    {pendency}
-                    <button onClick={() => handleTogglePendency(pendency)} className="ml-1.5 text-blue-500 hover:text-blue-700">
-                      <X size={12} />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
+              <button
+                onClick={() => setActiveTab('pendency')}
+                className={`${
+                  activeTab === 'pendency'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
+              >
+                Sinalizar Pendência
+              </button>
+            </nav>
           </div>
 
-          {/* Observação */}
-          <div className="mb-4">
-            <label htmlFor="observation" className="block text-sm font-medium text-gray-700">Observação</label>
-            <textarea
-              id="observation"
-              rows={3}
-              value={observation}
-              onChange={(e) => setObservation(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-            />
+          <div className="mt-6">
+            {activeTab === 'pendency' && (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo de Pendência
+                </label>
+                <div className="relative">
+                  <div 
+                    className="w-full border border-gray-300 rounded-md p-2 min-h-[42px] flex flex-wrap items-center gap-2 cursor-pointer"
+                    onClick={() => setShowPendencyList(prev => !prev)}
+                  >
+                    {selectedPendencies.length === 0 && (
+                      <span className="text-gray-400">Selecione uma ou mais pendências...</span>
+                    )}
+                    {selectedPendencies.map(pendencia => (
+                      <span key={pendencia} className="flex items-center gap-1 bg-blue-100 text-blue-800 text-sm font-medium px-2 py-0.5 rounded-full">
+                        {pendencia}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemovePendency(pendencia);
+                          }}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <X size={14} />
+                        </button>
+                      </span>
+                    ))}
+                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  </div>
+
+                  {showPendencyList && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                      {availablePendencies.length > 0 ? (
+                        availablePendencies.map(p => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => handleAddPendency(p.descricao)}
+                            className="w-full px-3 py-2 text-left hover:bg-gray-100 text-sm flex items-center justify-between"
+                          >
+                            {p.descricao}
+                            {selectedPendencies.includes(p.descricao) && <Check size={16} className="text-blue-600" />}
+                          </button>
+                        ))
+                      ) : (
+                        <span className="block px-3 py-2 text-sm text-gray-500">Nenhuma outra pendência disponível.</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            <div>
+              <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700 mb-2">
+                Observações
+              </label>
+              <textarea
+                id="observacoes"
+                value={observation}
+                onChange={(e) => setObservation(e.target.value)}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder={activeTab === 'approve' ? 'Adicione observações (opcional)...' : 'Descreva a pendência (obrigatório)...'}
+              />
+            </div>
           </div>
         </div>
 
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
-          <button
-            onClick={handleSignalPendency}
-            disabled={selectedPendencies.length === 0}
-            className="px-6 py-2 border rounded-md text-white bg-red-600 hover:bg-red-700 disabled:bg-gray-400"
-          >
-            Sinalizar Pendência
-          </button>
-          <button onClick={handleApprove} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-            Aprovar
-          </button>
+          <button onClick={handleClose} className="px-6 py-2 border rounded-md">Cancelar</button>
+          
+          {activeTab === 'approve' ? (
+            <button 
+              onClick={handleApprove} 
+              className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Aprovar
+            </button>
+          ) : (
+            <button 
+              onClick={handleSignalPendency} 
+              disabled={selectedPendencies.length === 0 || observation.trim() === ''}
+              className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400"
+            >
+              Sinalizar Pendência
+            </button>
+          )}
         </div>
       </div>
     </div>
