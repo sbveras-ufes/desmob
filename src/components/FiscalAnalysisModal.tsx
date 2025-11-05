@@ -25,7 +25,6 @@ const UFs = [
 ];
 
 const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClose, vehicles, pendencies, onApprove, onSignalPendency }) => {
-  // O estado 'activeTab' foi removido
   const [observation, setObservation] = useState('');
   const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [showPendencyList, setShowPendencyList] = useState(false);
@@ -51,7 +50,6 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
   };
 
   const handleClose = () => {
-    // Limpeza de 'activeTab' removida
     setObservation('');
     setSelectedPendencies([]);
     setShowPendencyList(false);
@@ -147,9 +145,7 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
             Se preenchidos, os campos acima atualizarão todos os veículos selecionados na confirmação.
           </p>
           
-          {/* Bloco de abas removido */}
           <div className="mt-6 space-y-4">
-            {/* Campo de Pendência (agora sempre visível) */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipo de Pendência
@@ -202,7 +198,6 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
               </div>
             </div>
             
-            {/* Campo de Observações (agora sempre visível) */}
             <div>
               <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700 mb-2">
                 Observações
@@ -219,7 +214,6 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
           </div>
         </div>
 
-        {/* Botões do rodapé atualizados */}
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
           <button onClick={handleClose} className="px-6 py-2 border rounded-md">Cancelar</button>
           
@@ -230,9 +224,11 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
           >
             Sinalizar Pendência
           </button>
+          {/* Botão "Aprovar" agora tem a condição 'disabled' */}
           <button 
             onClick={handleApprove} 
-            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            disabled={selectedPendencies.length > 0}
+            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400"
           >
             Aprovar
           </button>
