@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react'; // Removido: useState, useRef, useEffect
 import { ApprovalVehicle } from '../types/Approval';
-import { MoreVertical, Eye, Edit } from 'lucide-react';
+import { Eye } from 'lucide-react'; // Removido: MoreVertical, Edit. Adicionado: Eye
 
 interface FiscalAnalysisTableProps {
   vehicles: ApprovalVehicle[];
@@ -8,50 +8,12 @@ interface FiscalAnalysisTableProps {
   selectedVehicles?: string[];
   onSelectionChange?: (ids: string[]) => void;
   onViewVehicle: (vehicle: ApprovalVehicle) => void;
-  onEditVehicle: (vehicle: ApprovalVehicle) => void;
+  // Removida prop: onEditVehicle
 }
 
-const ActionsMenu: React.FC<{
-  vehicle: ApprovalVehicle;
-  onView: (vehicle: ApprovalVehicle) => void;
-  onEdit: (vehicle: ApprovalVehicle) => void;
-}> = ({ vehicle, onView, onEdit }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+// Removido componente ActionsMenu
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [menuRef]);
-
-  return (
-    <div className="relative inline-block text-left" ref={menuRef}>
-      <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-full hover:bg-gray-200">
-        <MoreVertical size={18} />
-      </button>
-      {isOpen && (
-        <div className="origin-top-right absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-          <div className="py-1" role="menu" aria-orientation="vertical">
-            <a href="#" onClick={(e) => { e.preventDefault(); onView(vehicle); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-              <Eye size={16} /> Visualizar
-            </a>
-            <a href="#" onClick={(e) => { e.preventDefault(); onEdit(vehicle); setIsOpen(false); }} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-              <Edit size={16} /> Editar
-            </a>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-
-const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange, onViewVehicle, onEditVehicle }) => {
+const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, paginationComponent, selectedVehicles = [], onSelectionChange, onViewVehicle }) => {
 
   const handleSelectAll = (checked: boolean) => {
     onSelectionChange?.(checked ? vehicles.map(v => v.id) : []);
@@ -88,7 +50,7 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
         return 'bg-yellow-100 text-yellow-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
-      case 'Em Andamento': // Novo status
+      case 'Em Andamento':
         return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Pendente com Bloqueio':
         return 'bg-red-100 text-red-800';
@@ -119,7 +81,8 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                   />
                 </th>
               )}
-              <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+              {/* Coluna Ações substituída por coluna de ícone */}
+              <th className="px-2 py-3"></th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Situação Análise Fiscal</th>
@@ -152,8 +115,11 @@ const FiscalAnalysisTable: React.FC<FiscalAnalysisTableProps> = ({ vehicles, pag
                     />
                   </td>
                 )}
-                <td className="px-2 py-4 whitespace-nowrap text-sm font-medium">
-                  <ActionsMenu vehicle={vehicle} onView={onViewVehicle} onEdit={onEditVehicle} />
+                {/* Coluna Ações substituída por ícone */}
+                <td className="px-2 py-2 text-sm">
+                  <button onClick={() => onViewVehicle(vehicle)} className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100">
+                    <Eye size={16} />
+                  </button>
                 </td>
                 <td className="px-2 py-2 text-sm font-medium text-gray-900">{vehicle.placa}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
