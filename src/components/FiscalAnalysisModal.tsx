@@ -76,7 +76,7 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Checklist Análise Fiscal</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Análise Fiscal</h2>
           <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
             <X className="h-6 w-6" />
           </button>
