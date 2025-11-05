@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'; // useMemo foi importado
+import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import FiscalAnalysisBreadcrumb from '../components/FiscalAnalysisBreadcrumb';
 import { ApprovalVehicle, ApprovalFilters } from '../types/Approval';
@@ -14,7 +14,13 @@ import { mockCompanies } from '../data/mockCompanies';
 import VehicleDetailModal from '../components/VehicleDetailModal';
 import EditFiscalDataModal from '../components/EditFiscalDataModal';
 import FiscalAnalysisConcluidasTable from '../components/FiscalAnalysisConcluidasTable';
-import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal'; // Importado
+import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal';
+
+// Tipo para as atualizações
+interface FiscalUpdates {
+  empresaProprietaria?: string;
+  ufEmplacamento?: string;
+}
 
 interface FiscalAnalysisPageProps {
   vehicles: ApprovalVehicle[];
@@ -33,14 +39,13 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isAssumeModalOpen, setIsAssumeModalOpen] = useState(false); // Novo estado
+  const [isAssumeModalOpen, setIsAssumeModalOpen] = useState(false);
   const [viewingVehicle, setViewingVehicle] = useState<ApprovalVehicle | null>(null);
   const [editingVehicle, setEditingVehicle] = useState<ApprovalVehicle | null>(null);
   const [filters, setFilters] = useState<ApprovalFilters>({});
 
   const concluidasVehicles = vehicles.filter(v => v.situacaoAnaliseFiscal === 'Aprovada');
   
-  // Filtro ATUALIZADO para incluir 'Em Andamento'
   const acompanhamentoVehicles = vehicles.filter(v => 
     (v.situacao === 'Liberado' || v.situacao === 'Em Manutenção' || v.situacao === 'Em Andamento') 
     && v.situacaoAnaliseFiscal !== 'Aprovada'
@@ -51,21 +56,36 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
 
   const selectedVehicles = vehicles.filter(v => selectedVehicleIds.includes(v.id));
 
-  // Nova lógica para habilitar o botão "Assumir"
   const canAssume = useMemo(() => {
     if (selectedVehicleIds.length === 0) return false;
-    // Só pode assumir se TODOS os selecionados estiverem como "Liberado"
     return selectedVehicles.every(v => v.situacao === 'Liberado');
   }, [selectedVehicles, selectedVehicleIds.length]);
 
+  // Helper para aplicar atualizações fiscais opcionais
+  const getFiscalUpdates = (updates: FiscalUpdates) => {
+    const newUpdates: Partial<ApprovalVehicle> = {};
+    
+    if (updates.ufEmplacamento) {
+      newUpdates.ufEmplacamento = updates.ufEmplacamento;
+    }
+    if (updates.empresaProprietaria) {
+      newUpdates.empresaProprietaria = updates.empresaProprietaria;
+      const company = mockCompanies.find(c => c.nome === updates.empresaProprietaria);
+      newUpdates.cnpjProprietario = company ? company.cnpj : undefined;
+    }
+    return newUpdates;
+  };
 
-  const handleApprove = (observation: string) => {
+
+  const handleApprove = (observation: string, updates: FiscalUpdates) => {
     const randomUserName = getRandomUser();
+    const fiscalUpdates = getFiscalUpdates(updates);
 
     const updatedVehicles = vehicles.map(v => 
       selectedVehicleIds.includes(v.id)
         ? { 
             ...v, 
+            ...fiscalUpdates, // Aplica atualizações opcionais
             situacaoAnaliseFiscal: 'Aprovada' as const, 
             observacaoAnaliseFiscal: observation, 
             lastUpdated: new Date().toISOString(), 
@@ -77,8 +97,9 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-  const handleSignalPendency = (pendenciesSelection: string[], observation: string) => {
+  const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: FiscalUpdates) => {
     const randomUserName = getRandomUser();
+    const fiscalUpdates = getFiscalUpdates(updates);
     const blockingPendencies = pendencies
       .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
       .map(p => p.descricao);
@@ -88,6 +109,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
         const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
+          ...fiscalUpdates, // Aplica atualizações opcionais
           situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
@@ -128,7 +150,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     onUpdateVehicles(updatedVehicles);
   };
 
-  // Nova função para "Assumir Desmobilização"
   const handleAssumeDemobilization = () => {
     const randomUserName = getRandomUser();
     const now = new Date().toISOString();
@@ -192,7 +213,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           <div className="mt-8">
             {activeTab === 'acompanhamento' && (
               <div>
-                {/* Botões atualizados */}
                 <div className="flex justify-end space-x-3 mb-4">
                   <button
                     onClick={() => setIsAssumeModalOpen(true)}
@@ -249,7 +269,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           onSignalPendency={handleSignalPendency}
           pendencies={pendencies}
         />
-        {/* Novo Modal Renderizado */}
         <AssumeDemobilizationModal
           isOpen={isAssumeModalOpen}
           onClose={() => setIsAssumeModalOpen(false)}
