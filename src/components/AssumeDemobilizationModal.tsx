@@ -44,6 +44,7 @@ const AssumeDemobilizationModal: React.FC<AssumeDemobilizationModalProps> = ({ i
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Placa</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Chassi</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Situação Desmobilização</th>
                   </tr>
                 </thead>
@@ -52,6 +53,7 @@ const AssumeDemobilizationModal: React.FC<AssumeDemobilizationModalProps> = ({ i
                     <tr key={v.id}>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.placa}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">{v.modelo}</td>
+                      <td className="px-4 py-2 whitespace-nowrap text-sm">{v.chassi}</td>
                       <td className="px-4 py-2 whitespace-nowrap text-sm">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(v.situacao)}`}>
                           {v.situacao}
