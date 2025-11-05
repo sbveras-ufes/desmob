@@ -16,7 +16,6 @@ import EditFiscalDataModal from '../components/EditFiscalDataModal';
 import FiscalAnalysisConcluidasTable from '../components/FiscalAnalysisConcluidasTable';
 import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal';
 
-// Tipo para as atualizações
 interface FiscalUpdates {
   empresaProprietaria?: string;
   ufEmplacamento?: string;
@@ -61,7 +60,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     return selectedVehicles.every(v => v.situacao === 'Liberado');
   }, [selectedVehicles, selectedVehicleIds.length]);
 
-  // Helper para aplicar atualizações fiscais opcionais
   const getFiscalUpdates = (updates: FiscalUpdates) => {
     const newUpdates: Partial<ApprovalVehicle> = {};
     
@@ -85,7 +83,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
       selectedVehicleIds.includes(v.id)
         ? { 
             ...v, 
-            ...fiscalUpdates, // Aplica atualizações opcionais
+            ...fiscalUpdates,
             situacaoAnaliseFiscal: 'Aprovada' as const, 
             observacaoAnaliseFiscal: observation, 
             lastUpdated: new Date().toISOString(), 
@@ -109,7 +107,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
         const hasBlocking = blockingPendencies.length > 0;
         return {
           ...v,
-          ...fiscalUpdates, // Aplica atualizações opcionais
+          ...fiscalUpdates,
           situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
           tipoPendenciaFiscal: pendenciesSelection,
           observacaoAnaliseFiscal: observation,
@@ -128,6 +126,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setIsDetailModalOpen(true);
   };
   
+  // A função ainda existe, mas não é chamada por esta tela
   const handleEditVehicle = (vehicle: ApprovalVehicle) => {
     setEditingVehicle(vehicle);
     setIsEditModalOpen(true);
@@ -226,7 +225,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                     disabled={selectedVehicleIds.length === 0}
                     className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                   >
-                    Checklist Análise Fiscal
+                    Análise Fiscal
                   </button>
                 </div>
                 <FiscalAnalysisTable
@@ -234,7 +233,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
                   onViewVehicle={handleViewVehicle}
-                  onEditVehicle={handleEditVehicle}
+                  // Removida prop: onEditVehicle
                   paginationComponent={
                     <Pagination
                       {...acompanhamentoPagination}
@@ -249,7 +248,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                <FiscalAnalysisConcluidasTable
                 vehicles={concluidasPagination.paginatedItems}
                 onViewVehicle={handleViewVehicle}
-                onEditVehicle={handleEditVehicle}
+                // Removida prop: onEditVehicle
                 paginationComponent={
                   <Pagination
                     {...concluidasPagination}
