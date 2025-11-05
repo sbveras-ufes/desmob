@@ -279,7 +279,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
               </div>
 
               <div className="flex justify-end space-x-3 mt-4">
-                {/* Texto do botão alterado */}
                 <button
                   onClick={() => setIsIndicarManutencaoModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
@@ -301,12 +300,13 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 >
                   Atualizar Transporte
                 </button>
+                {/* Título do Botão Alterado */}
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
                   className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                 >
-                  Checklist Análise Documental
+                  Análise Documental
                 </button>
                 <button
                   onClick={() => setIsCreateLotModalOpen(true)}
