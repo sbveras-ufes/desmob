@@ -13,7 +13,6 @@ interface DocumentAnalysisModalProps {
 }
 
 const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, onClose, vehicles, pendencies, onApprove, onSignalPendency }) => {
-  // Estado 'activeTab' removido
   const [observation, setObservation] = useState('');
   const [selectedPendencies, setSelectedPendencies] = useState<string[]>([]);
   const [showPendencyList, setShowPendencyList] = useState(false);
@@ -36,7 +35,6 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
   };
 
   const handleClose = () => {
-    // Limpeza do 'activeTab' removida
     setObservation('');
     setSelectedPendencies([]);
     setShowPendencyList(false);
@@ -68,7 +66,8 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
         <div className="p-6 overflow-y-auto">
           <div className="mb-6">
             <h3 className="text-lg font-medium text-gray-800 mb-2">Veículos Selecionados ({vehicles.length})</h3>
-            <div className="border rounded-lg overflow-hidden max-h-60 overflow-y-auto">
+            {/* Adicionado 'overflow-x-auto' ao div abaixo */}
+            <div className="border rounded-lg overflow-hidden max-h-60 overflow-y-auto overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0">
                   <tr>
@@ -105,11 +104,8 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
               </table>
             </div>
           </div>
-
-          {/* Abas de navegação removidas */}
           
           <div className="mt-6 space-y-4">
-            {/* Campo "Tipo de Pendência" agora está sempre visível */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipo de Pendência
@@ -162,7 +158,6 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
               </div>
             </div>
             
-            {/* Campo "Observações" agora está sempre visível e é opcional */}
             <div>
               <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700 mb-2">
                 Observações
@@ -179,7 +174,6 @@ const DocumentAnalysisModal: React.FC<DocumentAnalysisModalProps> = ({ isOpen, o
           </div>
         </div>
 
-        {/* Botões do rodapé atualizados */}
         <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 mt-auto">
           <button onClick={handleClose} className="px-6 py-2 border rounded-md">Cancelar</button>
           
