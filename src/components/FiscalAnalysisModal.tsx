@@ -208,7 +208,7 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
                 onChange={(e) => setObservation(e.target.value)}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Observações (obrigatório para pendência)"
+                placeholder="Observações (opcional)"
               />
             </div>
           </div>
@@ -219,12 +219,11 @@ const FiscalAnalysisModal: React.FC<FiscalAnalysisModalProps> = ({ isOpen, onClo
           
           <button 
             onClick={handleSignalPendency} 
-            disabled={selectedPendencies.length === 0 || observation.trim() === ''}
+            disabled={selectedPendencies.length === 0}
             className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-gray-400"
           >
             Sinalizar Pendência
           </button>
-          {/* Botão "Aprovar" agora tem a condição 'disabled' */}
           <button 
             onClick={handleApprove} 
             disabled={selectedPendencies.length > 0}
