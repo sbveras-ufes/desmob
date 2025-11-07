@@ -14,6 +14,7 @@ import IndicarManutencaoModal from '../components/IndicarManutencaoModal';
 import { Pendency } from '../types/Pendency';
 import VehicleDetailModal from '../components/VehicleDetailModal';
 import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal';
+import { VehiclePendency } from '../types/VehiclePendency'; // Importado
 
 interface AssetDemobilizationManagementPageProps {
   liberatedVehicles: ApprovalVehicle[];
@@ -142,26 +143,41 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
 
-  // Lógica de pendência ATUALIZADA
+  // Atualizado para criar objetos VehiclePendency
   const handleDocumentAnalysisPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
-    const blockingPendencies = pendencies
-      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
-      .map(p => p.descricao);
+    const now = new Date().toISOString();
   
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        const hasBlocking = blockingPendencies.length > 0;
         
-        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
-        const existingPendencies = v.tipoPendenciaDocumental || [];
-        const newPendencies = pendenciesSelection.filter(p => !existingPendencies.includes(p));
-        const allPendencies = [...existingPendencies, ...newPendencies];
+        // Constrói os novos objetos de pendência
+        const newPendencyObjects: VehiclePendency[] = pendenciesSelection
+          .map(desc => {
+            const masterPendency = pendencies.find(p => p.descricao === desc && p.tipo === 'Documental');
+            return {
+              id: `vp-${Date.now()}-${Math.random()}`,
+              descricao: desc,
+              dataCadastro: now,
+              status: 'Pendente' as const,
+              isBlocking: masterPendency?.geraBloqueio || false,
+            };
+          });
+
+        const existingPendencies = v.pendenciasDocumentais || [];
+        
+        // Filtra para não adicionar duplicatas (baseado na descrição E status)
+        const pendenciesToAdd = newPendencyObjects.filter(
+          np => !existingPendencies.some(ep => ep.descricao === np.descricao && ep.status === 'Pendente')
+        );
+        const allPendencies = [...existingPendencies, ...pendenciesToAdd];
+        
+        const hasBlocking = allPendencies.some(p => p.isBlocking && p.status === 'Pendente');
 
         return {
           ...v,
           situacaoAnaliseDocumental: hasBlocking ? 'Documentação Pendente com Bloqueio' as const : 'Documentação Pendente' as const,
-          tipoPendenciaDocumental: allPendencies, // Salva a lista combinada
+          pendenciasDocumentais: allPendencies, // Salva a lista de objetos
           observacaoAnaliseDocumental: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName
@@ -173,20 +189,35 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
-  // Lógica de pendência ATUALIZADA
+  // Atualizado para criar objetos VehiclePendency
   const handleIndicarManutencao = (tiposPendencia: string[], observacao: string) => {
     const randomUserName = getRandomUser();
-    
+    const now = new Date().toISOString();
+
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
-        const existingPendencies = v.tipoPendenciaOutras || [];
-        const newPendencies = tiposPendencia.filter(p => !existingPendencies.includes(p));
-        const allPendencies = [...existingPendencies, ...newPendencies];
+        
+        const newPendencyObjects: VehiclePendency[] = tiposPendencia
+          .map(desc => {
+            const masterPendency = pendencies.find(p => p.descricao === desc && p.tipo === 'Outras Pendências');
+            return {
+              id: `vp-${Date.now()}-${Math.random()}`,
+              descricao: desc,
+              dataCadastro: now,
+              status: 'Pendente' as const,
+              isBlocking: masterPendency?.geraBloqueio || false,
+            };
+          });
+
+        const existingPendencies = v.pendenciasOutras || [];
+        const pendenciesToAdd = newPendencyObjects.filter(
+          np => !existingPendencies.some(ep => ep.descricao === np.descricao && ep.status === 'Pendente')
+        );
+        const allPendencies = [...existingPendencies, ...pendenciesToAdd];
 
         return {
           ...v,
-          tipoPendenciaOutras: allPendencies, // Salva a lista combinada
+          pendenciasOutras: allPendencies, 
           observacaoPendenciaOutras: observacao, 
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName
@@ -200,6 +231,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setIsIndicarManutencaoModalOpen(false);
   };
 
+  // Atualizado para limpar o array de objetos
   const handleConcluirManutencao = () => {
     const randomUserName = getRandomUser();
     const updatedVehicles = allVehicles.map(v =>
@@ -207,7 +239,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         ? {
             ...v,
             situacao: 'Liberado' as const,
-            tipoPendenciaOutras: undefined, 
+            pendenciasOutras: [], // Limpa as pendências
             observacaoPendenciaOutras: undefined,
             lastUpdated: new Date().toISOString(),
             responsavelAtualizacao: randomUserName
@@ -362,7 +394,9 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
         <DocumentAnalysisModal
           isOpen={isDocumentAnalysisModalOpen}
           onClose={() => setIsDocumentAnalysisModalOpen(false)}
-          vehicles={selectedVehicles}
+          selectedVehicles={selectedVehicles} // Prop renomeada
+          allVehicles={allVehicles} // Prop adicionada
+          onUpdateVehicles={onUpdateVehicles} // Prop adicionada
           onApprove={handleDocumentAnalysisApprove}
           onSignalPendency={handleDocumentAnalysisPendency}
           pendencies={pendencies}
