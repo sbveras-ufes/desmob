@@ -65,7 +65,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
   const getTipoAtivo = (modelo: string) => {
     const isHeavy = modelo.includes('HILUX') || 
                     modelo.includes('RANGER') || 
-                    modelo.includes('AMAROK'); // Logic based on useVehicleFilter.ts
+                    modelo.includes('AMAROK');
     return isHeavy ? 'Pesado' : 'Leve';
   };
 
@@ -121,7 +121,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   />
                 </th>
               )}
-              <th className="px-2 py-3"></th> {/* Visualizar */}
+              <th className="px-2 py-3"></th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Desmobilização</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Placa</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Modelo</th>
@@ -149,7 +149,6 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Prevista</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UF Emplacamento</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável pela Desmobilização</th>
-              {/* Linha 152 Corrigida */}
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Última Atualização Responsável pela Desmob</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Responsável Última Alteração</th>
               <th className="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data/Hora Última Alteração</th>
@@ -179,7 +178,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.anoModelo}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatKilometer(vehicle.km)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{getTipoAtivo(vehicle.modelo)}</td>
-                <td className="px-2 py-2 text-sm text-gray-500">-</td> {/* Implemento */}
+                <td className="px-2 py-2 text-sm text-gray-500">-</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{calculateSlaEstoque(vehicle.dataInicioCR)}</td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacao)}`}>
@@ -195,7 +194,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.cr}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.descricaoCR}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaOutras ? vehicle.tipoPendenciaOutras.join(', ') : '-'}
+                  {vehicle.pendenciasOutras ? vehicle.pendenciasOutras.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
@@ -203,7 +202,7 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaDocumental ? vehicle.tipoPendenciaDocumental.join(', ') : '-'}
+                  {vehicle.pendenciasDocumentais ? vehicle.pendenciasDocumentais.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseFiscal)}`}>
@@ -211,13 +210,12 @@ const AcompanhamentoTable: React.FC<AcompanhamentoTableProps> = ({
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaFiscal ? vehicle.tipoPendenciaFiscal.join(', ') : '-'}
+                  {vehicle.pendenciasFiscais ? vehicle.pendenciasFiscais.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.patioDestino || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataEntrega)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDate(vehicle.dataPrevista)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.ufEmplacamento || '-'}</td>
-                {/* Texto aleatório removido daqui */}
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{formatDateTime(vehicle.dataResponsavelDesmobilizacao)}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.responsavelAtualizacao || '-'}</td>
