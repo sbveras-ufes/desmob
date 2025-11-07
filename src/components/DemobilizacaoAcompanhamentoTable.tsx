@@ -45,7 +45,6 @@ const DemobilizacaoAcompanhamentoTable: React.FC<DemobilizacaoAcompanhamentoTabl
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
     try {
-      // Adiciona 'T00:00:00' para garantir que a data seja interpretada como local
       const date = new Date(dateString + 'T00:00:00');
       return date.toLocaleDateString('pt-BR');
     } catch (e) {
@@ -120,7 +119,7 @@ const DemobilizacaoAcompanhamentoTable: React.FC<DemobilizacaoAcompanhamentoTabl
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaFiscal ? vehicle.tipoPendenciaFiscal.join(', ') : '-'}
+                  {vehicle.pendenciasFiscais ? vehicle.pendenciasFiscais.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSituacaoColor(vehicle.situacaoAnaliseDocumental)}`}>
@@ -128,10 +127,10 @@ const DemobilizacaoAcompanhamentoTable: React.FC<DemobilizacaoAcompanhamentoTabl
                   </span>
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaDocumental ? vehicle.tipoPendenciaDocumental.join(', ') : '-'}
+                  {vehicle.pendenciasDocumentais ? vehicle.pendenciasDocumentais.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">
-                  {vehicle.tipoPendenciaOutras ? vehicle.tipoPendenciaOutras.join(', ') : '-'}
+                  {vehicle.pendenciasOutras ? vehicle.pendenciasOutras.map(p => p.descricao).join(', ') : '-'}
                 </td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.chassi}</td>
                 <td className="px-2 py-2 text-sm text-gray-500">{vehicle.modelo}</td>
