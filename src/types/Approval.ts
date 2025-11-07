@@ -1,3 +1,5 @@
+import { VehiclePendency } from "./VehiclePendency";
+
 export interface ApprovalVehicle {
   id: string;
   demobilizationCode?: string;
@@ -28,10 +30,12 @@ export interface ApprovalVehicle {
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
-  tipoPendenciaDocumental?: string[];
+  // Alterado
+  pendenciasDocumentais?: VehiclePendency[];
   observacaoAnaliseDocumental?: string;
   situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | 'Análise Pendente com Bloqueio';
-  tipoPendenciaFiscal?: string[];
+  // Alterado
+  pendenciasFiscais?: VehiclePendency[];
   observacaoAnaliseFiscal?: string;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
@@ -42,8 +46,9 @@ export interface ApprovalVehicle {
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
-  tipoPendenciaOutras?: string[];
-  observacaoPendenciaOutras?: string; // Novo campo
+  // Alterado
+  pendenciasOutras?: VehiclePendency[];
+  observacaoPendenciaOutras?: string;
 }
 
 export interface ApprovalFilters {
