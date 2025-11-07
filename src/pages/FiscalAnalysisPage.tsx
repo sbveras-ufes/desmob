@@ -15,6 +15,7 @@ import VehicleDetailModal from '../components/VehicleDetailModal';
 import EditFiscalDataModal from '../components/EditFiscalDataModal';
 import FiscalAnalysisConcluidasTable from '../components/FiscalAnalysisConcluidasTable';
 import AssumeDemobilizationModal from '../components/AssumeDemobilizationModal';
+import { VehiclePendency } from '../types/VehiclePendency'; // Importado
 
 interface FiscalUpdates {
   empresaProprietaria?: string;
@@ -95,26 +96,40 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
+  // Atualizado para criar objetos VehiclePendency
   const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: FiscalUpdates) => {
     const randomUserName = getRandomUser();
     const fiscalUpdates = getFiscalUpdates(updates);
-    const blockingPendencies = pendencies
-      .filter(p => pendenciesSelection.includes(p.descricao) && p.geraBloqueio)
-      .map(p => p.descricao);
+    const now = new Date().toISOString();
   
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
-        const hasBlocking = blockingPendencies.length > 0;
+
+        const newPendencyObjects: VehiclePendency[] = pendenciesSelection
+          .map(desc => {
+            const masterPendency = pendencies.find(p => p.descricao === desc && p.tipo === 'Fiscal');
+            return {
+              id: `vp-${Date.now()}-${Math.random()}`,
+              descricao: desc,
+              dataCadastro: now,
+              status: 'Pendente' as const,
+              isBlocking: masterPendency?.geraBloqueio || false,
+            };
+          });
         
-        const existingPendencies = v.tipoPendenciaFiscal || [];
-        const newPendencies = pendenciesSelection.filter(p => !existingPendencies.includes(p));
-        const allPendencies = [...existingPendencies, ...newPendencies];
+        const existingPendencies = v.pendenciasFiscais || [];
+        const pendenciesToAdd = newPendencyObjects.filter(
+          np => !existingPendencies.some(ep => ep.descricao === np.descricao && ep.status === 'Pendente')
+        );
+        const allPendencies = [...existingPendencies, ...pendenciesToAdd];
+        
+        const hasBlocking = allPendencies.some(p => p.isBlocking && p.status === 'Pendente');
 
         return {
           ...v,
           ...fiscalUpdates,
           situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
-          tipoPendenciaFiscal: allPendencies,
+          pendenciasFiscais: allPendencies, 
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
@@ -265,7 +280,9 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
         <FiscalAnalysisModal 
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          vehicles={selectedVehicles}
+          selectedVehicles={selectedVehicles} // Prop renomeada
+          allVehicles={vehicles} // Prop adicionada (passa a lista completa)
+          onUpdateVehicles={onUpdateVehicles} // Prop adicionada
           onApprove={handleApprove}
           onSignalPendency={handleSignalPendency}
           pendencies={pendencies}
@@ -276,7 +293,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           vehicles={selectedVehicles}
           onConfirm={handleAssumeDemobilization}
         />
-        {/* Props 'hideVistoria' e 'hideDocumentalAnalysis' adicionadas */}
         <VehicleDetailModal
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
