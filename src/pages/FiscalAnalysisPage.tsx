@@ -95,7 +95,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
-  // Lógica de pendência ATUALIZADA
   const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: FiscalUpdates) => {
     const randomUserName = getRandomUser();
     const fiscalUpdates = getFiscalUpdates(updates);
@@ -107,7 +106,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
         
-        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
         const existingPendencies = v.tipoPendenciaFiscal || [];
         const newPendencies = pendenciesSelection.filter(p => !existingPendencies.includes(p));
         const allPendencies = [...existingPendencies, ...newPendencies];
@@ -116,7 +114,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           ...v,
           ...fiscalUpdates,
           situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
-          tipoPendenciaFiscal: allPendencies, // Salva a lista combinada
+          tipoPendenciaFiscal: allPendencies,
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
@@ -278,11 +276,13 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
           vehicles={selectedVehicles}
           onConfirm={handleAssumeDemobilization}
         />
+        {/* Props 'hideVistoria' e 'hideDocumentalAnalysis' adicionadas */}
         <VehicleDetailModal
           isOpen={isDetailModalOpen}
           onClose={() => setIsDetailModalOpen(false)}
           vehicle={viewingVehicle}
           hideDocumentalAnalysis={true}
+          hideVistoria={true}
         />
         <EditFiscalDataModal
           isOpen={isEditModalOpen}
