@@ -1,13 +1,14 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { ApprovalVehicle } from '../types/Approval';
+import { VehiclePendency } from '../types/VehiclePendency'; // Importado
 
 interface VehicleDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicle: ApprovalVehicle | null;
   hideDocumentalAnalysis?: boolean;
-  hideVistoria?: boolean; // Nova prop
+  hideVistoria?: boolean;
 }
 
 // Helper para formatar data e hora
@@ -22,14 +23,12 @@ const formatDateTime = (dateString?: string) => {
   }
 };
 
-// Componente de Grid de Pendências reutilizável
-const PendencyGrid: React.FC<{ pendencies?: string[], date?: string }> = ({ pendencies, date }) => {
+// Componente de Grid de Pendências reutilizável (agora usa VehiclePendency)
+const PendencyGrid: React.FC<{ pendencies?: VehiclePendency[] }> = ({ pendencies }) => {
   if (!pendencies || pendencies.length === 0) {
     return <p className="text-gray-900 text-sm">-</p>;
   }
   
-  const formattedDate = formatDateTime(date);
-
   return (
     <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
       <table className="min-w-full divide-y divide-gray-200">
@@ -40,10 +39,10 @@ const PendencyGrid: React.FC<{ pendencies?: string[], date?: string }> = ({ pend
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {pendencies.map((p, index) => (
-            <tr key={index}>
-              <td className="px-4 py-2 whitespace-nowrap text-sm">{p}</td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm">{formattedDate}</td>
+          {pendencies.map((p) => (
+            <tr key={p.id}>
+              <td className="px-4 py-2 whitespace-nowrap text-sm">{p.descricao}</td>
+              <td className="px-4 py-2 whitespace-nowrap text-sm">{formatDateTime(p.dataCadastro)}</td>
             </tr>
           ))}
         </tbody>
@@ -58,7 +57,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({
   onClose, 
   vehicle, 
   hideDocumentalAnalysis = false,
-  hideVistoria = false // Nova prop com valor default
+  hideVistoria = false
 }) => {
   if (!isOpen || !vehicle) return null;
 
@@ -127,7 +126,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({
 
             <div className="col-span-2 mt-4">
               <p className="font-medium text-gray-500 text-sm mb-2">Outras Pendências</p>
-              <PendencyGrid pendencies={vehicle.tipoPendenciaOutras} date={vehicle.lastUpdated} />
+              <PendencyGrid pendencies={vehicle.pendenciasOutras} />
             </div>
             
             <div className="col-span-2 mt-4 text-sm">
@@ -150,7 +149,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({
               </div>
               
               <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
-              <PendencyGrid pendencies={vehicle.tipoPendenciaDocumental} date={vehicle.lastUpdated} />
+              <PendencyGrid pendencies={vehicle.pendenciasDocumentais} />
               
               <div className="col-span-2 mt-4 text-sm">
                 <p className="font-medium text-gray-500">Observação</p>
@@ -184,7 +183,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({
             </div>
 
             <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
-            <PendencyGrid pendencies={vehicle.tipoPendenciaFiscal} date={vehicle.lastUpdated} />
+            <PendencyGrid pendencies={vehicle.pendenciasFiscais} />
 
             <div className="col-span-2 mt-4 text-sm">
               <p className="font-medium text-gray-500">Observação</p>
@@ -192,7 +191,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({
             </div>
           </div>
 
-          {/* Vistoria (Agora condicional) */}
+          {/* Vistoria */}
           {!hideVistoria && (
             <div className="border-t pt-4">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Vistoria</h3>
