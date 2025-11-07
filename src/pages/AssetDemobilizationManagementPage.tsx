@@ -142,6 +142,7 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
 
+  // Lógica de pendência ATUALIZADA
   const handleDocumentAnalysisPendency = (pendenciesSelection: string[], observation: string) => {
     const randomUserName = getRandomUser();
     const blockingPendencies = pendencies
@@ -151,10 +152,16 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     const updatedVehicles = allVehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
+        
+        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
+        const existingPendencies = v.tipoPendenciaDocumental || [];
+        const newPendencies = pendenciesSelection.filter(p => !existingPendencies.includes(p));
+        const allPendencies = [...existingPendencies, ...newPendencies];
+
         return {
           ...v,
           situacaoAnaliseDocumental: hasBlocking ? 'Documentação Pendente com Bloqueio' as const : 'Documentação Pendente' as const,
-          tipoPendenciaDocumental: pendenciesSelection,
+          tipoPendenciaDocumental: allPendencies, // Salva a lista combinada
           observacaoAnaliseDocumental: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName
@@ -166,19 +173,28 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
     setSelectedVehicleIds([]);
   };
   
+  // Lógica de pendência ATUALIZADA
   const handleIndicarManutencao = (tiposPendencia: string[], observacao: string) => {
     const randomUserName = getRandomUser();
-    const updatedVehicles = allVehicles.map(v =>
-      selectedVehicleIds.includes(v.id)
-        ? {
-            ...v,
-            tipoPendenciaOutras: tiposPendencia, 
-            observacaoPendenciaOutras: observacao,
-            lastUpdated: new Date().toISOString(),
-            responsavelAtualizacao: randomUserName
-          }
-        : v
-    );
+    
+    const updatedVehicles = allVehicles.map(v => {
+      if (selectedVehicleIds.includes(v.id)) {
+        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
+        const existingPendencies = v.tipoPendenciaOutras || [];
+        const newPendencies = tiposPendencia.filter(p => !existingPendencies.includes(p));
+        const allPendencies = [...existingPendencies, ...newPendencies];
+
+        return {
+          ...v,
+          tipoPendenciaOutras: allPendencies, // Salva a lista combinada
+          observacaoPendenciaOutras: observacao, 
+          lastUpdated: new Date().toISOString(),
+          responsavelAtualizacao: randomUserName
+        };
+      }
+      return v;
+    });
+
     onUpdateVehicles(updatedVehicles);
     setSelectedVehicleIds([]);
     setIsIndicarManutencaoModalOpen(false);
@@ -300,7 +316,6 @@ const AssetDemobilizationManagementPage: React.FC<AssetDemobilizationManagementP
                 >
                   Atualizar Transporte
                 </button>
-                {/* Título do Botão Alterado */}
                 <button
                   onClick={() => setIsDocumentAnalysisModalOpen(true)}
                   disabled={selectedVehicleIds.length === 0}
