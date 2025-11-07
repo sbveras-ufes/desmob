@@ -1,4 +1,4 @@
-import { VehiclePendency } from "./VehiclePendency";
+import { VehiclePendency } from './VehiclePendency';
 
 export interface ApprovalVehicle {
   id: string;
@@ -30,12 +30,10 @@ export interface ApprovalVehicle {
   dataVistoria?: string;
   classificacaoVistoria?: string;
   situacaoAnaliseDocumental?: 'Documentação Aprovada' | 'Documentação Pendente' | 'Documentação Pendente com Bloqueio';
-  // Alterado
-  pendenciasDocumentais?: VehiclePendency[];
+  pendenciasDocumentais?: VehiclePendency[]; // Alterado
   observacaoAnaliseDocumental?: string;
   situacaoAnaliseFiscal?: 'Aprovada' | 'Pendente' | 'Análise Pendente com Bloqueio';
-  // Alterado
-  pendenciasFiscais?: VehiclePendency[];
+  pendenciasFiscais?: VehiclePendency[]; // Alterado
   observacaoAnaliseFiscal?: string;
   isTransitionCR?: boolean;
   dataInicioCR?: string;
@@ -46,8 +44,7 @@ export interface ApprovalVehicle {
   ufEmplacamento?: string;
   empresaProprietaria?: string;
   cnpjProprietario?: string;
-  // Alterado
-  pendenciasOutras?: VehiclePendency[];
+  pendenciasOutras?: VehiclePendency[]; // Alterado
   observacaoPendenciaOutras?: string;
 }
 
