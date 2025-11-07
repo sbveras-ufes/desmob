@@ -9,6 +9,50 @@ interface VehicleDetailModalProps {
   hideDocumentalAnalysis?: boolean;
 }
 
+// Helper para formatar data e hora
+const formatDateTime = (dateString?: string) => {
+  if (!dateString) return '-';
+  try {
+    return new Date(dateString).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  } catch (e) {
+    return '-';
+  }
+};
+
+// Componente de Grid de Pendências reutilizável
+const PendencyGrid: React.FC<{ pendencies?: string[], date?: string }> = ({ pendencies, date }) => {
+  if (!pendencies || pendencies.length === 0) {
+    return <p className="text-gray-900 text-sm">-</p>;
+  }
+  
+  const formattedDate = formatDateTime(date);
+
+  return (
+    <div className="border rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50 sticky top-0">
+          <tr>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Tipo de Pendência</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Data de Cadastro da Pendência</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {pendencies.map((p, index) => (
+            <tr key={index}>
+              <td className="px-4 py-2 whitespace-nowrap text-sm">{p}</td>
+              {/* Usando a data da última atualização do veículo, pois não há data individual por pendência */}
+              <td className="px-4 py-2 whitespace-nowrap text-sm">{formattedDate}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+
 const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose, vehicle, hideDocumentalAnalysis = false }) => {
   if (!isOpen || !vehicle) return null;
 
@@ -26,7 +70,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
         return 'bg-blue-100 text-blue-800';
       case 'Em Manutenção':
         return 'bg-purple-100 text-purple-800';
-      case 'Em Andamento': // Novo status
+      case 'Em Andamento': 
         return 'bg-cyan-100 text-cyan-800';
       case 'Documentação Aprovada':
       case 'Aprovada':
@@ -76,39 +120,47 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
             </div>
           </div>
 
-          {/* Análise Documental */}
+          {/* Outras Pendências (Nova Seção) */}
+          <div className="border-t pt-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Outras Pendências</h3>
+            <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
+            <PendencyGrid pendencies={vehicle.tipoPendenciaOutras} date={vehicle.lastUpdated} />
+            
+            <div className="col-span-2 mt-4 text-sm">
+              <p className="font-medium text-gray-500">Observação (Outras Pendências)</p>
+              <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoPendenciaOutras || '-'}</p>
+            </div>
+          </div>
+
+
+          {/* Análise Documental (Atualizada) */}
           {!hideDocumentalAnalysis && (
             <div className="border-t pt-4">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Documental</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                 <div>
                   <p className="font-medium text-gray-500">Situação</p>
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoAnaliseDocumental)}`}>
                     {vehicle.situacaoAnaliseDocumental || '-'}
                   </span>
                 </div>
-                <div className="col-span-2">
-                  <p className="font-medium text-gray-500">Pendências</p>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {vehicle.tipoPendenciaDocumental && vehicle.tipoPendenciaDocumental.length > 0 ? (
-                      vehicle.tipoPendenciaDocumental.map(p => (
-                        <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
-                      ))
-                    ) : <p className="text-gray-900">-</p>}
-                  </div>
-                </div>
-                <div className="col-span-2">
-                  <p className="font-medium text-gray-500">Observação</p>
-                  <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseDocumental || '-'}</p>
-                </div>
+              </div>
+              
+              <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
+              {/* Grid de Pendências Documentais */}
+              <PendencyGrid pendencies={vehicle.tipoPendenciaDocumental} date={vehicle.lastUpdated} />
+              
+              <div className="col-span-2 mt-4 text-sm">
+                <p className="font-medium text-gray-500">Observação</p>
+                <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseDocumental || '-'}</p>
               </div>
             </div>
           )}
 
-          {/* Análise Fiscal */}
+          {/* Análise Fiscal (Atualizada) */}
           <div className="border-t pt-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Fiscal</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
+            <div className="grid grid-cols-2 gap-4 text-sm mb-4">
               <div>
                 <p className="font-medium text-gray-500">Situação</p>
                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoAnaliseFiscal)}`}>
@@ -127,20 +179,15 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
                 <p className="font-medium text-gray-500">CNPJ Proprietário</p>
                 <p className="text-gray-900">{vehicle.cnpjProprietario || '-'}</p>
               </div>
-              <div className="col-span-2">
-                <p className="font-medium text-gray-500">Pendências</p>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {vehicle.tipoPendenciaFiscal && vehicle.tipoPendenciaFiscal.length > 0 ? (
-                    vehicle.tipoPendenciaFiscal.map(p => (
-                      <span key={p} className="bg-gray-200 text-gray-800 text-xs font-medium px-2 py-1 rounded-md">{p}</span>
-                    ))
-                  ) : <p className="text-gray-900">-</p>}
-                </div>
-              </div>
-              <div className="col-span-2">
-                <p className="font-medium text-gray-500">Observação</p>
-                <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseFiscal || '-'}</p>
-              </div>
+            </div>
+
+            <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
+            {/* Grid de Pendências Fiscais */}
+            <PendencyGrid pendencies={vehicle.tipoPendenciaFiscal} date={vehicle.lastUpdated} />
+
+            <div className="col-span-2 mt-4 text-sm">
+              <p className="font-medium text-gray-500">Observação</p>
+              <p className="text-gray-900 bg-gray-50 p-2 rounded-md mt-1">{vehicle.observacaoAnaliseFiscal || '-'}</p>
             </div>
           </div>
 
