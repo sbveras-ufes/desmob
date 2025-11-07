@@ -7,6 +7,7 @@ interface VehicleDetailModalProps {
   onClose: () => void;
   vehicle: ApprovalVehicle | null;
   hideDocumentalAnalysis?: boolean;
+  hideVistoria?: boolean; // Nova prop
 }
 
 // Helper para formatar data e hora
@@ -52,7 +53,13 @@ const PendencyGrid: React.FC<{ pendencies?: string[], date?: string }> = ({ pend
 };
 
 
-const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose, vehicle, hideDocumentalAnalysis = false }) => {
+const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  vehicle, 
+  hideDocumentalAnalysis = false,
+  hideVistoria = false // Nova prop com valor default
+}) => {
   if (!isOpen || !vehicle) return null;
 
   const getStatusColor = (status?: string) => {
@@ -118,7 +125,6 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
               <p className="text-gray-900">{vehicle.modelo}</p>
             </div>
 
-            {/* Conteúdo de "Outras Pendências" movido para cá */}
             <div className="col-span-2 mt-4">
               <p className="font-medium text-gray-500 text-sm mb-2">Outras Pendências</p>
               <PendencyGrid pendencies={vehicle.tipoPendenciaOutras} date={vehicle.lastUpdated} />
@@ -186,22 +192,24 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
             </div>
           </div>
 
-          {/* Vistoria */}
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Vistoria</h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="font-medium text-gray-500">Situação Vistoria</p>
-                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoVistoria)}`}>
-                  {vehicle.situacaoVistoria || '-'}
-                </span>
-              </div>
-              <div>
-                <p className="font-medium text-gray-500">Data da Precificação</p>
-                <p className="text-gray-900">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</p>
+          {/* Vistoria (Agora condicional) */}
+          {!hideVistoria && (
+            <div className="border-t pt-4">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Vistoria</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-medium text-gray-500">Situação Vistoria</p>
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(vehicle.situacaoVistoria)}`}>
+                    {vehicle.situacaoVistoria || '-'}
+                  </span>
+                </div>
+                <div>
+                  <p className="font-medium text-gray-500">Data da Precificação</p>
+                  <p className="text-gray-900">{vehicle.dataPrecificacao ? new Date(vehicle.dataPrecificacao).toLocaleDateString('pt-BR') : '-'}</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
         </div>
 
