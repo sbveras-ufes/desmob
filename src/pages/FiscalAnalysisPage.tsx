@@ -95,6 +95,7 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setSelectedVehicleIds([]);
   };
   
+  // Lógica de pendência ATUALIZADA
   const handleSignalPendency = (pendenciesSelection: string[], observation: string, updates: FiscalUpdates) => {
     const randomUserName = getRandomUser();
     const fiscalUpdates = getFiscalUpdates(updates);
@@ -105,11 +106,17 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     const updatedVehicles = vehicles.map(v => {
       if (selectedVehicleIds.includes(v.id)) {
         const hasBlocking = blockingPendencies.length > 0;
+        
+        // Lógica de histórico: une pendências existentes com as novas, sem duplicar
+        const existingPendencies = v.tipoPendenciaFiscal || [];
+        const newPendencies = pendenciesSelection.filter(p => !existingPendencies.includes(p));
+        const allPendencies = [...existingPendencies, ...newPendencies];
+
         return {
           ...v,
           ...fiscalUpdates,
           situacaoAnaliseFiscal: hasBlocking ? 'Análise Pendente com Bloqueio' as const : 'Pendente' as const,
-          tipoPendenciaFiscal: pendenciesSelection,
+          tipoPendenciaFiscal: allPendencies, // Salva a lista combinada
           observacaoAnaliseFiscal: observation,
           lastUpdated: new Date().toISOString(),
           responsavelAtualizacao: randomUserName,
@@ -126,7 +133,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
     setIsDetailModalOpen(true);
   };
   
-  // A função ainda existe, mas não é chamada por esta tela
   const handleEditVehicle = (vehicle: ApprovalVehicle) => {
     setEditingVehicle(vehicle);
     setIsEditModalOpen(true);
@@ -233,7 +239,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                   selectedVehicles={selectedVehicleIds}
                   onSelectionChange={setSelectedVehicleIds}
                   onViewVehicle={handleViewVehicle}
-                  // Removida prop: onEditVehicle
                   paginationComponent={
                     <Pagination
                       {...acompanhamentoPagination}
@@ -248,7 +253,6 @@ const FiscalAnalysisPage: React.FC<FiscalAnalysisPageProps> = ({ vehicles, onUpd
                <FiscalAnalysisConcluidasTable
                 vehicles={concluidasPagination.paginatedItems}
                 onViewVehicle={handleViewVehicle}
-                // Removida prop: onEditVehicle
                 paginationComponent={
                   <Pagination
                     {...concluidasPagination}
