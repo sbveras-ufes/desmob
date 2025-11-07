@@ -42,7 +42,6 @@ const PendencyGrid: React.FC<{ pendencies?: string[], date?: string }> = ({ pend
           {pendencies.map((p, index) => (
             <tr key={index}>
               <td className="px-4 py-2 whitespace-nowrap text-sm">{p}</td>
-              {/* Usando a data da última atualização do veículo, pois não há data individual por pendência */}
               <td className="px-4 py-2 whitespace-nowrap text-sm">{formattedDate}</td>
             </tr>
           ))}
@@ -118,13 +117,12 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
               <p className="font-medium text-gray-500">Modelo</p>
               <p className="text-gray-900">{vehicle.modelo}</p>
             </div>
-          </div>
 
-          {/* Outras Pendências (Nova Seção) */}
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">Outras Pendências</h3>
-            <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
-            <PendencyGrid pendencies={vehicle.tipoPendenciaOutras} date={vehicle.lastUpdated} />
+            {/* Conteúdo de "Outras Pendências" movido para cá */}
+            <div className="col-span-2 mt-4">
+              <p className="font-medium text-gray-500 text-sm mb-2">Outras Pendências</p>
+              <PendencyGrid pendencies={vehicle.tipoPendenciaOutras} date={vehicle.lastUpdated} />
+            </div>
             
             <div className="col-span-2 mt-4 text-sm">
               <p className="font-medium text-gray-500">Observação (Outras Pendências)</p>
@@ -132,8 +130,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
             </div>
           </div>
 
-
-          {/* Análise Documental (Atualizada) */}
+          {/* Análise Documental */}
           {!hideDocumentalAnalysis && (
             <div className="border-t pt-4">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Documental</h3>
@@ -147,7 +144,6 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
               </div>
               
               <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
-              {/* Grid de Pendências Documentais */}
               <PendencyGrid pendencies={vehicle.tipoPendenciaDocumental} date={vehicle.lastUpdated} />
               
               <div className="col-span-2 mt-4 text-sm">
@@ -157,7 +153,7 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
             </div>
           )}
 
-          {/* Análise Fiscal (Atualizada) */}
+          {/* Análise Fiscal */}
           <div className="border-t pt-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Análise Fiscal</h3>
             <div className="grid grid-cols-2 gap-4 text-sm mb-4">
@@ -182,7 +178,6 @@ const VehicleDetailModal: React.FC<VehicleDetailModalProps> = ({ isOpen, onClose
             </div>
 
             <p className="font-medium text-gray-500 text-sm mb-2">Pendências</p>
-            {/* Grid de Pendências Fiscais */}
             <PendencyGrid pendencies={vehicle.tipoPendenciaFiscal} date={vehicle.lastUpdated} />
 
             <div className="col-span-2 mt-4 text-sm">
